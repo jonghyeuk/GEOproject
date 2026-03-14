@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin - LittleScience Knowledge Platform</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div id="site-header"></div>
+
+  <div class="container page-content">
+    <div class="breadcrumb">
+      <a href="index.html">Home</a>
+      <span class="sep">›</span>
+      <span>Admin</span>
+    </div>
+
+    <h1 class="section-title">문서 관리</h1>
+    <p class="section-subtitle">문서 작성 및 발행 관리</p>
+
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:32px;" id="adminLayout">
+      <!-- 문서 작성 폼 -->
+      <div style="background:white; border:1px solid var(--gray-200); border-radius:var(--radius); padding:28px;">
+        <h2 style="font-size:18px; font-weight:600; margin-bottom:20px;">새 문서 작성</h2>
+
+        <div class="form-group">
+          <label>제목 *</label>
+          <input type="text" id="docTitle" placeholder="문서 제목">
+        </div>
+
+        <div class="form-group">
+          <label>요약 *</label>
+          <textarea id="docSummary" placeholder="문서 요약 (1~2문장)" style="min-height:60px;"></textarea>
+        </div>
+
+        <div class="form-group">
+          <label>카테고리 *</label>
+          <select id="docCategory">
+            <option value="">선택하세요</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>문서 유형 *</label>
+          <select id="docType">
+            <option value="article">정보 문서 (article)</option>
+            <option value="topic">주제형 문서 (topic)</option>
+            <option value="guide">가이드 (guide)</option>
+            <option value="company">기관/회사 (company)</option>
+            <option value="academy">학원 (academy)</option>
+            <option value="concept">개념 (concept)</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>태그</label>
+          <input type="text" id="docTags" placeholder="쉼표로 구분 (예: 반도체, 식각, 공정)">
+          <small>쉼표(,)로 구분하여 입력하세요</small>
+        </div>
+
+        <div class="form-group">
+          <label>핵심 정보 (선택)</label>
+          <textarea id="docKeyInfo" placeholder='JSON 형식: {"정의": "...", "중요성": "..."}' style="min-height:80px;"></textarea>
+          <small>JSON 형식으로 입력 (선택사항)</small>
+        </div>
+
+        <div class="form-group">
+          <label>본문 (Markdown) *</label>
+          <textarea id="docBody" placeholder="## 정의&#10;&#10;내용을 작성하세요...&#10;&#10;## 핵심 개념&#10;&#10;- 항목 1&#10;- 항목 2" style="min-height:300px;"></textarea>
+        </div>
+
+        <div style="display:flex; gap:12px;">
+          <button class="btn btn-primary btn-lg" style="flex:1;" onclick="publishDoc()">발행하기</button>
+          <button class="btn btn-secondary btn-lg" onclick="previewDoc()">미리보기</button>
+        </div>
+      </div>
+
+      <!-- 오른쪽: 미리보기 + 문서 목록 -->
+      <div>
+        <!-- 미리보기 -->
+        <div id="adminPreview" style="display:none; background:white; border:1px solid var(--gray-200); border-radius:var(--radius); padding:28px; margin-bottom:20px;">
+          <h3 style="font-size:16px; font-weight:600; margin-bottom:16px;">미리보기</h3>
+          <div id="previewArea" style="font-size:14px; line-height:1.8;"></div>
+        </div>
+
+        <!-- 저장된 문서 목록 -->
+        <div style="background:white; border:1px solid var(--gray-200); border-radius:var(--radius); padding:28px;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+            <h3 style="font-size:16px; font-weight:600;">저장된 문서</h3>
+            <span id="docCount" style="font-size:13px; color:var(--gray-400);"></span>
+          </div>
+          <div id="docList"></div>
+        </div>
+
+        <!-- 데이터 관리 -->
+        <div style="background:white; border:1px solid var(--gray-200); border-radius:var(--radius); padding:28px; margin-top:20px;">
+          <h3 style="font-size:16px; font-weight:600; margin-bottom:16px;">데이터 관리</h3>
+          <div style="display:flex; gap:12px; flex-wrap:wrap;">
+            <button class="btn btn-secondary" onclick="exportData()">데이터 내보내기</button>
+            <button class="btn btn-secondary" onclick="clearCustomData()">커스텀 데이터 초기화</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="site-footer"></div>
+
+  <script src="data/documents.js"></script>
+  <script src="js/app.js"></script>
+  <script>
+  function pageInit() {
+    // category options
+    const catSelect = document.getElementById('docCategory');
+    CATEGORIES.forEach(c => {
+      catSelect.innerHTML += `<option value="${c.id}">${c.icon} ${c.nameKo}</option>`;
+    });
+    renderDocList();
+  }
+
+  function renderDocList() {
+    const docs = getAllDocuments().sort((a, b) => b.updatedAt.localeCompare(a.updatedAt));
+    document.getElementById('docCount').textContent = `${docs.length}개 문서`;
+    document.getElementById('docList').innerHTML = docs.map(d => {
+      const cat = getCategoryById(d.categoryId);
+      return `
+      <div style="padding:10px 0; border-bottom:1px solid var(--gray-100); display:flex; justify-content:space-between; align-items:center;">
+        <div>
+          <a href="document.html?slug=${d.slug}" style="font-size:14px; font-weight:500;">${d.title}</a>
+          <div style="font-size:12px; color:var(--gray-400);">${cat ? cat.icon + ' ' + cat.nameKo : ''} · ${d.docType} · ${formatDate(d.updatedAt)}</div>
+        </div>
+        <span style="font-size:11px; padding:3px 8px; border-radius:10px; background:${d.status==='published'?'#d1fae5':'#fef3c7'}; color:${d.status==='published'?'#065f46':'#92400e'};">${d.status}</span>
+      </div>`;
+    }).join('');
+  }
+
+  function publishDoc() {
+    const title = document.getElementById('docTitle').value.trim();
+    const summary = document.getElementById('docSummary').value.trim();
+    const categoryId = document.getElementById('docCategory').value;
+    const docType = document.getElementById('docType').value;
+    const tagsStr = document.getElementById('docTags').value.trim();
+    const body = document.getElementById('docBody').value.trim();
+    const keyInfoStr = document.getElementById('docKeyInfo').value.trim();
+
+    if (!title || !summary || !categoryId || !body) {
+      alert('제목, 요약, 카테고리, 본문은 필수입니다.');
+      return;
+    }
+
+    const tags = tagsStr ? tagsStr.split(',').map(t => t.trim()).filter(Boolean) : [];
+    let keyInfo = null;
+    if (keyInfoStr) {
+      try { keyInfo = JSON.parse(keyInfoStr); } catch(e) { alert('핵심 정보 JSON 형식이 올바르지 않습니다.'); return; }
+    }
+
+    const slug = title.toLowerCase()
+      .replace(/[가-힣]+/g, m => m)
+      .replace(/[^a-z0-9가-힣]+/g, '-')
+      .replace(/^-|-$/g, '');
+
+    const doc = {
+      slug: slug || 'doc-' + Date.now(),
+      title, summary, docType, categoryId, tags, body,
+      keyInfo,
+      status: 'published',
+      relatedDocs: [],
+      relatedServices: []
+    };
+
+    saveDocument(doc);
+    alert('문서가 발행되었습니다.');
+
+    // clear form
+    ['docTitle','docSummary','docTags','docBody','docKeyInfo'].forEach(id => document.getElementById(id).value = '');
+    document.getElementById('docCategory').value = '';
+    renderDocList();
+  }
+
+  function previewDoc() {
+    const title = document.getElementById('docTitle').value.trim() || '(제목 없음)';
+    const summary = document.getElementById('docSummary').value.trim();
+    const body = document.getElementById('docBody').value.trim();
+
+    const preview = document.getElementById('adminPreview');
+    preview.style.display = 'block';
+    document.getElementById('previewArea').innerHTML = `
+      <h2 style="font-size:22px; font-weight:700; margin-bottom:8px;">${title}</h2>
+      <p style="color:var(--gray-500); margin-bottom:16px;">${summary}</p>
+      <hr style="border:none; border-top:1px solid var(--gray-200); margin:16px 0;">
+      ${renderMarkdown(body)}
+    `;
+    preview.scrollIntoView({ behavior: 'smooth' });
+  }
+
+  function exportData() {
+    const docs = getAllDocuments();
+    const data = JSON.stringify({ documents: docs, categories: CATEGORIES, services: SERVICES }, null, 2);
+    const blob = new Blob([data], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'knowledge-platform-data.json';
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+
+  function clearCustomData() {
+    if (confirm('커스텀으로 추가한 문서를 모두 삭제하시겠습니까? (기본 샘플 데이터는 유지됩니다)')) {
+      localStorage.removeItem('kp_documents');
+      renderDocList();
+      alert('커스텀 데이터가 초기화되었습니다.');
+    }
+  }
+  </script>
+
+  <style>
+    @media (max-width: 768px) {
+      #adminLayout { grid-template-columns: 1fr !important; }
+    }
+  </style>
+</body>
+</html>

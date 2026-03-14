@@ -16,18 +16,18 @@
 - [x] 이름/역할 분리
 - [x] 메뉴 구조 확정: Home / Knowledge / GEO Builder / Categories / Services / Search
 
-### 1단계: 가장 작은 MVP 🔲 ← 현재 단계
-- [ ] 공통 CSS/JS 생성
-- [ ] 샘플 데이터 (data/documents.js) ✅ 생성됨
-- [ ] index.html (메인 홈페이지)
-- [ ] knowledge.html (문서 목록)
-- [ ] document.html (문서 상세 페이지)
-- [ ] categories.html (카테고리 허브)
-- [ ] geo-builder.html (GEO 생성기 기본형)
-- [ ] services.html (서비스 연결)
-- [ ] search.html (검색)
-- [ ] admin.html (관리자 - 문서 발행)
-- [ ] firebase.json / sitemap.xml / robots.txt 업데이트
+### 1단계: 가장 작은 MVP ✅ 완료
+- [x] 공통 CSS/JS 생성 (css/style.css, js/app.js)
+- [x] 샘플 데이터 (data/documents.js) - 7개 문서, 5개 카테고리
+- [x] index.html (메인 홈페이지 - 히어로, 검색, 카테고리, 최신문서, 서비스)
+- [x] knowledge.html (문서 목록 - 필터, 검색, 태그)
+- [x] document.html (문서 상세 - 핵심정보, 본문, 관련문서, schema markup)
+- [x] categories.html (카테고리 허브 - 목록/상세 뷰)
+- [x] geo-builder.html (GEO 생성기 - 입력폼, 페이지생성, 미리보기, 발행)
+- [x] services.html (서비스 연결 - LittleScienceAI, 반도체 플랫폼)
+- [x] search.html (검색 - 실시간 검색, 인기 태그)
+- [x] admin.html (관리자 - 문서 작성/발행, 미리보기, 데이터 내보내기)
+- [x] firebase.json / sitemap.xml / robots.txt 업데이트
 
 #### MVP 문서 타입 (3개)
 1. **정보 문서** - 반도체 식각, 과학 소논문, 탐구 설계 방법

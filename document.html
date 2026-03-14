@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document - LittleScience Knowledge Platform</title>
+  <meta name="description" content="">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div id="site-header"></div>
+
+  <div class="container page-content">
+    <div class="breadcrumb" id="breadcrumb"></div>
+
+    <div class="doc-layout">
+      <!-- Main Content -->
+      <div>
+        <div class="doc-header" id="docHeader"></div>
+        <div class="key-info-box" id="keyInfo"></div>
+        <div class="doc-body" id="docBody"></div>
+        <div style="margin-top:40px;" id="docTags"></div>
+      </div>
+
+      <!-- Sidebar -->
+      <aside id="sidebar"></aside>
+    </div>
+  </div>
+
+  <div id="site-footer"></div>
+
+  <script src="data/documents.js"></script>
+  <script src="js/app.js"></script>
+  <script>
+  function pageInit() {
+    const slug = getParam('slug');
+    if (!slug) { location.href = 'knowledge.html'; return; }
+
+    const doc = getDocumentBySlug(slug);
+    if (!doc) {
+      document.querySelector('.page-content .doc-layout').innerHTML = `
+        <div class="empty-state" style="grid-column:1/-1">
+          <div class="empty-icon">📄</div>
+          <h3>문서를 찾을 수 없습니다</h3>
+          <p><a href="knowledge.html">문서 목록으로 돌아가기</a></p>
+        </div>`;
+      return;
+    }
+
+    const cat = getCategoryById(doc.categoryId);
+
+    // page title & meta
+    document.title = doc.title + ' - LittleScience Knowledge Platform';
+    document.querySelector('meta[name="description"]').content = doc.summary;
+
+    // schema markup
+    const schema = document.createElement('script');
+    schema.type = 'application/ld+json';
+    schema.textContent = JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "Article",
+      "headline": doc.title,
+      "description": doc.summary,
+      "datePublished": doc.createdAt,
+      "dateModified": doc.updatedAt,
+      "author": { "@type": "Organization", "name": "LittleScience" },
+      "publisher": { "@type": "Organization", "name": "LittleScience Knowledge Platform" },
+      "articleSection": cat ? cat.nameKo : '',
+      "keywords": doc.tags.join(', ')
+    });
+    document.head.appendChild(schema);
+
+    // breadcrumb
+    document.getElementById('breadcrumb').innerHTML = `
+      <a href="index.html">Home</a><span class="sep">›</span>
+      <a href="knowledge.html">Knowledge</a><span class="sep">›</span>
+      ${cat ? `<a href="categories.html?id=${cat.id}">${cat.nameKo}</a><span class="sep">›</span>` : ''}
+      <span>${doc.title}</span>`;
+
+    // header
+    document.getElementById('docHeader').innerHTML = `
+      ${cat ? `<a href="categories.html?id=${cat.id}" class="doc-category">${cat.icon} ${cat.nameKo}</a>` : ''}
+      <h1>${doc.title}</h1>
+      <p class="doc-summary">${doc.summary}</p>
+      <div class="doc-meta">
+        <span>📅 ${formatDate(doc.updatedAt)}</span>
+        <span>📄 ${doc.docType}</span>
+      </div>`;
+
+    // key info
+    if (doc.keyInfo) {
+      const items = Object.entries(doc.keyInfo).map(([k, v]) => `
+        <div class="key-info-item">
+          <span class="label">${k}</span>
+          <span class="value">${v}</span>
+        </div>`).join('');
+      document.getElementById('keyInfo').innerHTML = `<h3>핵심 정보</h3>${items}`;
+    } else {
+      document.getElementById('keyInfo').style.display = 'none';
+    }
+
+    // body
+    document.getElementById('docBody').innerHTML = renderMarkdown(doc.body);
+
+    // tags
+    document.getElementById('docTags').innerHTML = `
+      <div class="tag-list">
+        ${doc.tags.map(t => `<a href="search.html?q=${encodeURIComponent(t)}" class="tag">${t}</a>`).join('')}
+      </div>`;
+
+    // sidebar
+    let sidebarHTML = '';
+
+    // related docs
+    const related = getRelatedDocuments(doc);
+    if (related.length) {
+      sidebarHTML += `<div class="sidebar-section"><h3>관련 문서</h3>
+        ${related.map(r => `<a href="document.html?slug=${r.slug}" class="related-link">${r.title}</a>`).join('')}
+      </div>`;
+    }
+
+    // category
+    if (cat) {
+      const catDocs = getDocumentsByCategory(cat.id).filter(d => d.id !== doc.id).slice(0, 5);
+      sidebarHTML += `<div class="sidebar-section"><h3>${cat.icon} ${cat.nameKo} 문서</h3>
+        ${catDocs.map(d => `<a href="document.html?slug=${d.slug}" class="related-link">${d.title}</a>`).join('')}
+        <a href="categories.html?id=${cat.id}" class="related-link" style="color:var(--primary)">전체 보기 →</a>
+      </div>`;
+    }
+
+    // services
+    if (doc.relatedServices && doc.relatedServices.length) {
+      const svcs = doc.relatedServices.map(id => SERVICES.find(s => s.id === id)).filter(Boolean);
+      sidebarHTML += `<div class="sidebar-section"><h3>관련 서비스</h3>
+        ${svcs.map(s => `
+          <a href="services.html" class="related-link">
+            ${s.icon} ${s.name}<br>
+            <small style="color:var(--gray-400)">${s.description}</small>
+          </a>`).join('')}
+      </div>`;
+    }
+
+    document.getElementById('sidebar').innerHTML = sidebarHTML;
+  }
+  </script>
+</body>
+</html>
