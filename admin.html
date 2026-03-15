@@ -11,96 +11,205 @@
 
   <div class="container page-content">
     <div class="breadcrumb">
-      <a href="index.html">Home</a>
+      <a href="index.html">Explore</a>
       <span class="sep">›</span>
       <span>Admin</span>
     </div>
 
     <h1 class="section-title">문서 관리</h1>
-    <p class="section-subtitle">문서 작성 및 발행 관리</p>
 
-    <div style="display:grid; grid-template-columns:1fr 1fr; gap:32px;" id="adminLayout">
-      <!-- 문서 작성 폼 -->
-      <div style="background:white; border:1px solid var(--gray-200); border-radius:var(--radius); padding:28px;">
-        <h2 style="font-size:18px; font-weight:600; margin-bottom:20px;">새 문서 작성</h2>
+    <!-- 탭 네비게이션 -->
+    <div class="admin-tabs">
+      <button class="admin-tab active" onclick="switchTab('create')">새 문서 작성</button>
+      <button class="admin-tab" onclick="switchTab('draft')">AI 초안 생성</button>
+      <button class="admin-tab" onclick="switchTab('manage')">문서 관리</button>
+      <button class="admin-tab" onclick="switchTab('data')">데이터</button>
+    </div>
 
-        <div class="form-group">
-          <label>제목 *</label>
-          <input type="text" id="docTitle" placeholder="문서 제목">
+    <!-- 탭 1: 문서 작성/편집 -->
+    <div id="tab-create" class="admin-tab-content active">
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:32px;" id="adminLayout">
+        <div class="admin-panel">
+          <h2 class="admin-panel-title" id="formTitle">새 문서 작성</h2>
+          <input type="hidden" id="editId" value="">
+
+          <div class="form-group">
+            <label>제목 *</label>
+            <input type="text" id="docTitle" placeholder="문서 제목">
+          </div>
+
+          <div class="form-group">
+            <label>요약 *</label>
+            <textarea id="docSummary" placeholder="문서 요약 (1~2문장)" style="min-height:60px;"></textarea>
+          </div>
+
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+            <div class="form-group">
+              <label>카테고리 *</label>
+              <select id="docCategory"><option value="">선택</option></select>
+            </div>
+            <div class="form-group">
+              <label>문서 유형 *</label>
+              <select id="docType">
+                <option value="article">정보 문서 (article)</option>
+                <option value="topic">주제형 (topic)</option>
+                <option value="guide">가이드 (guide)</option>
+                <option value="company">기관/회사 (company)</option>
+                <option value="academy">학원 (academy)</option>
+                <option value="concept">개념 (concept)</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>태그</label>
+            <input type="text" id="docTags" placeholder="쉼표로 구분 (예: 반도체, 식각, 공정)">
+          </div>
+
+          <div class="form-group">
+            <label>대상 독자</label>
+            <input type="text" id="docAudience" placeholder="쉼표로 구분 (예: 중학생, 교사)">
+          </div>
+
+          <div class="form-group">
+            <label>핵심 답변 (Direct Answer)</label>
+            <textarea id="docDirectAnswer" placeholder="검색 결과에 바로 표시될 핵심 답변 (줄바꿈으로 구분)" style="min-height:80px;"></textarea>
+            <small>줄바꿈으로 여러 답변을 구분합니다</small>
+          </div>
+
+          <div class="form-group">
+            <label>핵심 정보 (JSON)</label>
+            <textarea id="docKeyInfo" placeholder='{"정의": "...", "중요성": "..."}' style="min-height:60px;"></textarea>
+          </div>
+
+          <div class="form-group">
+            <label>FAQ (JSON 배열)</label>
+            <textarea id="docFaq" placeholder='[{"question":"질문","answer":"답변"}]' style="min-height:60px;"></textarea>
+          </div>
+
+          <div class="form-group">
+            <label>본문 (Markdown) *</label>
+            <textarea id="docBody" placeholder="## 정의&#10;&#10;내용을 작성하세요..." style="min-height:300px;"></textarea>
+          </div>
+
+          <div style="display:flex; gap:12px;">
+            <button class="btn btn-primary btn-lg" style="flex:1;" onclick="publishDoc()">발행하기</button>
+            <button class="btn btn-secondary btn-lg" onclick="previewDoc()">미리보기</button>
+            <button class="btn btn-secondary btn-lg" id="cancelEditBtn" style="display:none;" onclick="cancelEdit()">취소</button>
+          </div>
         </div>
 
-        <div class="form-group">
-          <label>요약 *</label>
-          <textarea id="docSummary" placeholder="문서 요약 (1~2문장)" style="min-height:60px;"></textarea>
+        <div>
+          <div id="adminPreview" style="display:none;" class="admin-panel">
+            <h3 class="admin-panel-title">미리보기</h3>
+            <div id="previewArea" style="font-size:14px; line-height:1.8;"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 탭 2: AI 초안 생성 -->
+    <div id="tab-draft" class="admin-tab-content">
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:32px;">
+        <div class="admin-panel">
+          <h2 class="admin-panel-title">AI 초안 생성기</h2>
+          <p style="font-size:14px; color:var(--gray-500); margin-bottom:20px;">
+            문서 유형과 기본 정보를 입력하면 템플릿 기반 초안을 자동 생성합니다.
+          </p>
+
+          <div class="form-group">
+            <label>문서 제목 *</label>
+            <input type="text" id="draftTitle" placeholder="예: 반도체 CVD 공정의 이해">
+          </div>
+
+          <div class="form-group">
+            <label>문서 유형 *</label>
+            <select id="draftType">
+              <option value="article">정보 문서 (article)</option>
+              <option value="topic">주제형 (topic)</option>
+              <option value="guide">가이드 (guide)</option>
+              <option value="academy">학원 (academy)</option>
+              <option value="company">기관/회사 (company)</option>
+              <option value="concept">개념 (concept)</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>카테고리</label>
+            <select id="draftCategory"><option value="">선택</option></select>
+          </div>
+
+          <div class="form-group">
+            <label>주제/분야</label>
+            <input type="text" id="draftSubject" placeholder="예: 반도체 공정">
+          </div>
+
+          <div class="form-group">
+            <label>대상 독자</label>
+            <input type="text" id="draftAudience" placeholder="예: 중학생, 고등학생">
+          </div>
+
+          <button class="btn btn-accent btn-lg" style="width:100%;" onclick="generateDraft()">
+            초안 생성하기
+          </button>
         </div>
 
-        <div class="form-group">
-          <label>카테고리 *</label>
-          <select id="docCategory">
-            <option value="">선택하세요</option>
-          </select>
+        <div id="draftResult" style="display:none;" class="admin-panel">
+          <h3 class="admin-panel-title">생성된 초안</h3>
+          <div id="draftPreview" style="font-size:14px; line-height:1.8; margin-bottom:20px;"></div>
+          <button class="btn btn-primary" onclick="useDraft()">이 초안으로 문서 작성</button>
         </div>
+      </div>
+    </div>
 
-        <div class="form-group">
-          <label>문서 유형 *</label>
-          <select id="docType">
-            <option value="article">정보 문서 (article)</option>
-            <option value="topic">주제형 문서 (topic)</option>
-            <option value="guide">가이드 (guide)</option>
-            <option value="company">기관/회사 (company)</option>
-            <option value="academy">학원 (academy)</option>
-            <option value="concept">개념 (concept)</option>
-          </select>
+    <!-- 탭 3: 문서 관리 -->
+    <div id="tab-manage" class="admin-tab-content">
+      <div class="admin-panel">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+          <h2 class="admin-panel-title" style="margin:0;">문서 목록</h2>
+          <div style="display:flex; gap:12px; align-items:center;">
+            <input type="text" id="manageSearch" placeholder="검색..." style="padding:8px 12px; border:1px solid var(--gray-300); border-radius:var(--radius-sm); font-size:13px;">
+            <span id="docCount" style="font-size:13px; color:var(--gray-400);"></span>
+          </div>
         </div>
+        <div id="docList"></div>
+      </div>
+    </div>
 
-        <div class="form-group">
-          <label>태그</label>
-          <input type="text" id="docTags" placeholder="쉼표로 구분 (예: 반도체, 식각, 공정)">
-          <small>쉼표(,)로 구분하여 입력하세요</small>
-        </div>
-
-        <div class="form-group">
-          <label>핵심 정보 (선택)</label>
-          <textarea id="docKeyInfo" placeholder='JSON 형식: {"정의": "...", "중요성": "..."}' style="min-height:80px;"></textarea>
-          <small>JSON 형식으로 입력 (선택사항)</small>
-        </div>
-
-        <div class="form-group">
-          <label>본문 (Markdown) *</label>
-          <textarea id="docBody" placeholder="## 정의&#10;&#10;내용을 작성하세요...&#10;&#10;## 핵심 개념&#10;&#10;- 항목 1&#10;- 항목 2" style="min-height:300px;"></textarea>
-        </div>
-
-        <div style="display:flex; gap:12px;">
-          <button class="btn btn-primary btn-lg" style="flex:1;" onclick="publishDoc()">발행하기</button>
-          <button class="btn btn-secondary btn-lg" onclick="previewDoc()">미리보기</button>
+    <!-- 탭 4: 데이터 관리 -->
+    <div id="tab-data" class="admin-tab-content">
+      <div class="admin-panel">
+        <h2 class="admin-panel-title">데이터 관리</h2>
+        <div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(250px, 1fr)); gap:16px;">
+          <div class="admin-action-card" onclick="exportData()">
+            <div class="admin-action-icon">📦</div>
+            <strong>데이터 내보내기</strong>
+            <p>전체 문서, 카테고리, 서비스 데이터를 JSON으로 내보냅니다</p>
+          </div>
+          <div class="admin-action-card" onclick="document.getElementById('importFile').click()">
+            <div class="admin-action-icon">📥</div>
+            <strong>데이터 가져오기</strong>
+            <p>JSON 파일에서 문서 데이터를 가져옵니다</p>
+            <input type="file" id="importFile" accept=".json" style="display:none;" onchange="importData(event)">
+          </div>
+          <div class="admin-action-card" onclick="generateSitemapData()">
+            <div class="admin-action-icon">🗺️</div>
+            <strong>Sitemap 데이터 생성</strong>
+            <p>전체 문서 기반 sitemap XML을 생성합니다</p>
+          </div>
+          <div class="admin-action-card" onclick="clearCustomData()">
+            <div class="admin-action-icon">🗑️</div>
+            <strong>커스텀 데이터 초기화</strong>
+            <p>직접 추가한 문서를 모두 삭제합니다 (샘플 유지)</p>
+          </div>
         </div>
       </div>
 
-      <!-- 오른쪽: 미리보기 + 문서 목록 -->
-      <div>
-        <!-- 미리보기 -->
-        <div id="adminPreview" style="display:none; background:white; border:1px solid var(--gray-200); border-radius:var(--radius); padding:28px; margin-bottom:20px;">
-          <h3 style="font-size:16px; font-weight:600; margin-bottom:16px;">미리보기</h3>
-          <div id="previewArea" style="font-size:14px; line-height:1.8;"></div>
-        </div>
-
-        <!-- 저장된 문서 목록 -->
-        <div style="background:white; border:1px solid var(--gray-200); border-radius:var(--radius); padding:28px;">
-          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
-            <h3 style="font-size:16px; font-weight:600;">저장된 문서</h3>
-            <span id="docCount" style="font-size:13px; color:var(--gray-400);"></span>
-          </div>
-          <div id="docList"></div>
-        </div>
-
-        <!-- 데이터 관리 -->
-        <div style="background:white; border:1px solid var(--gray-200); border-radius:var(--radius); padding:28px; margin-top:20px;">
-          <h3 style="font-size:16px; font-weight:600; margin-bottom:16px;">데이터 관리</h3>
-          <div style="display:flex; gap:12px; flex-wrap:wrap;">
-            <button class="btn btn-secondary" onclick="exportData()">데이터 내보내기</button>
-            <button class="btn btn-secondary" onclick="clearCustomData()">커스텀 데이터 초기화</button>
-          </div>
-        </div>
+      <!-- Sitemap output -->
+      <div id="sitemapOutput" style="display:none; margin-top:20px;" class="admin-panel">
+        <h3 class="admin-panel-title">생성된 Sitemap</h3>
+        <textarea id="sitemapText" style="width:100%; min-height:300px; font-family:monospace; font-size:12px; padding:12px; border:1px solid var(--gray-300); border-radius:var(--radius-sm);"></textarea>
+        <button class="btn btn-secondary" style="margin-top:12px;" onclick="copySitemap()">클립보드 복사</button>
       </div>
     </div>
   </div>
@@ -110,32 +219,98 @@
   <script src="data/documents.js"></script>
   <script src="js/app.js"></script>
   <script>
+  let currentDraft = null;
+
   function pageInit() {
     // category options
-    const catSelect = document.getElementById('docCategory');
-    CATEGORIES.forEach(c => {
-      catSelect.innerHTML += `<option value="${c.id}">${c.icon} ${c.nameKo}</option>`;
+    [document.getElementById('docCategory'), document.getElementById('draftCategory')].forEach(sel => {
+      CATEGORIES.forEach(c => {
+        sel.innerHTML += `<option value="${c.id}">${c.icon} ${c.nameKo}</option>`;
+      });
     });
     renderDocList();
+
+    // search filter
+    document.getElementById('manageSearch').addEventListener('input', renderDocList);
+  }
+
+  function switchTab(tabId) {
+    document.querySelectorAll('.admin-tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.admin-tab-content').forEach(c => c.classList.remove('active'));
+    document.getElementById('tab-' + tabId).classList.add('active');
+    event.target.classList.add('active');
+    if (tabId === 'manage') renderDocList();
   }
 
   function renderDocList() {
-    const docs = getAllDocuments().sort((a, b) => b.updatedAt.localeCompare(a.updatedAt));
+    const search = (document.getElementById('manageSearch').value || '').toLowerCase();
+    let docs = getAllDocuments().sort((a, b) => b.updatedAt.localeCompare(a.updatedAt));
+    if (search) {
+      docs = docs.filter(d => d.title.toLowerCase().includes(search) || d.tags.some(t => t.toLowerCase().includes(search)));
+    }
     document.getElementById('docCount').textContent = `${docs.length}개 문서`;
     document.getElementById('docList').innerHTML = docs.map(d => {
       const cat = getCategoryById(d.categoryId);
+      const isCustom = isCustomDocument(d.id);
       return `
-      <div style="padding:10px 0; border-bottom:1px solid var(--gray-100); display:flex; justify-content:space-between; align-items:center;">
-        <div>
-          <a href="document.html?slug=${d.slug}" style="font-size:14px; font-weight:500;">${d.title}</a>
-          <div style="font-size:12px; color:var(--gray-400);">${cat ? cat.icon + ' ' + cat.nameKo : ''} · ${d.docType} · ${formatDate(d.updatedAt)}</div>
+      <div class="admin-doc-row">
+        <div class="admin-doc-info">
+          <a href="document.html?slug=${d.slug}" class="admin-doc-title">${d.title}</a>
+          <div class="admin-doc-meta">${cat ? cat.icon + ' ' + cat.nameKo : ''} · ${d.docType} · ${formatDate(d.updatedAt)}</div>
+          <div class="tag-list" style="margin-top:4px;">${d.tags.slice(0,4).map(t => `<span class="tag" style="font-size:11px; padding:2px 6px;">${t}</span>`).join('')}</div>
         </div>
-        <span style="font-size:11px; padding:3px 8px; border-radius:10px; background:${d.status==='published'?'#d1fae5':'#fef3c7'}; color:${d.status==='published'?'#065f46':'#92400e'};">${d.status}</span>
+        <div class="admin-doc-actions">
+          <span class="admin-status-badge ${d.status}">${d.status}</span>
+          ${isCustom ? `
+            <button class="btn btn-secondary" style="font-size:12px; padding:4px 10px;" onclick="editDoc('${d.id}')">편집</button>
+            <button class="btn btn-secondary" style="font-size:12px; padding:4px 10px; color:var(--danger);" onclick="removeDoc('${d.id}')">삭제</button>
+          ` : `<span style="font-size:11px; color:var(--gray-400);">샘플</span>`}
+        </div>
       </div>`;
     }).join('');
   }
 
+  function editDoc(id) {
+    const doc = getDocumentById(id);
+    if (!doc) return;
+
+    document.getElementById('editId').value = id;
+    document.getElementById('docTitle').value = doc.title;
+    document.getElementById('docSummary').value = doc.summary;
+    document.getElementById('docCategory').value = doc.categoryId;
+    document.getElementById('docType').value = doc.docType;
+    document.getElementById('docTags').value = doc.tags.join(', ');
+    document.getElementById('docAudience').value = doc.targetAudience ? doc.targetAudience.join(', ') : '';
+    document.getElementById('docDirectAnswer').value = doc.directAnswer ? doc.directAnswer.join('\n') : '';
+    document.getElementById('docKeyInfo').value = doc.keyInfo ? JSON.stringify(doc.keyInfo, null, 2) : '';
+    document.getElementById('docFaq').value = doc.faqItems ? JSON.stringify(doc.faqItems, null, 2) : '';
+    document.getElementById('docBody').value = doc.body || '';
+
+    document.getElementById('formTitle').textContent = '문서 편집';
+    document.getElementById('cancelEditBtn').style.display = 'inline-flex';
+    switchTab('create');
+    document.querySelector('.admin-tab').classList.add('active');
+    window.scrollTo(0, 0);
+  }
+
+  function cancelEdit() {
+    document.getElementById('editId').value = '';
+    document.getElementById('formTitle').textContent = '새 문서 작성';
+    document.getElementById('cancelEditBtn').style.display = 'none';
+    ['docTitle','docSummary','docTags','docBody','docKeyInfo','docDirectAnswer','docAudience','docFaq'].forEach(id => document.getElementById(id).value = '');
+    document.getElementById('docCategory').value = '';
+  }
+
+  function removeDoc(id) {
+    const doc = getDocumentById(id);
+    if (!doc) return;
+    if (!confirm(`"${doc.title}" 문서를 삭제하시겠습니까?`)) return;
+    deleteDocument(id);
+    renderDocList();
+  }
+
   function publishDoc() {
+    const editId = document.getElementById('editId').value;
     const title = document.getElementById('docTitle').value.trim();
     const summary = document.getElementById('docSummary').value.trim();
     const categoryId = document.getElementById('docCategory').value;
@@ -143,6 +318,9 @@
     const tagsStr = document.getElementById('docTags').value.trim();
     const body = document.getElementById('docBody').value.trim();
     const keyInfoStr = document.getElementById('docKeyInfo').value.trim();
+    const directAnswerStr = document.getElementById('docDirectAnswer').value.trim();
+    const audienceStr = document.getElementById('docAudience').value.trim();
+    const faqStr = document.getElementById('docFaq').value.trim();
 
     if (!title || !summary || !categoryId || !body) {
       alert('제목, 요약, 카테고리, 본문은 필수입니다.');
@@ -150,9 +328,17 @@
     }
 
     const tags = tagsStr ? tagsStr.split(',').map(t => t.trim()).filter(Boolean) : [];
+    const targetAudience = audienceStr ? audienceStr.split(',').map(t => t.trim()).filter(Boolean) : [];
+    const directAnswer = directAnswerStr ? directAnswerStr.split('\n').filter(Boolean) : [];
+
     let keyInfo = null;
     if (keyInfoStr) {
       try { keyInfo = JSON.parse(keyInfoStr); } catch(e) { alert('핵심 정보 JSON 형식이 올바르지 않습니다.'); return; }
+    }
+
+    let faqItems = null;
+    if (faqStr) {
+      try { faqItems = JSON.parse(faqStr); } catch(e) { alert('FAQ JSON 형식이 올바르지 않습니다.'); return; }
     }
 
     const slug = title.toLowerCase()
@@ -160,21 +346,38 @@
       .replace(/[^a-z0-9가-힣]+/g, '-')
       .replace(/^-|-$/g, '');
 
-    const doc = {
-      slug: slug || 'doc-' + Date.now(),
-      title, summary, docType, categoryId, tags, body,
-      keyInfo,
-      status: 'published',
-      relatedDocs: [],
-      relatedServices: []
-    };
-
-    saveDocument(doc);
-    alert('문서가 발행되었습니다.');
-
-    // clear form
-    ['docTitle','docSummary','docTags','docBody','docKeyInfo'].forEach(id => document.getElementById(id).value = '');
-    document.getElementById('docCategory').value = '';
+    if (editId) {
+      // 편집 모드
+      const existing = getDocumentById(editId);
+      const doc = {
+        ...existing,
+        title, summary, docType, categoryId, tags, body, keyInfo,
+        targetAudience: targetAudience.length ? targetAudience : undefined,
+        directAnswer: directAnswer.length ? directAnswer : undefined,
+        faqItems: faqItems || undefined,
+        status: 'published'
+      };
+      updateDocument(doc);
+      alert('문서가 수정되었습니다.');
+      cancelEdit();
+    } else {
+      // 새 문서
+      const doc = {
+        slug: slug || 'doc-' + Date.now(),
+        title, summary, docType, categoryId, tags, body, keyInfo,
+        targetAudience: targetAudience.length ? targetAudience : undefined,
+        directAnswer: directAnswer.length ? directAnswer : undefined,
+        faqItems: faqItems || undefined,
+        authorInfo: { name: 'EduAtlas 편집팀', role: '콘텐츠 에디터', expertise: '' },
+        status: 'published',
+        relatedDocs: [],
+        relatedServices: []
+      };
+      saveDocument(doc);
+      alert('문서가 발행되었습니다.');
+      ['docTitle','docSummary','docTags','docBody','docKeyInfo','docDirectAnswer','docAudience','docFaq'].forEach(id => document.getElementById(id).value = '');
+      document.getElementById('docCategory').value = '';
+    }
     renderDocList();
   }
 
@@ -182,18 +385,73 @@
     const title = document.getElementById('docTitle').value.trim() || '(제목 없음)';
     const summary = document.getElementById('docSummary').value.trim();
     const body = document.getElementById('docBody').value.trim();
+    const directAnswerStr = document.getElementById('docDirectAnswer').value.trim();
 
     const preview = document.getElementById('adminPreview');
     preview.style.display = 'block';
+    const directHTML = directAnswerStr
+      ? `<div class="direct-answer-box"><h3>핵심 답변</h3>${directAnswerStr.split('\n').filter(Boolean).map(a => `<p>${a}</p>`).join('')}</div>`
+      : '';
     document.getElementById('previewArea').innerHTML = `
       <h2 style="font-size:22px; font-weight:700; margin-bottom:8px;">${title}</h2>
       <p style="color:var(--gray-500); margin-bottom:16px;">${summary}</p>
+      ${directHTML}
       <hr style="border:none; border-top:1px solid var(--gray-200); margin:16px 0;">
       ${renderMarkdown(body)}
     `;
     preview.scrollIntoView({ behavior: 'smooth' });
   }
 
+  // AI 초안 생성
+  function generateDraft() {
+    const title = document.getElementById('draftTitle').value.trim();
+    const docType = document.getElementById('draftType').value;
+    const categoryId = document.getElementById('draftCategory').value;
+    const subject = document.getElementById('draftSubject').value.trim();
+    const audience = document.getElementById('draftAudience').value.trim();
+
+    if (!title) { alert('제목을 입력해주세요.'); return; }
+
+    const template = generateDraftTemplate(docType, { title, subject, audience, categoryId });
+
+    currentDraft = {
+      title, docType, categoryId, subject, audience,
+      summary: template.summary,
+      body: template.body,
+      keyInfo: template.keyInfo
+    };
+
+    const resultEl = document.getElementById('draftResult');
+    resultEl.style.display = 'block';
+    document.getElementById('draftPreview').innerHTML = `
+      <div style="margin-bottom:16px;">
+        <strong>제목:</strong> ${title}<br>
+        <strong>유형:</strong> ${docType}<br>
+        <strong>요약:</strong> ${template.summary}
+      </div>
+      <div style="background:var(--gray-50); padding:16px; border-radius:var(--radius-sm); font-family:monospace; font-size:13px; white-space:pre-wrap;">${template.body}</div>
+      <div style="margin-top:12px;">
+        <strong>핵심 정보:</strong>
+        <pre style="font-size:12px; background:var(--gray-50); padding:8px; border-radius:4px;">${JSON.stringify(template.keyInfo, null, 2)}</pre>
+      </div>
+    `;
+    resultEl.scrollIntoView({ behavior: 'smooth' });
+  }
+
+  function useDraft() {
+    if (!currentDraft) return;
+    document.getElementById('docTitle').value = currentDraft.title;
+    document.getElementById('docSummary').value = currentDraft.summary;
+    document.getElementById('docCategory').value = currentDraft.categoryId || '';
+    document.getElementById('docType').value = currentDraft.docType;
+    document.getElementById('docBody').value = currentDraft.body;
+    document.getElementById('docKeyInfo').value = JSON.stringify(currentDraft.keyInfo, null, 2);
+    switchTab('create');
+    document.querySelectorAll('.admin-tab').forEach((t,i) => t.classList.toggle('active', i === 0));
+    window.scrollTo(0, 0);
+  }
+
+  // 데이터 관리
   function exportData() {
     const docs = getAllDocuments();
     const data = JSON.stringify({ documents: docs, categories: CATEGORIES, services: SERVICES }, null, 2);
@@ -201,9 +459,92 @@
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = 'knowledge-platform-data.json';
+    a.download = 'eduatlas-data.json';
     a.click();
     URL.revokeObjectURL(url);
+  }
+
+  function importData(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      try {
+        const data = JSON.parse(e.target.result);
+        if (data.documents && Array.isArray(data.documents)) {
+          const stored = localStorage.getItem('kp_documents');
+          const existing = stored ? JSON.parse(stored) : [];
+          const imported = data.documents.filter(d => d.id && d.id.startsWith('doc-custom-'));
+          const merged = [...existing, ...imported];
+          localStorage.setItem('kp_documents', JSON.stringify(merged));
+          renderDocList();
+          alert(`${imported.length}개 문서를 가져왔습니다.`);
+        } else {
+          alert('올바른 형식의 JSON 파일이 아닙니다.');
+        }
+      } catch(err) {
+        alert('파일을 읽을 수 없습니다: ' + err.message);
+      }
+    };
+    reader.readAsText(file);
+    event.target.value = '';
+  }
+
+  function generateSitemapData() {
+    const baseUrl = 'https://geoproject-8fc76.web.app';
+    const docs = getAllDocuments().filter(d => d.status === 'published');
+    const today = new Date().toISOString().slice(0, 10);
+
+    let xml = '<?xml version="1.0" encoding="UTF-8"?>\n';
+    xml += '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n';
+
+    // 정적 페이지
+    const staticPages = [
+      { path: '/', priority: '1.0', freq: 'daily' },
+      { path: '/knowledge.html', priority: '0.9', freq: 'daily' },
+      { path: '/categories.html', priority: '0.8', freq: 'weekly' },
+      { path: '/search.html', priority: '0.7', freq: 'weekly' },
+      { path: '/geo-builder.html', priority: '0.8', freq: 'weekly' },
+      { path: '/services.html', priority: '0.7', freq: 'weekly' },
+      { path: '/tag.html', priority: '0.7', freq: 'weekly' },
+      { path: '/about.html', priority: '0.6', freq: 'monthly' },
+      { path: '/contact.html', priority: '0.6', freq: 'monthly' },
+      { path: '/privacy.html', priority: '0.4', freq: 'yearly' },
+      { path: '/terms.html', priority: '0.4', freq: 'yearly' },
+      { path: '/content-policy.html', priority: '0.5', freq: 'monthly' }
+    ];
+
+    staticPages.forEach(p => {
+      xml += `  <url>\n    <loc>${baseUrl}${p.path}</loc>\n    <lastmod>${today}</lastmod>\n    <changefreq>${p.freq}</changefreq>\n    <priority>${p.priority}</priority>\n  </url>\n`;
+    });
+
+    // 카테고리 페이지
+    CATEGORIES.forEach(c => {
+      xml += `  <url>\n    <loc>${baseUrl}/categories.html?id=${c.id}</loc>\n    <lastmod>${today}</lastmod>\n    <changefreq>weekly</changefreq>\n    <priority>0.8</priority>\n  </url>\n`;
+    });
+
+    // 문서 페이지
+    docs.forEach(d => {
+      xml += `  <url>\n    <loc>${baseUrl}/document.html?slug=${d.slug}</loc>\n    <lastmod>${d.updatedAt}</lastmod>\n    <changefreq>monthly</changefreq>\n    <priority>0.8</priority>\n  </url>\n`;
+    });
+
+    // 태그 페이지
+    const tags = getAllTags();
+    tags.forEach(([tag]) => {
+      xml += `  <url>\n    <loc>${baseUrl}/tag.html?t=${encodeURIComponent(tag)}</loc>\n    <lastmod>${today}</lastmod>\n    <changefreq>weekly</changefreq>\n    <priority>0.6</priority>\n  </url>\n`;
+    });
+
+    xml += '</urlset>';
+
+    document.getElementById('sitemapOutput').style.display = 'block';
+    document.getElementById('sitemapText').value = xml;
+  }
+
+  function copySitemap() {
+    const text = document.getElementById('sitemapText');
+    text.select();
+    document.execCommand('copy');
+    alert('클립보드에 복사되었습니다.');
   }
 
   function clearCustomData() {
@@ -216,8 +557,29 @@
   </script>
 
   <style>
+    .admin-tabs { display: flex; gap: 4px; margin-bottom: 24px; border-bottom: 2px solid var(--gray-200); padding-bottom: 0; }
+    .admin-tab { padding: 10px 20px; border: none; background: none; font-size: 14px; font-weight: 600; color: var(--gray-400); cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -2px; transition: all 0.2s; }
+    .admin-tab.active { color: var(--primary); border-bottom-color: var(--primary); }
+    .admin-tab:hover { color: var(--gray-700); }
+    .admin-tab-content { display: none; }
+    .admin-tab-content.active { display: block; }
+    .admin-panel { background: white; border: 1px solid var(--gray-200); border-radius: var(--radius); padding: 28px; }
+    .admin-panel-title { font-size: 18px; font-weight: 600; margin-bottom: 20px; }
+    .admin-doc-row { display: flex; justify-content: space-between; align-items: center; padding: 14px 0; border-bottom: 1px solid var(--gray-100); }
+    .admin-doc-title { font-size: 14px; font-weight: 500; }
+    .admin-doc-meta { font-size: 12px; color: var(--gray-400); margin-top: 2px; }
+    .admin-doc-actions { display: flex; gap: 8px; align-items: center; flex-shrink: 0; }
+    .admin-status-badge { font-size: 11px; padding: 3px 8px; border-radius: 10px; }
+    .admin-status-badge.published { background: #d1fae5; color: #065f46; }
+    .admin-status-badge.draft { background: #fef3c7; color: #92400e; }
+    .admin-action-card { background: var(--gray-50); border: 1px solid var(--gray-200); border-radius: var(--radius-sm); padding: 20px; cursor: pointer; transition: all 0.2s; }
+    .admin-action-card:hover { border-color: var(--primary-light); background: white; }
+    .admin-action-icon { font-size: 28px; margin-bottom: 8px; }
+    .admin-action-card strong { display: block; font-size: 14px; margin-bottom: 4px; }
+    .admin-action-card p { font-size: 12px; color: var(--gray-400); }
     @media (max-width: 768px) {
       #adminLayout { grid-template-columns: 1fr !important; }
+      .admin-tabs { overflow-x: auto; }
     }
   </style>
 </body>

@@ -52,7 +52,7 @@
     // popular tags
     const tags = getAllTags();
     document.getElementById('popularTags').innerHTML = tags.map(([t, c]) =>
-      `<a href="search.html?q=${encodeURIComponent(t)}" class="tag" style="font-size:14px; padding:8px 16px;">${t} (${c})</a>`
+      `<a href="tag.html?t=${encodeURIComponent(t)}" class="tag" style="font-size:14px; padding:8px 16px;">${t} (${c})</a>`
     ).join('');
 
     if (q) {

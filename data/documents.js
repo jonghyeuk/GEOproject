@@ -575,6 +575,126 @@ function saveDocument(doc) {
   return doc;
 }
 
+function updateDocument(doc) {
+  const stored = localStorage.getItem('kp_documents');
+  if (!stored) return null;
+  const custom = JSON.parse(stored);
+  const idx = custom.findIndex(d => d.id === doc.id);
+  if (idx === -1) return null;
+  doc.updatedAt = new Date().toISOString().slice(0, 10);
+  custom[idx] = doc;
+  localStorage.setItem('kp_documents', JSON.stringify(custom));
+  return doc;
+}
+
+function deleteDocument(id) {
+  const stored = localStorage.getItem('kp_documents');
+  if (!stored) return false;
+  const custom = JSON.parse(stored).filter(d => d.id !== id);
+  localStorage.setItem('kp_documents', JSON.stringify(custom));
+  return true;
+}
+
+function isCustomDocument(id) {
+  return id && id.startsWith('doc-custom-');
+}
+
+/**
+ * 태그 겹침 기반 관련 문서 자동 추천
+ */
+function getRecommendedDocs(doc, limit) {
+  limit = limit || 5;
+  const all = getAllDocuments().filter(d => d.id !== doc.id && d.status === 'published');
+  const scored = all.map(d => {
+    let score = 0;
+    // 태그 겹침
+    const tagOverlap = doc.tags.filter(t => d.tags.includes(t)).length;
+    score += tagOverlap * 3;
+    // 같은 카테고리
+    if (d.categoryId === doc.categoryId) score += 2;
+    // 같은 docType
+    if (d.docType === doc.docType) score += 1;
+    // 클러스터 연결
+    if (doc.cluster && doc.cluster.relatedClusterSlugs && doc.cluster.relatedClusterSlugs.includes(d.slug)) score += 5;
+    // 엔티티 겹침
+    if (doc.entities && d.entities) {
+      const entOverlap = doc.entities.filter(e => d.entities.includes(e)).length;
+      score += entOverlap * 2;
+    }
+    return { doc: d, score };
+  });
+  return scored.filter(s => s.score > 0).sort((a, b) => b.score - a.score).slice(0, limit).map(s => s.doc);
+}
+
+/**
+ * 본문에서 다른 문서 제목/엔티티를 찾아 내부 링크로 교체
+ */
+function autoLinkEntities(html, currentSlug) {
+  const allDocs = getAllDocuments().filter(d => d.status === 'published' && d.slug !== currentSlug);
+  // 엔티티 목록 수집 (긴 것 우선 매칭)
+  const linkMap = [];
+  allDocs.forEach(d => {
+    linkMap.push({ text: d.title, slug: d.slug });
+    if (d.entities) {
+      d.entities.forEach(e => linkMap.push({ text: e, slug: d.slug }));
+    }
+  });
+  linkMap.sort((a, b) => b.text.length - a.text.length);
+
+  const linked = new Set();
+  linkMap.forEach(({ text, slug }) => {
+    if (linked.has(slug)) return;
+    // <a> 태그 내부나 <h2>, <h3> 내부는 건드리지 않음
+    const escaped = text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const regex = new RegExp('(?<!<[^>]*)\\b(' + escaped + ')\\b(?![^<]*>)', 'i');
+    if (regex.test(html)) {
+      html = html.replace(regex, `<a href="document.html?slug=${slug}" class="entity-link">$1</a>`);
+      linked.add(slug);
+    }
+  });
+  return html;
+}
+
+/**
+ * AI 초안 생성 (템플릿 기반)
+ */
+function generateDraftTemplate(docType, params) {
+  const { title, subject, audience, categoryId } = params;
+  const templates = {
+    article: {
+      summary: `${subject || title}의 핵심 개념, 원리, 응용 분야를 구조화하여 설명합니다.`,
+      body: `## 정의\n\n${title}은(는) ...\n\n## 핵심 개념\n\n### 1. 기본 원리\n- \n- \n- \n\n### 2. 주요 특징\n- \n- \n\n## 적용 분야\n- \n- \n\n## 관련 기술\n- \n- `,
+      keyInfo: { definition: '', importance: '', types: '' }
+    },
+    topic: {
+      summary: `${audience || '학생'}을 위한 ${subject || title} 관련 탐구 주제를 분야별로 정리했습니다.`,
+      body: `## 분야별 탐구 주제\n\n### 분야 1\n1. \n2. \n3. \n\n### 분야 2\n4. \n5. \n6. \n\n## 주제 선정 팁\n- 일상의 궁금증에서 출발\n- 측정 가능한 변인 설정\n- 반복 실험 가능한 주제\n\n## 주의사항\n- `,
+      keyInfo: { definition: '', audience: audience || '', difficulty: '초급~중급' }
+    },
+    guide: {
+      summary: `${title}을 위한 효과적인 전략과 방법을 단계별로 정리합니다.`,
+      body: `## 개요\n\n...\n\n## 단계별 방법\n\n### 1단계\n- \n\n### 2단계\n- \n\n### 3단계\n- \n\n## 핵심 팁\n- \n- \n\n## 주의할 점\n- \n- `,
+      keyInfo: { definition: '', types: '', audience: audience || '' }
+    },
+    academy: {
+      summary: `${title}의 교육 프로그램, 특징, 위치 정보를 안내합니다.`,
+      body: `## 기관 소개\n\n...\n\n## 교육 프로그램\n\n### 주요 과목\n- \n\n### 특징\n- \n\n## 위치 및 연락처\n- 주소: \n- 연락처: \n\n## 교육 방식\n- `,
+      keyInfo: { name: title, location: '', subjects: '' }
+    },
+    company: {
+      summary: `${title}의 사업 분야, 기술력, 주요 제품 정보를 정리합니다.`,
+      body: `## 회사 소개\n\n...\n\n## 주요 사업 분야\n- \n- \n\n## 기술력\n- \n\n## 주요 제품/서비스\n- \n- `,
+      keyInfo: { name: title, industry: '', headquarters: '' }
+    },
+    concept: {
+      summary: `${title}의 정의, 원리, 관련 개념을 체계적으로 정리합니다.`,
+      body: `## 정의\n\n...\n\n## 핵심 원리\n- \n- \n\n## 관련 개념\n- \n\n## 응용\n- \n\n## 참고 자료\n- `,
+      keyInfo: { definition: '', importance: '' }
+    }
+  };
+  return templates[docType] || templates.article;
+}
+
 function formatDate(dateStr) {
   const d = new Date(dateStr);
   return d.toLocaleDateString('ko-KR', { year: 'numeric', month: 'long', day: 'numeric' });

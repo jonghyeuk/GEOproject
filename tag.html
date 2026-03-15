@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tags - EduAtlas</title>
+  <meta name="description" content="EduAtlas 전체 태그 목록. 교육, 연구, 기술, 실험 관련 키워드별 문서를 탐색하세요.">
+  <link rel="canonical" href="https://geoproject-8fc76.web.app/tag.html">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div id="site-header"></div>
+
+  <div class="container page-content">
+    <div class="breadcrumb" id="breadcrumb">
+      <a href="index.html">Explore</a>
+      <span class="sep">›</span>
+      <span>Tags</span>
+    </div>
+
+    <div id="pageContent"></div>
+  </div>
+
+  <div id="site-footer"></div>
+
+  <script src="data/documents.js"></script>
+  <script src="js/app.js"></script>
+  <script>
+  function pageInit() {
+    const tag = getParam('t');
+
+    if (tag) {
+      renderTagDetail(tag);
+    } else {
+      renderTagList();
+    }
+  }
+
+  function renderTagList() {
+    const tags = getAllTags();
+    const maxCount = tags.length > 0 ? tags[0][1] : 1;
+
+    document.title = 'Tags - EduAtlas';
+
+    const tagCards = tags.map(([tag, count]) => {
+      const size = Math.max(14, Math.min(28, 14 + (count / maxCount) * 14));
+      const opacity = Math.max(0.6, count / maxCount);
+      return `<a href="tag.html?t=${encodeURIComponent(tag)}" class="tag-cloud-item" style="font-size:${size}px; opacity:${opacity};">
+        ${tag} <span class="tag-cloud-count">${count}</span>
+      </a>`;
+    }).join('');
+
+    const tagTable = tags.map(([tag, count]) => {
+      const docs = getDocumentsByTag(tag);
+      const cats = [...new Set(docs.map(d => d.categoryId))];
+      const catNames = cats.map(id => {
+        const c = getCategoryById(id);
+        return c ? c.icon + ' ' + c.nameKo : '';
+      }).filter(Boolean).join(', ');
+
+      return `
+      <a href="tag.html?t=${encodeURIComponent(tag)}" class="tag-table-row">
+        <span class="tag-table-name">${tag}</span>
+        <span class="tag-table-cats">${catNames}</span>
+        <span class="tag-table-count">${count}개 문서</span>
+      </a>`;
+    }).join('');
+
+    document.getElementById('pageContent').innerHTML = `
+      <h1 class="section-title">Tags</h1>
+      <p class="section-subtitle">키워드별 문서를 탐색하세요 · ${tags.length}개 태그</p>
+
+      <!-- 태그 클라우드 -->
+      <div class="tag-cloud-container">
+        ${tagCards}
+      </div>
+
+      <!-- 태그 테이블 -->
+      <h2 class="section-title" style="margin-top:48px;">전체 태그 목록</h2>
+      <div class="tag-table">
+        <div class="tag-table-header">
+          <span>태그</span>
+          <span>카테고리</span>
+          <span>문서 수</span>
+        </div>
+        ${tagTable}
+      </div>
+    `;
+  }
+
+  function renderTagDetail(tag) {
+    const docs = getDocumentsByTag(tag);
+
+    document.title = tag + ' - Tags - EduAtlas';
+
+    // breadcrumb
+    document.getElementById('breadcrumb').innerHTML = `
+      <a href="index.html">Explore</a><span class="sep">›</span>
+      <a href="tag.html">Tags</a><span class="sep">›</span>
+      <span>${tag}</span>`;
+
+    // 관련 태그: 같은 문서에 함께 나오는 다른 태그
+    const relatedTags = {};
+    docs.forEach(d => {
+      d.tags.forEach(t => {
+        if (t !== tag) relatedTags[t] = (relatedTags[t] || 0) + 1;
+      });
+    });
+    const topRelated = Object.entries(relatedTags).sort((a, b) => b[1] - a[1]).slice(0, 12);
+
+    // 카테고리 분포
+    const catDist = {};
+    docs.forEach(d => {
+      const c = getCategoryById(d.categoryId);
+      const key = c ? c.nameKo : '기타';
+      catDist[key] = (catDist[key] || 0) + 1;
+    });
+
+    document.getElementById('pageContent').innerHTML = `
+      <div style="margin-bottom:32px;">
+        <h1 style="font-size:28px; font-weight:800; color:var(--gray-900);">
+          <span class="tag" style="font-size:16px; padding:6px 14px; margin-right:8px; vertical-align:middle;">#</span>
+          ${tag}
+        </h1>
+        <p style="color:var(--gray-500); margin-top:8px;">${docs.length}개 문서</p>
+      </div>
+
+      <!-- 카테고리 분포 -->
+      <div style="display:flex; gap:12px; margin-bottom:24px; flex-wrap:wrap;">
+        ${Object.entries(catDist).map(([cat, count]) =>
+          `<span style="font-size:13px; padding:6px 14px; background:var(--gray-100); border-radius:20px; color:var(--gray-600);">${cat} (${count})</span>`
+        ).join('')}
+      </div>
+
+      <!-- 관련 태그 -->
+      ${topRelated.length ? `
+      <div style="margin-bottom:32px;">
+        <h3 style="font-size:14px; color:var(--gray-500); margin-bottom:8px;">관련 태그</h3>
+        <div class="tag-list">
+          ${topRelated.map(([t, c]) => `<a href="tag.html?t=${encodeURIComponent(t)}" class="tag" style="font-size:13px; padding:6px 14px;">${t} (${c})</a>`).join('')}
+        </div>
+      </div>` : ''}
+
+      <!-- 문서 목록 -->
+      <h2 class="section-title">문서</h2>
+      ${docs.length
+        ? `<div class="card-grid">${docs.sort((a,b) => b.updatedAt.localeCompare(a.updatedAt)).map(d => renderDocCard(d)).join('')}</div>`
+        : `<div class="empty-state"><div class="empty-icon">🏷️</div><h3>이 태그의 문서가 없습니다</h3></div>`
+      }
+    `;
+  }
+  </script>
+</body>
+</html>

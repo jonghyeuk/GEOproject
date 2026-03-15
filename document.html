@@ -22,6 +22,9 @@
         <div class="doc-body" id="docBody"></div>
         <div class="faq-section" id="faqSection"></div>
         <div class="author-section" id="authorSection"></div>
+        <div class="error-report" style="margin-top:24px; padding:12px 16px; background:#f8f9fa; border-radius:8px; font-size:0.9rem; color:#666;">
+          정보에 오류가 있나요? <a href="contact.html" style="color:var(--primary-color); text-decoration:underline;">오류 제보하기</a>
+        </div>
         <div style="margin-top:40px;" id="docTags"></div>
       </div>
 
@@ -96,6 +99,25 @@
       document.head.appendChild(s2);
     }
 
+    // --- JSON-LD: EducationalOrganization (academy/company 문서) ---
+    if (doc.docType === 'academy' || doc.docType === 'company') {
+      const eduOrgSchema = {
+        "@context": "https://schema.org",
+        "@type": "EducationalOrganization",
+        "name": doc.title,
+        "description": doc.seoDescription || doc.summary,
+        "url": "https://geoproject-8fc76.web.app/document.html?slug=" + doc.slug
+      };
+      if (doc.keyInfo) {
+        if (doc.keyInfo.location) eduOrgSchema.address = { "@type": "PostalAddress", "addressLocality": doc.keyInfo.location };
+        if (doc.keyInfo.subjects) eduOrgSchema.knowsAbout = doc.keyInfo.subjects;
+      }
+      const s4 = document.createElement('script');
+      s4.type = 'application/ld+json';
+      s4.textContent = JSON.stringify(eduOrgSchema);
+      document.head.appendChild(s4);
+    }
+
     // --- JSON-LD: BreadcrumbList ---
     const breadcrumbSchema = {
       "@context": "https://schema.org",
@@ -150,11 +172,15 @@
     }
 
     // body: contentBlocks 우선, 없으면 body(마크다운) fallback
+    let bodyHTML;
     if (doc.contentBlocks && doc.contentBlocks.length > 0) {
-      document.getElementById('docBody').innerHTML = renderContentBlocks(doc.contentBlocks);
+      bodyHTML = renderContentBlocks(doc.contentBlocks);
     } else {
-      document.getElementById('docBody').innerHTML = renderMarkdown(doc.body);
+      bodyHTML = renderMarkdown(doc.body);
     }
+    // 엔티티 자동 내부 링크
+    bodyHTML = autoLinkEntities(bodyHTML, doc.slug);
+    document.getElementById('docBody').innerHTML = bodyHTML;
 
     // FAQ section (있을 때만)
     if (doc.faqItems && doc.faqItems.length > 0) {
@@ -189,7 +215,7 @@
     }
     document.getElementById('docTags').innerHTML = `
       <div class="tag-list">
-        ${allTags.map(t => `<a href="search.html?q=${encodeURIComponent(t)}" class="tag">${t}</a>`).join('')}
+        ${allTags.map(t => `<a href="tag.html?t=${encodeURIComponent(t)}" class="tag">${t}</a>`).join('')}
       </div>`;
 
     // sidebar
@@ -209,11 +235,16 @@
       </div>`;
     }
 
-    // related docs
-    const related = getRelatedDocuments(doc);
-    if (related.length) {
+    // related docs (수동 연결 + 자동 추천 병합)
+    const manualRelated = getRelatedDocuments(doc);
+    const autoRelated = getRecommendedDocs(doc, 5);
+    const seen = new Set(manualRelated.map(d => d.id));
+    const allRelated = [...manualRelated];
+    autoRelated.forEach(d => { if (!seen.has(d.id)) { allRelated.push(d); seen.add(d.id); } });
+    const finalRelated = allRelated.slice(0, 6);
+    if (finalRelated.length) {
       sidebarHTML += `<div class="sidebar-section"><h3>관련 문서</h3>
-        ${related.map(r => `<a href="document.html?slug=${r.slug}" class="related-link">${r.title}</a>`).join('')}
+        ${finalRelated.map(r => `<a href="document.html?slug=${r.slug}" class="related-link">${r.title}</a>`).join('')}
       </div>`;
     }
 

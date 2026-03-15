@@ -81,18 +81,43 @@
       return;
     }
 
-    document.title = cat.nameKo + ' - Categories - EduAtlas';
+    document.title = cat.name + ' - ' + cat.nameKo + ' - EduAtlas';
+    document.querySelector('meta[name="description"]').content = cat.description + ' - EduAtlas ' + cat.name;
 
-    // breadcrumb update
+    // CollectionPage schema
+    const collectionSchema = {
+      "@context": "https://schema.org",
+      "@type": "CollectionPage",
+      "name": cat.name + ' - ' + cat.nameKo,
+      "description": cat.description,
+      "url": "https://geoproject-8fc76.web.app/categories.html?id=" + cat.id,
+      "isPartOf": { "@type": "WebSite", "name": "EduAtlas", "url": "https://geoproject-8fc76.web.app/" }
+    };
+    const s = document.createElement('script');
+    s.type = 'application/ld+json';
+    s.textContent = JSON.stringify(collectionSchema);
+    document.head.appendChild(s);
+
+    // breadcrumb
     document.getElementById('breadcrumb').innerHTML = `
-      <a href="index.html">Home</a><span class="sep">›</span>
+      <a href="index.html">Explore</a><span class="sep">›</span>
       <a href="categories.html">Categories</a><span class="sep">›</span>
       <span>${cat.nameKo}</span>`;
 
     const docs = getDocumentsByCategory(cat.id).sort((a,b) => b.updatedAt.localeCompare(a.updatedAt));
     const tags = {};
-    docs.forEach(d => d.tags.forEach(t => { tags[t] = (tags[t]||0)+1; }));
-    const topTags = Object.entries(tags).sort((a,b) => b[1]-a[1]).slice(0,10);
+    const typeDist = {};
+    docs.forEach(d => {
+      d.tags.forEach(t => { tags[t] = (tags[t]||0)+1; });
+      typeDist[d.docType] = (typeDist[d.docType] || 0) + 1;
+    });
+    const topTags = Object.entries(tags).sort((a,b) => b[1]-a[1]).slice(0,12);
+
+    // 문서 유형 분포
+    const typeLabels = { article: '정보 문서', topic: '주제', guide: '가이드', company: '기관', academy: '학원', concept: '개념' };
+    const typeStats = Object.entries(typeDist).map(([type, count]) =>
+      `<span style="font-size:13px; padding:6px 14px; background:var(--gray-100); border-radius:20px; color:var(--gray-600);">${typeLabels[type] || type} (${count})</span>`
+    ).join('');
 
     document.getElementById('pageContent').innerHTML = `
       <div style="display:flex; align-items:center; gap:16px; margin-bottom:8px;">
@@ -104,11 +129,16 @@
       </div>
       <p style="color:var(--gray-600); margin-bottom:24px;">${cat.description}</p>
 
+      <!-- 통계 -->
+      <div style="display:flex; gap:12px; margin-bottom:24px; flex-wrap:wrap;">
+        ${typeStats}
+      </div>
+
       <!-- 하위 분류 -->
       <div style="margin-bottom:24px;">
         <h3 style="font-size:14px; color:var(--gray-500); margin-bottom:8px;">하위 분류</h3>
         <div class="tag-list">
-          ${cat.subcategories.map(s => `<span class="tag" style="font-size:13px; padding:6px 14px;">${s}</span>`).join('')}
+          ${cat.subcategories.map(s => `<a href="search.html?q=${encodeURIComponent(s)}" class="tag" style="font-size:13px; padding:6px 14px;">${s}</a>`).join('')}
         </div>
       </div>
 
@@ -117,7 +147,7 @@
       <div style="margin-bottom:32px;">
         <h3 style="font-size:14px; color:var(--gray-500); margin-bottom:8px;">인기 태그</h3>
         <div class="tag-list">
-          ${topTags.map(([t,c]) => `<a href="search.html?q=${encodeURIComponent(t)}" class="tag">${t} (${c})</a>`).join('')}
+          ${topTags.map(([t,c]) => `<a href="tag.html?t=${encodeURIComponent(t)}" class="tag">${t} (${c})</a>`).join('')}
         </div>
       </div>` : ''}
 
