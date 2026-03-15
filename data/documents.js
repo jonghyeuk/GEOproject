@@ -114,56 +114,73 @@ const DOCUMENTS = [
     summary: '중학생이 과학 소논문을 작성할 때 필요한 구조, 방법론, 주제 선정부터 결론까지의 과정을 단계별로 안내합니다.',
     docType: 'article',
     categoryId: 'research',
-    tags: ['소논문', '과학탐구', '중학생', '연구방법', '실험설계', 'Atlas Research'],
+    tags: ['소논문', '과학탐구', '중학생', '연구방법', '실험설계'],
     status: 'published',
     createdAt: '2026-03-08',
     updatedAt: '2026-03-12',
+    // --- GEO v2 필드 ---
+    directAnswer: [
+      '과학 소논문은 서론→이론적 배경→연구 방법→결과→결론의 5단계 구조로 작성합니다.',
+      '가장 중요한 것은 변인 통제와 반복 실험이며, 이 두 가지가 빠지면 신뢰할 수 있는 결론을 낼 수 없습니다.',
+      '주제는 일상의 궁금증에서 출발하되, 측정 가능한 변인이 있는지 먼저 확인해야 합니다.'
+    ],
+    targetAudience: ['중학교 1~3학년', '과학 교사', '학부모'],
+    entities: ['과학 소논문', '변인 통제', '가설 설정', '실험 설계', '데이터 분석'],
+    cluster: {
+      pillarTopic: '중학생 과학 탐구',
+      subTopic: '소논문 작성',
+      intentType: 'how-to',
+      relatedClusterSlugs: ['middle-school-science-topics', 'experiment-design-methodology', 'study-methods-for-performance-assessment']
+    },
+    contentBlocks: [
+      { type: 'heading', level: 2, text: '정의' },
+      { type: 'paragraph', text: '과학 소논문은 학생이 스스로 과학적 질문을 세우고, 실험이나 조사를 통해 답을 찾아가는 과정을 체계적으로 기록한 문서입니다.' },
+      { type: 'heading', level: 2, text: '소논문 구조' },
+      { type: 'heading', level: 3, text: '1. 서론' },
+      { type: 'list', ordered: false, items: ['연구 동기', '연구 목적', '가설 설정'] },
+      { type: 'heading', level: 3, text: '2. 이론적 배경' },
+      { type: 'list', ordered: false, items: ['관련 개념 정리', '선행 연구 조사'] },
+      { type: 'heading', level: 3, text: '3. 연구 방법' },
+      { type: 'list', ordered: false, items: ['실험 설계', '변인 통제', '측정 방법'] },
+      { type: 'heading', level: 3, text: '4. 결과' },
+      { type: 'list', ordered: false, items: ['데이터 정리', '그래프/표 작성', '통계 분석'] },
+      { type: 'heading', level: 3, text: '5. 결론' },
+      { type: 'list', ordered: false, items: ['가설 검증', '의의와 한계', '후속 연구 제안'] },
+      { type: 'heading', level: 2, text: '연구 질문을 좁히는 방법' },
+      { type: 'paragraph', text: '처음에는 넓은 관심사에서 시작하되, "무엇이 ~에 영향을 미치는가?" 형태로 질문을 좁혀야 합니다. 예를 들어 "식물"이라는 관심사는 "빛의 색깔이 콩나물 성장 속도에 미치는 영향"으로 구체화합니다.' },
+      { type: 'heading', level: 2, text: '주제 선정 팁' },
+      { type: 'list', ordered: false, items: ['일상에서 궁금한 점 출발', '측정 가능한 변인 설정', '반복 실험 가능한 주제', '안전하게 수행 가능한 실험'] },
+      { type: 'heading', level: 2, text: '보고서 작성 시 피해야 할 점' },
+      { type: 'list', ordered: false, items: [
+        '변인 통제 미흡 — 독립변인 외 다른 조건이 바뀌면 결과를 신뢰할 수 없습니다',
+        '데이터 부족 — 최소 3회 반복 실험이 필요합니다',
+        '결론과 결과 불일치 — 데이터가 보여주는 것만 결론에 써야 합니다',
+        '참고문헌 누락 — 인용한 자료는 반드시 출처를 밝혀야 합니다'
+      ]}
+    ],
+    faqItems: [
+      { question: '과학 소논문과 일반 보고서의 차이점은 무엇인가요?', answer: '소논문은 가설 설정→실험→검증의 과학적 방법론을 따르는 반면, 일반 보고서는 조사 결과를 정리하는 데 초점을 둡니다.' },
+      { question: '중학생 소논문의 적절한 분량은 어느 정도인가요?', answer: 'A4 기준 5~10페이지가 일반적입니다. 분량보다 변인 통제와 데이터의 신뢰성이 더 중요합니다.' },
+      { question: '실험 없이 조사만으로 소논문을 쓸 수 있나요?', answer: '가능합니다. 설문 조사, 문헌 분석, 관찰 연구 등도 과학적 방법론을 따르면 소논문으로 인정됩니다.' },
+      { question: '가설이 틀린 것으로 나오면 실패한 건가요?', answer: '아닙니다. 가설이 기각되어도 그 과정과 이유를 분석하면 훌륭한 소논문이 됩니다. 과학에서 가설 기각도 중요한 결과입니다.' }
+    ],
+    authorInfo: {
+      name: 'EduAtlas 편집팀',
+      role: '콘텐츠 에디터',
+      expertise: '과학 교육, 탐구 활동 설계'
+    },
+    seoTitle: '중학생 과학 소논문 작성법 - 구조, 주제 선정, 실험 설계 가이드',
+    seoDescription: '중학생을 위한 과학 소논문 작성 가이드. 서론부터 결론까지 5단계 구조, 주제 선정 팁, 변인 통제 방법, 흔한 실수와 해결법을 안내합니다.',
+    schemaTypes: ['Article', 'FAQPage'],
+    technicalMeta: {
+      canonicalPath: '/document.html?slug=science-research-paper-guide',
+      indexable: true
+    },
     keyInfo: {
       definition: '과학 소논문은 학생이 직접 과학적 탐구를 수행하고 그 과정과 결과를 체계적으로 기술한 보고서입니다.',
       importance: '과학적 사고력, 문제 해결 능력, 논리적 글쓰기 능력을 키우는 핵심 활동입니다.',
       audience: '중학교 1~3학년 학생 및 지도 교사'
     },
-    body: `## 정의
-
-과학 소논문은 학생이 스스로 과학적 질문을 세우고, 실험이나 조사를 통해 답을 찾아가는 과정을 체계적으로 기록한 문서입니다.
-
-## 소논문 구조
-
-### 1. 서론
-- 연구 동기
-- 연구 목적
-- 가설 설정
-
-### 2. 이론적 배경
-- 관련 개념 정리
-- 선행 연구 조사
-
-### 3. 연구 방법
-- 실험 설계
-- 변인 통제
-- 측정 방법
-
-### 4. 결과
-- 데이터 정리
-- 그래프/표 작성
-- 통계 분석
-
-### 5. 결론
-- 가설 검증
-- 의의와 한계
-- 후속 연구 제안
-
-## 주제 선정 팁
-- 일상에서 궁금한 점 출발
-- 측정 가능한 변인 설정
-- 반복 실험 가능한 주제
-- 안전하게 수행 가능한 실험
-
-## 흔한 실수
-- 변인 통제 미흡
-- 데이터 부족 (반복 횟수 적음)
-- 결론과 결과 불일치
-- 참고문헌 누락`,
     relatedDocs: ['doc-004', 'doc-005'],
     relatedServices: ['littlescience']
   },
@@ -283,45 +300,86 @@ const DOCUMENTS = [
     status: 'published',
     createdAt: '2026-02-28',
     updatedAt: '2026-03-10',
+    // --- GEO v2 필드 ---
+    directAnswer: [
+      '과학 실험 설계의 핵심은 독립변인·종속변인·통제변인을 명확히 정의하고, 대조군을 설정하는 것입니다.',
+      '모든 실험은 최소 3회 반복해야 하며, 한 번에 하나의 변인만 바꿔야 결과를 신뢰할 수 있습니다.',
+      '좋은 실험 설계는 다른 사람이 같은 절차를 따라 했을 때 같은 결과가 나오는 재현 가능성을 갖춰야 합니다.'
+    ],
+    targetAudience: ['중학교 1~3학년', '고등학생', '과학 교사'],
+    entities: ['변인 통제', '독립변인', '종속변인', '대조군', '실험군', '반복 실험'],
+    cluster: {
+      pillarTopic: '중학생 과학 탐구',
+      subTopic: '실험 설계',
+      intentType: 'how-to',
+      relatedClusterSlugs: ['science-research-paper-guide', 'middle-school-science-topics', 'study-methods-for-performance-assessment']
+    },
+    contentBlocks: [
+      { type: 'heading', level: 2, text: '정의' },
+      { type: 'paragraph', text: '실험 설계(Experimental Design)는 가설을 검증하기 위해 실험 조건, 측정 방법, 데이터 수집 절차를 사전에 계획하는 과정입니다.' },
+      { type: 'heading', level: 2, text: '이 실험으로 무엇을 확인할 수 있는가' },
+      { type: 'paragraph', text: '올바른 실험 설계를 통해 특정 원인(독립변인)이 결과(종속변인)에 실제로 영향을 미치는지 확인할 수 있습니다. 설계가 부실하면 결과가 나와도 "그래서 이게 진짜 원인 때문인지" 판단할 수 없습니다.' },
+      { type: 'heading', level: 2, text: '핵심 개념' },
+      { type: 'heading', level: 3, text: '변인(Variable)' },
+      { type: 'list', ordered: false, items: [
+        '독립변인: 연구자가 의도적으로 변화시키는 요인',
+        '종속변인: 독립변인에 의해 변화하는 결과',
+        '통제변인: 일정하게 유지해야 하는 조건'
+      ]},
+      { type: 'heading', level: 3, text: '변인통제 핵심' },
+      { type: 'paragraph', text: '한 번에 하나의 변인만 바꿔야 합니다. 예를 들어 "빛의 색깔이 식물 성장에 미치는 영향"을 실험할 때, 물의 양·온도·토양은 모두 동일하게 유지해야 합니다. 두 가지 이상을 동시에 바꾸면 어떤 변인이 결과에 영향을 줬는지 알 수 없습니다.' },
+      { type: 'heading', level: 3, text: '대조군과 실험군' },
+      { type: 'list', ordered: false, items: [
+        '대조군: 독립변인을 적용하지 않은 기준 그룹',
+        '실험군: 독립변인을 적용한 그룹'
+      ]},
+      { type: 'heading', level: 3, text: '반복 실험' },
+      { type: 'list', ordered: false, items: ['최소 3회 이상 반복', '평균값 활용', '이상치 처리'] },
+      { type: 'heading', level: 2, text: '설계 절차' },
+      { type: 'list', ordered: true, items: [
+        '연구 질문 설정',
+        '가설 수립',
+        '변인 정의',
+        '실험 절차 계획',
+        '데이터 수집 방법 결정',
+        '결과 분석 방법 선택'
+      ]},
+      { type: 'heading', level: 2, text: '자주 하는 실수' },
+      { type: 'list', ordered: false, items: [
+        '통제변인을 빠뜨리고 두 가지 이상을 동시에 바꿈',
+        '반복 횟수가 1~2회로 부족함',
+        '측정 기준이 모호함 (예: "많이 자랐다"가 아니라 cm로 측정해야 함)',
+        '대조군 없이 실험군만 설정함'
+      ]},
+      { type: 'heading', level: 2, text: '결과 해석 포인트' },
+      { type: 'paragraph', text: '실험 결과를 해석할 때는 데이터가 보여주는 것만 진술해야 합니다. 평균값과 편차를 확인하고, 이상치가 있다면 원인을 분석합니다. "예상과 다른 결과"도 중요한 발견이므로 왜 다른지를 논의합니다.' },
+      { type: 'heading', level: 2, text: '좋은 실험 설계의 조건' },
+      { type: 'list', ordered: false, items: ['재현 가능성', '객관적 측정', '적절한 표본 크기', '윤리적 고려'] }
+    ],
+    faqItems: [
+      { question: '변인 통제가 왜 그렇게 중요한가요?', answer: '변인 통제 없이는 실험 결과가 독립변인 때문인지 다른 요인 때문인지 구분할 수 없습니다. 과학 실험의 신뢰성은 변인 통제에서 시작됩니다.' },
+      { question: '대조군을 꼭 설정해야 하나요?', answer: '네. 대조군이 없으면 실험군의 결과가 독립변인 때문인지 자연적 변화인지 판단할 기준이 없습니다.' },
+      { question: '반복 실험은 몇 회가 적당한가요?', answer: '최소 3회 이상이 기본이며, 5회 이상이면 더 신뢰할 수 있습니다. 결과 편차가 크다면 반복 횟수를 늘려야 합니다.' },
+      { question: '실험 결과가 가설과 다르면 어떻게 하나요?', answer: '가설이 틀렸다고 실패가 아닙니다. 왜 다른 결과가 나왔는지 분석하고, 실험 설계의 한계나 새로운 변인 가능성을 논의하면 됩니다.' },
+      { question: '관찰 연구도 실험 설계가 필요한가요?', answer: '네. 관찰 연구도 무엇을, 어떤 기준으로, 얼마나 자주 관찰할지 사전에 설계해야 체계적인 데이터를 얻을 수 있습니다.' }
+    ],
+    authorInfo: {
+      name: 'EduAtlas 편집팀',
+      role: '콘텐츠 에디터',
+      expertise: '과학 교육, 실험 설계'
+    },
+    seoTitle: '과학 실험 설계 방법론 - 변인 통제, 대조군, 반복 실험 가이드',
+    seoDescription: '과학 실험 설계의 핵심: 독립변인·종속변인·통제변인 정의, 대조군 설정, 반복 실험 방법. 중학생부터 고등학생까지 실험 설계 절차와 자주 하는 실수를 정리합니다.',
+    schemaTypes: ['Article', 'FAQPage'],
+    technicalMeta: {
+      canonicalPath: '/document.html?slug=experiment-design-methodology',
+      indexable: true
+    },
     keyInfo: {
       definition: '실험 설계는 과학적 질문에 답하기 위해 실험 조건을 체계적으로 계획하는 과정입니다.',
       importance: '올바른 실험 설계 없이는 신뢰할 수 있는 결론을 도출할 수 없습니다.',
       components: '독립변인, 종속변인, 통제변인, 대조군, 실험군'
     },
-    body: `## 정의
-
-실험 설계(Experimental Design)는 가설을 검증하기 위해 실험 조건, 측정 방법, 데이터 수집 절차를 사전에 계획하는 과정입니다.
-
-## 핵심 개념
-
-### 변인(Variable)
-- **독립변인**: 연구자가 의도적으로 변화시키는 요인
-- **종속변인**: 독립변인에 의해 변화하는 결과
-- **통제변인**: 일정하게 유지해야 하는 조건
-
-### 대조군과 실험군
-- **대조군**: 독립변인을 적용하지 않은 기준 그룹
-- **실험군**: 독립변인을 적용한 그룹
-
-### 반복 실험
-- 최소 3회 이상 반복
-- 평균값 활용
-- 이상치 처리
-
-## 설계 절차
-
-1. 연구 질문 설정
-2. 가설 수립
-3. 변인 정의
-4. 실험 절차 계획
-5. 데이터 수집 방법 결정
-6. 결과 분석 방법 선택
-
-## 좋은 실험 설계의 조건
-- 재현 가능성
-- 객관적 측정
-- 적절한 표본 크기
-- 윤리적 고려`,
     relatedDocs: ['doc-002', 'doc-004'],
     relatedServices: ['littlescience']
   },
@@ -533,4 +591,37 @@ function renderMarkdown(md) {
     .replace(/(<li>.*<\/li>)/s, '<ul>$1</ul>')
     .replace(/\n\n/g, '</p><p>')
     .replace(/\n/g, '<br>');
+}
+
+/**
+ * contentBlocks 렌더러
+ * 타입: heading, paragraph, list, table, quote, note
+ */
+function renderContentBlocks(blocks) {
+  if (!blocks || !blocks.length) return '';
+  return blocks.map(block => {
+    switch (block.type) {
+      case 'heading':
+        const tag = 'h' + (block.level || 2);
+        return `<${tag}>${block.text}</${tag}>`;
+      case 'paragraph':
+        return `<p>${block.text}</p>`;
+      case 'list':
+        const listTag = block.ordered ? 'ol' : 'ul';
+        const items = block.items.map(item => `<li>${item}</li>`).join('');
+        return `<${listTag}>${items}</${listTag}>`;
+      case 'table':
+        const ths = block.headers.map(h => `<th>${h}</th>`).join('');
+        const trs = block.rows.map(row =>
+          '<tr>' + row.map(cell => `<td>${cell}</td>`).join('') + '</tr>'
+        ).join('');
+        return `<table><thead><tr>${ths}</tr></thead><tbody>${trs}</tbody></table>`;
+      case 'quote':
+        return `<blockquote>${block.text}</blockquote>`;
+      case 'note':
+        return `<div class="content-note"><strong>${block.label || '참고'}</strong> ${block.text}</div>`;
+      default:
+        return '';
+    }
+  }).join('\n');
 }

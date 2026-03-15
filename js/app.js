@@ -86,10 +86,13 @@ function getFooterHTML() {
 // ---- Render Helpers ----
 function renderDocCard(doc) {
   const cat = getCategoryById(doc.categoryId);
+  const desc = (doc.directAnswer && doc.directAnswer.length > 0)
+    ? doc.directAnswer[0]
+    : doc.summary;
   return `
   <a href="document.html?slug=${doc.slug}" class="card">
     <div class="card-title">${doc.title}</div>
-    <div class="card-desc">${doc.summary}</div>
+    <div class="card-desc">${desc}</div>
     <div class="card-meta">
       <span>${cat ? cat.icon + ' ' + cat.nameKo : ''}</span>
       <span>${doc.docType}</span>

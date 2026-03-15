@@ -17,8 +17,11 @@
       <!-- Main Content -->
       <div>
         <div class="doc-header" id="docHeader"></div>
+        <div class="direct-answer-box" id="directAnswer"></div>
         <div class="key-info-box" id="keyInfo"></div>
         <div class="doc-body" id="docBody"></div>
+        <div class="faq-section" id="faqSection"></div>
+        <div class="author-section" id="authorSection"></div>
         <div style="margin-top:40px;" id="docTags"></div>
       </div>
 
@@ -49,31 +52,68 @@
 
     const cat = getCategoryById(doc.categoryId);
 
-    // page title & meta
-    document.title = doc.title + ' - EduAtlas';
-    document.querySelector('meta[name="description"]').content = doc.summary;
+    // page title & meta (seoTitle 우선)
+    document.title = (doc.seoTitle || doc.title) + ' - EduAtlas';
+    document.querySelector('meta[name="description"]').content = doc.seoDescription || doc.summary;
 
-    // schema markup
-    const schema = document.createElement('script');
-    schema.type = 'application/ld+json';
-    schema.textContent = JSON.stringify({
+    // --- JSON-LD: Article ---
+    const articleSchema = {
       "@context": "https://schema.org",
       "@type": "Article",
       "headline": doc.title,
-      "description": doc.summary,
+      "description": doc.seoDescription || doc.summary,
       "datePublished": doc.createdAt,
       "dateModified": doc.updatedAt,
-      "author": { "@type": "Organization", "name": "EduAtlas" },
+      "author": doc.authorInfo
+        ? { "@type": "Person", "name": doc.authorInfo.name, "jobTitle": doc.authorInfo.role }
+        : { "@type": "Organization", "name": "EduAtlas" },
       "publisher": { "@type": "Organization", "name": "EduAtlas" },
       "articleSection": cat ? cat.nameKo : '',
       "keywords": doc.tags.join(', ')
-    });
-    document.head.appendChild(schema);
+    };
+    const s1 = document.createElement('script');
+    s1.type = 'application/ld+json';
+    s1.textContent = JSON.stringify(articleSchema);
+    document.head.appendChild(s1);
 
-    // breadcrumb
+    // --- JSON-LD: FAQPage (faqItems가 있을 때만) ---
+    if (doc.faqItems && doc.faqItems.length > 0) {
+      const faqSchema = {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": doc.faqItems.map(faq => ({
+          "@type": "Question",
+          "name": faq.question,
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": faq.answer
+          }
+        }))
+      };
+      const s2 = document.createElement('script');
+      s2.type = 'application/ld+json';
+      s2.textContent = JSON.stringify(faqSchema);
+      document.head.appendChild(s2);
+    }
+
+    // --- JSON-LD: BreadcrumbList ---
+    const breadcrumbSchema = {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "EduAtlas", "item": "https://geoproject-8fc76.web.app/" },
+        cat ? { "@type": "ListItem", "position": 2, "name": cat.nameKo, "item": "https://geoproject-8fc76.web.app/categories.html?id=" + cat.id } : null,
+        { "@type": "ListItem", "position": cat ? 3 : 2, "name": doc.title }
+      ].filter(Boolean)
+    };
+    const s3 = document.createElement('script');
+    s3.type = 'application/ld+json';
+    s3.textContent = JSON.stringify(breadcrumbSchema);
+    document.head.appendChild(s3);
+
+    // breadcrumb (visible)
     document.getElementById('breadcrumb').innerHTML = `
-      <a href="index.html">Home</a><span class="sep">›</span>
-      <a href="knowledge.html">Knowledge</a><span class="sep">›</span>
+      <a href="index.html">Explore</a><span class="sep">›</span>
       ${cat ? `<a href="categories.html?id=${cat.id}">${cat.nameKo}</a><span class="sep">›</span>` : ''}
       <span>${doc.title}</span>`;
 
@@ -83,9 +123,19 @@
       <h1>${doc.title}</h1>
       <p class="doc-summary">${doc.summary}</p>
       <div class="doc-meta">
-        <span>📅 ${formatDate(doc.updatedAt)}</span>
-        <span>📄 ${doc.docType}</span>
+        <span>${formatDate(doc.updatedAt)}</span>
+        <span>${doc.docType}</span>
+        ${doc.targetAudience ? `<span>${doc.targetAudience.join(', ')}</span>` : ''}
       </div>`;
+
+    // directAnswer (있을 때만)
+    if (doc.directAnswer && doc.directAnswer.length > 0) {
+      document.getElementById('directAnswer').innerHTML = `
+        <h3>핵심 답변</h3>
+        ${doc.directAnswer.map(a => `<p>${a}</p>`).join('')}`;
+    } else {
+      document.getElementById('directAnswer').style.display = 'none';
+    }
 
     // key info
     if (doc.keyInfo) {
@@ -99,17 +149,65 @@
       document.getElementById('keyInfo').style.display = 'none';
     }
 
-    // body
-    document.getElementById('docBody').innerHTML = renderMarkdown(doc.body);
+    // body: contentBlocks 우선, 없으면 body(마크다운) fallback
+    if (doc.contentBlocks && doc.contentBlocks.length > 0) {
+      document.getElementById('docBody').innerHTML = renderContentBlocks(doc.contentBlocks);
+    } else {
+      document.getElementById('docBody').innerHTML = renderMarkdown(doc.body);
+    }
+
+    // FAQ section (있을 때만)
+    if (doc.faqItems && doc.faqItems.length > 0) {
+      document.getElementById('faqSection').innerHTML = `
+        <h2>자주 묻는 질문</h2>
+        <div class="faq-list">
+          ${doc.faqItems.map(faq => `
+            <details class="faq-item">
+              <summary class="faq-question">${faq.question}</summary>
+              <div class="faq-answer">${faq.answer}</div>
+            </details>`).join('')}
+        </div>`;
+    } else {
+      document.getElementById('faqSection').style.display = 'none';
+    }
+
+    // author section (있을 때만)
+    if (doc.authorInfo) {
+      document.getElementById('authorSection').innerHTML = `
+        <div class="author-info">
+          <span class="author-name">${doc.authorInfo.name}</span>
+          <span class="author-role">${doc.authorInfo.role} · ${doc.authorInfo.expertise}</span>
+        </div>`;
+    } else {
+      document.getElementById('authorSection').style.display = 'none';
+    }
 
     // tags
+    const allTags = [...(doc.tags || [])];
+    if (doc.entities) {
+      doc.entities.forEach(e => { if (!allTags.includes(e)) allTags.push(e); });
+    }
     document.getElementById('docTags').innerHTML = `
       <div class="tag-list">
-        ${doc.tags.map(t => `<a href="search.html?q=${encodeURIComponent(t)}" class="tag">${t}</a>`).join('')}
+        ${allTags.map(t => `<a href="search.html?q=${encodeURIComponent(t)}" class="tag">${t}</a>`).join('')}
       </div>`;
 
     // sidebar
     let sidebarHTML = '';
+
+    // cluster info (있을 때만)
+    if (doc.cluster && doc.cluster.pillarTopic) {
+      const clusterDocs = doc.cluster.relatedClusterSlugs
+        ? doc.cluster.relatedClusterSlugs.map(s => getDocumentBySlug(s)).filter(Boolean)
+        : [];
+      sidebarHTML += `<div class="sidebar-section"><h3>주제 클러스터</h3>
+        <div class="cluster-topic">${doc.cluster.pillarTopic}</div>
+        <div class="cluster-sub">${doc.cluster.subTopic} · ${doc.cluster.intentType}</div>
+        ${clusterDocs.length ? clusterDocs.map(d =>
+          `<a href="document.html?slug=${d.slug}" class="related-link">${d.title}</a>`
+        ).join('') : ''}
+      </div>`;
+    }
 
     // related docs
     const related = getRelatedDocuments(doc);
