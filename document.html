@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document - LittleScience Knowledge Platform</title>
+  <title>Document - EduAtlas</title>
   <meta name="description" content="">
   <link rel="stylesheet" href="css/style.css">
 </head>
@@ -50,7 +50,7 @@
     const cat = getCategoryById(doc.categoryId);
 
     // page title & meta
-    document.title = doc.title + ' - LittleScience Knowledge Platform';
+    document.title = doc.title + ' - EduAtlas';
     document.querySelector('meta[name="description"]').content = doc.summary;
 
     // schema markup
@@ -63,8 +63,8 @@
       "description": doc.summary,
       "datePublished": doc.createdAt,
       "dateModified": doc.updatedAt,
-      "author": { "@type": "Organization", "name": "LittleScience" },
-      "publisher": { "@type": "Organization", "name": "LittleScience Knowledge Platform" },
+      "author": { "@type": "Organization", "name": "EduAtlas" },
+      "publisher": { "@type": "Organization", "name": "EduAtlas" },
       "articleSection": cat ? cat.nameKo : '',
       "keywords": doc.tags.join(', ')
     });
