@@ -71,9 +71,12 @@ function getFooterHTML() {
           <a href="admin.html">Admin</a>
         </div>
         <div class="footer-section">
-          <h4>Services</h4>
-          <a href="services.html">LittleScienceAI</a>
-          <a href="services.html">반도체 플랫폼</a>
+          <h4>Trust</h4>
+          <a href="about.html">About</a>
+          <a href="contact.html">Contact</a>
+          <a href="privacy.html">개인정보처리방침</a>
+          <a href="terms.html">이용약관</a>
+          <a href="content-policy.html">콘텐츠 운영 원칙</a>
         </div>
       </div>
       <div class="footer-bottom">

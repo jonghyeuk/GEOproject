@@ -892,6 +892,103 @@ img { max-width: 100%; height: auto; }
 .breadcrumb a:hover { color: var(--primary); }
 .breadcrumb .sep { color: var(--gray-300); }
 
+/* ---- Legal / Trust Pages ---- */
+.legal-content {
+  max-width: 780px;
+}
+
+.legal-content h1 {
+  font-size: 32px;
+  font-weight: 800;
+  color: var(--gray-900);
+  margin-bottom: 8px;
+}
+
+.legal-updated {
+  font-size: 14px;
+  color: var(--gray-400);
+  margin-bottom: 32px;
+}
+
+.legal-content h2 {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--gray-800);
+  margin: 32px 0 12px;
+}
+
+.legal-content h3 {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--gray-700);
+  margin: 20px 0 8px;
+}
+
+.legal-content p {
+  font-size: 15px;
+  color: var(--gray-600);
+  line-height: 1.8;
+  margin-bottom: 12px;
+}
+
+.legal-content ul, .legal-content ol {
+  margin: 0 0 16px 20px;
+  color: var(--gray-600);
+  font-size: 15px;
+  line-height: 1.8;
+}
+
+.legal-content li {
+  margin-bottom: 6px;
+}
+
+.legal-content a {
+  color: var(--primary);
+}
+
+.legal-footer-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-top: 48px;
+  padding-top: 24px;
+  border-top: 1px solid var(--gray-200);
+  font-size: 14px;
+}
+
+/* ---- Contact Page ---- */
+.contact-box {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+  margin: 16px 0 24px;
+}
+
+.contact-item {
+  background: white;
+  border: 1px solid var(--gray-200);
+  border-radius: var(--radius-sm);
+  padding: 20px;
+}
+
+.contact-item strong {
+  display: block;
+  font-size: 15px;
+  color: var(--gray-800);
+  margin-bottom: 4px;
+}
+
+.contact-item p {
+  font-size: 13px;
+  color: var(--gray-400);
+  margin-bottom: 8px;
+}
+
+.contact-item a {
+  font-size: 14px;
+  font-weight: 600;
+}
+
 /* ---- Responsive ---- */
 @media (max-width: 768px) {
   .hero { padding: 48px 0; }
