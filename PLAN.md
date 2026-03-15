@@ -43,29 +43,48 @@
 | Academy | 학원 소개, 지역 학원, 과목별 학원, 교육 특징 |
 | Study | 공부법, 수행평가, 진로, 학습 도구 |
 
-### 2단계: 데이터 축적 🔲
-- [ ] 기존 지식/문서를 카테고리별 정리
-- [ ] AI 초안 생성 기능
-- [ ] 템플릿에 맞춰 저장
-- [ ] 내부 링크 자동 연결
-- [ ] related pages 자동 생성
+### 2단계: 데이터 축적 ✅ 완료
+- [x] 문서 편집/삭제 기능 (Admin)
+- [x] AI 초안 생성 기능 (템플릿 기반)
+- [x] 템플릿에 맞춰 저장
+- [x] 내부 링크 자동 연결 (autoLinkEntities)
+- [x] related pages 자동 생성 (getRecommendedDocs)
+- [x] 데이터 가져오기/내보내기
 - 문서를 "글"이 아닌 **"레코드"**로 관리 (제목/카테고리/태그/요약/본문/관련항목/출처/공개상태)
 
-### 3단계: GEO 생성기 추가 🔲
-- [ ] 입력: 기관명, 지역, 과목, 대상, 특징
-- [ ] 출력: 기관 소개 페이지, 지역+과목 페이지, 교육 특징 페이지, 공부법/주제 페이지
-- [ ] 기본 10페이지 생성
-- [ ] 수정/발행 기능
+### 3단계: GEO 생성기 추가 ✅ 완료
+- [x] 입력: 기관명, 지역, 과목, 대상, 특징
+- [x] 출력: 기관 소개 페이지, 지역+과목 페이지, 교육 특징 페이지, 공부법/주제 페이지
+- [x] 기본 10페이지 생성 (실제 콘텐츠 포함)
+- [x] 개별 편집/발행 기능
+- [x] 전체 발행 → EduAtlas 문서로 저장
 - 구조: 사람용 30% + AI용 70%
 
-### 4단계: 검색/연결 구조 강화 🔲
-- [ ] 관련 문서 추천
-- [ ] 카테고리별 허브 페이지
-- [ ] 태그 페이지
-- [ ] 기관/회사/주제 연결
-- [ ] 검색 결과 페이지
-- [ ] sitemap 자동 생성
-- [ ] schema markup (Article, EducationalOrganization, FAQ, Breadcrumb)
+### 4단계: 검색/연결 구조 강화 ✅ 완료
+- [x] 관련 문서 추천 (태그 겹침 + 카테고리 + 클러스터 + 엔티티 점수 알고리즘)
+- [x] 카테고리별 허브 페이지 강화 (통계, CollectionPage schema)
+- [x] 태그 페이지 (tag.html — 클라우드 + 테이블 + 상세)
+- [x] 기관/회사/주제 연결 (엔티티 자동 링크)
+- [x] 검색 결과 페이지 (기존 search.html 유지)
+- [x] sitemap 자동 생성 (Admin 데이터 관리)
+- [x] schema markup (Article, EducationalOrganization, FAQ, Breadcrumb, CollectionPage)
+
+### LLM 문서 생성 파이프라인
+```
+prompts/
+├── 00_global_rules.md        ← 공통 규칙 (문체, JSON, Core/Bridge)
+├── 01_topics_generator.md    ← Topics 카테고리 생성기
+├── 02_research_generator.md  ← Research 카테고리 생성기
+├── 03_experiments_generator.md ← Experiments 카테고리 생성기
+├── 04_engineering_generator.md ← Engineering 카테고리 생성기
+├── 05_study_generator.md     ← Study 카테고리 생성기
+├── 06_academies_generator.md ← Academies 카테고리 생성기
+├── 10_service_bridge_planner.md ← 서비스 분석 → 연결 전략
+├── 11_service_bridge_writer.md  ← Bridge 문서 생성
+├── 20_document_validator.md  ← 내부 검증 체크리스트
+└── 21_document_rewriter.md   ← 검증 결과 반영 수정기
+```
+파이프라인: **생성 → 검증 → 수정 → 발행**
 
 ### 5단계: 수익화 🔲
 - [ ] 무료 공개 문서
@@ -112,21 +131,32 @@ article / topic / company / academy / concept / guide / geo_page
 ## 파일 구조 (현재)
 ```
 littlescienceHTML/
-├── PLAN.md          ← 이 파일 (개발 계획)
-├── index.html       ← 메인 홈
-├── knowledge.html   ← 문서 목록
-├── document.html    ← 문서 상세
-├── categories.html  ← 카테고리 허브
-├── geo-builder.html ← GEO 생성기
-├── services.html    ← 서비스 연결
-├── search.html      ← 검색
-├── admin.html       ← 관리자
+├── PLAN.md              ← 이 파일 (개발 계획)
+├── index.html           ← 메인 홈
+├── knowledge.html       ← 문서 목록
+├── document.html        ← 문서 상세 (엔티티 자동 링크, 추천 알고리즘)
+├── categories.html      ← 카테고리 허브 (통계, CollectionPage schema)
+├── tag.html             ← 태그 허브 (클라우드, 테이블, 상세)
+├── geo-builder.html     ← GEO 생성기 (실제 콘텐츠 생성, 개별 편집/발행)
+├── services.html        ← 서비스 연결
+├── search.html          ← 검색
+├── admin.html           ← 관리자 (편집/삭제, AI 초안, 데이터 관리, sitemap)
+├── about.html           ← 소개
+├── contact.html         ← 문의
+├── privacy.html         ← 개인정보처리방침
+├── terms.html           ← 이용약관
+├── content-policy.html  ← 콘텐츠 운영 원칙
 ├── css/
-│   └── style.css    ← 공통 스타일
+│   └── style.css        ← 공통 스타일
 ├── js/
-│   └── app.js       ← 공통 로직
+│   └── app.js           ← 공통 로직
 ├── data/
-│   └── documents.js ← 샘플 데이터 ✅
+│   └── documents.js     ← 데이터 + CRUD + 추천/링크 함수
+├── prompts/             ← LLM 문서 생성 파이프라인
+│   ├── 00_global_rules.md
+│   ├── 01~06_카테고리별_generator.md
+│   ├── 10~11_service_bridge.md
+│   └── 20~21_validator_rewriter.md
 ├── firebase.json
 ├── sitemap.xml
 ├── robots.txt

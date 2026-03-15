@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>GEO Builder - EduAtlas</title>
-  <meta name="description" content="교육 기관을 위한 AI 최적화 페이지 자동 생성기">
+  <meta name="description" content="교육 기관을 위한 AI 최적화 페이지 자동 생성기. 기관 소개, 지역+과목, 교육 특징, FAQ 등 10페이지를 한 번에 생성합니다.">
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
@@ -12,7 +12,7 @@
 
   <div class="container page-content">
     <div class="breadcrumb">
-      <a href="index.html">Home</a>
+      <a href="index.html">Explore</a>
       <span class="sep">›</span>
       <span>GEO Builder</span>
     </div>
@@ -84,9 +84,35 @@
               <span id="geoPageCount" style="font-size:13px; color:var(--primary); font-weight:500;"></span>
             </div>
             <div id="geoPages"></div>
-            <div style="margin-top:20px; display:flex; gap:12px;">
-              <button class="btn btn-primary" onclick="publishGEO()">전체 발행</button>
+            <div style="margin-top:20px; display:flex; gap:12px; flex-wrap:wrap;">
+              <button class="btn btn-primary" onclick="publishAllGEO()">전체 발행 (문서로 저장)</button>
               <button class="btn btn-secondary" onclick="exportGEO()">내보내기</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- 편집 모달 -->
+        <div id="geoEditPanel" style="display:none; margin-top:20px;">
+          <div style="background:white; border:1px solid var(--gray-200); border-radius:var(--radius); padding:28px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+              <h3 style="font-size:16px; font-weight:600;">페이지 편집</h3>
+              <button class="btn btn-secondary" style="font-size:12px; padding:6px 12px;" onclick="closeEditPanel()">닫기</button>
+            </div>
+            <div class="form-group">
+              <label>제목</label>
+              <input type="text" id="editPageTitle">
+            </div>
+            <div class="form-group">
+              <label>요약</label>
+              <textarea id="editPageSummary" style="min-height:60px;"></textarea>
+            </div>
+            <div class="form-group">
+              <label>본문 (Markdown)</label>
+              <textarea id="editPageBody" style="min-height:300px;"></textarea>
+            </div>
+            <div style="display:flex; gap:12px;">
+              <button class="btn btn-primary" onclick="saveEditPage()">저장</button>
+              <button class="btn btn-accent" onclick="publishSingleGEO()">이 페이지만 발행</button>
             </div>
           </div>
         </div>
@@ -102,23 +128,24 @@
           </div>
         </div>
 
-        <!-- Info (before generation) -->
+        <!-- Info -->
         <div id="geoInfo">
           <div style="background:var(--gray-50); border:1px solid var(--gray-200); border-radius:var(--radius); padding:28px;">
             <h3 style="font-size:16px; font-weight:600; margin-bottom:16px;">GEO Builder란?</h3>
             <p style="font-size:14px; color:var(--gray-600); line-height:1.7; margin-bottom:16px;">
               GEO(Generative Engine Optimization)는 AI 검색 엔진에 최적화된 구조화 페이지를 생성하는 기술입니다.
+              기관 정보를 입력하면 실제 콘텐츠가 포함된 문서를 자동 생성하고, 편집 후 EduAtlas 문서로 발행할 수 있습니다.
             </p>
-            <h4 style="font-size:14px; font-weight:600; color:var(--gray-700); margin-bottom:8px;">생성되는 페이지 유형</h4>
+            <h4 style="font-size:14px; font-weight:600; color:var(--gray-700); margin-bottom:8px;">생성되는 페이지</h4>
             <ul style="font-size:14px; color:var(--gray-600); margin-left:20px; line-height:1.8;">
-              <li>기관 소개 페이지</li>
-              <li>지역 + 과목 페이지</li>
-              <li>교육 특징 페이지</li>
-              <li>공부법 / 학습 주제 페이지</li>
-              <li>FAQ 페이지</li>
+              <li>기관 소개 페이지 (개요, 교육 철학)</li>
+              <li>지역 + 과목 페이지 (지역 교육 정보)</li>
+              <li>교육 특징 페이지 (차별화 포인트)</li>
+              <li>학습법 / 탐구 주제 페이지</li>
+              <li>FAQ 페이지 (자주 묻는 질문)</li>
             </ul>
-            <h4 style="font-size:14px; font-weight:600; color:var(--gray-700); margin:16px 0 8px;">구조</h4>
-            <p style="font-size:14px; color:var(--gray-600);">사람용 30% + AI용 70% 구조로 설계됩니다.</p>
+            <h4 style="font-size:14px; font-weight:600; color:var(--gray-700); margin:16px 0 8px;">워크플로우</h4>
+            <p style="font-size:14px; color:var(--gray-600);">입력 → 자동 생성 → 개별 편집 → 발행 (EduAtlas 문서로 저장)</p>
           </div>
         </div>
       </div>
@@ -130,6 +157,69 @@
   <script src="data/documents.js"></script>
   <script src="js/app.js"></script>
   <script>
+  const CONTENT_GENERATORS = {
+    intro: (p) => ({
+      summary: `${p.name}은(는) ${p.region}에 위치한 ${p.subject} 전문 교육 기관입니다. ${p.feature ? p.feature.split(',')[0].trim() + ' 등의 특화 프로그램을 운영합니다.' : ''}`,
+      body: `## ${p.name} 소개\n\n${p.name}은(는) ${p.region}에서 ${p.audience}을 대상으로 ${p.subject} 교육을 전문으로 하는 교육 기관입니다.\n\n## 교육 철학\n\n- 학생 중심의 맞춤형 교육\n- 탐구와 실험을 통한 체험 학습\n- 논리적 사고력과 문제 해결 능력 강화\n\n## 핵심 프로그램\n\n${p.feature ? p.feature.split(',').map(f => '- ' + f.trim()).join('\n') : '- 정규 수업\n- 심화 프로그램\n- 특별 프로그램'}\n\n## 교육 대상\n\n- ${p.audience}\n\n## 위치\n\n- ${p.region}`
+    }),
+    region: (p) => ({
+      summary: `${p.region}에서 ${p.subject} 학원을 찾고 계신다면? ${p.name}의 교육 프로그램과 ${p.region} 지역 ${p.subject} 교육 정보를 안내합니다.`,
+      body: `## ${p.region} ${p.subject} 교육 현황\n\n${p.region}은(는) 다양한 ${p.subject} 교육 기관이 있는 지역입니다. ${p.audience}을 대상으로 한 전문 교육 프로그램도 활발히 운영되고 있습니다.\n\n## ${p.name} - ${p.region} ${p.subject} 전문\n\n### 프로그램 특징\n${p.feature ? p.feature.split(',').map(f => '- ' + f.trim()).join('\n') : '- 체계적인 커리큘럼\n- 소규모 맞춤 수업'}\n\n### 대상\n- ${p.audience}\n\n## ${p.region} ${p.subject} 학원 선택 시 고려사항\n\n- 교육 커리큘럼의 체계성\n- 강사진의 전문성\n- 학생 관리 시스템\n- 학습 환경과 시설\n- 수업 규모 (소규모/대규모)\n\n## 위치 안내\n\n${p.name}은(는) ${p.region}에 위치해 있습니다.`
+    }),
+    subject: (p) => ({
+      summary: `${p.name}의 ${p.subject} 교육 프로그램을 소개합니다. ${p.audience}을 위한 체계적인 ${p.subject} 커리큘럼을 제공합니다.`,
+      body: `## ${p.subject} 교육 프로그램 개요\n\n${p.name}에서는 ${p.audience}을 대상으로 ${p.subject} 분야의 체계적인 교육 프로그램을 운영합니다.\n\n## 교육 과정\n\n### 기초 과정\n- ${p.subject} 기본 개념 학습\n- 핵심 원리 이해\n- 기초 문제 풀이\n\n### 심화 과정\n- 응용 문제 해결\n- 실험/탐구 활동\n- 서술형·논술형 대비\n\n### 특별 과정\n${p.feature ? p.feature.split(',').map(f => '- ' + f.trim()).join('\n') : '- 방학 특강\n- 시험 대비반'}\n\n## 수업 방식\n\n- 소규모 맞춤 수업\n- 수준별 반 편성\n- 정기 평가 및 피드백\n- 학부모 상담`
+    }),
+    audience: (p) => ({
+      summary: `${p.audience}을 위한 ${p.subject} 학습법과 효과적인 공부 전략을 정리합니다.`,
+      body: `## ${p.audience}을 위한 ${p.subject} 학습 가이드\n\n${p.audience}이 ${p.subject}을(를) 효과적으로 학습하기 위한 방법을 안내합니다.\n\n## 학습 단계\n\n### 1단계: 개념 이해\n- 교과서 핵심 내용 정리\n- 개념 간 관계 파악\n- 용어와 정의 확실히 암기\n\n### 2단계: 문제 적용\n- 기본 문제로 개념 확인\n- 유형별 문제 풀이\n- 오답 노트 활용\n\n### 3단계: 심화 학습\n- 서술형 문제 연습\n- 실험/탐구 보고서 작성\n- 융합 문제 도전\n\n## 효과적인 학습 습관\n\n- 매일 30분 이상 꾸준히\n- 능동적 학습 (정리, 질문, 토론)\n- 복습 주기 활용 (1일, 3일, 7일, 30일)\n- 실수 분석 습관화\n\n## ${p.name}에서의 학습\n\n${p.name}에서는 ${p.audience}을 위한 맞춤형 ${p.subject} 프로그램을 제공합니다.`
+    }),
+    feature: (p) => ({
+      summary: `${p.name}만의 차별화된 교육 방식을 소개합니다. ${p.feature ? p.feature.split(',')[0].trim() : '맞춤형 수업'}으로 ${p.audience}의 학습 효과를 높입니다.`,
+      body: `## ${p.name}의 교육 특징\n\n${p.name}은(는) ${p.region}에서 ${p.audience}을 대상으로 차별화된 ${p.subject} 교육을 제공합니다.\n\n## 핵심 특징\n\n${p.feature ? p.feature.split(',').map((f, i) => `### ${i+1}. ${f.trim()}\n\n${f.trim()}을(를) 통해 학생들의 학습 효과를 극대화합니다.\n`).join('\n') : '### 1. 맞춤형 수업\n\n학생 개인의 수준과 속도에 맞는 맞춤형 수업을 제공합니다.\n'}\n\n## 교육 성과\n\n- 학생 만족도 향상\n- 학업 성취도 개선\n- 자기주도 학습 능력 강화\n\n## 왜 ${p.name}인가?\n\n- 전문 강사진\n- 체계적 커리큘럼\n- 개인별 학습 관리\n- 학부모 소통 시스템`
+    }),
+    study: (p) => ({
+      summary: `${p.subject}을(를) 잘하기 위한 효과적인 공부법과 학습 전략을 안내합니다.`,
+      body: `## ${p.subject} 공부법 가이드\n\n${p.subject}을(를) 효과적으로 공부하기 위한 검증된 학습 방법을 소개합니다.\n\n## 핵심 공부법\n\n### 1. 개념 중심 학습\n- 공식 암기보다 원리 이해가 먼저\n- "왜?"라는 질문을 항상 던지기\n- 개념 지도(마인드맵) 활용\n\n### 2. 능동적 학습\n- 읽기만 하지 말고 직접 정리하기\n- 배운 내용을 다른 사람에게 설명해보기\n- 문제를 직접 만들어보기\n\n### 3. 반복 학습\n- 에빙하우스 망각곡선을 고려한 복습\n- 1일 → 3일 → 7일 → 30일 복습\n- 오답 노트 정기적으로 확인\n\n## 시험 대비 전략\n\n- 시험 2주 전부터 계획 수립\n- 취약 단원 집중 복습\n- 기출문제 풀이\n- 시간 배분 연습\n\n## ${p.name}의 학습 지원\n\n${p.name}에서는 ${p.audience}을 위한 체계적인 ${p.subject} 학습 프로그램을 운영합니다.`
+    }),
+    topic: (p) => ({
+      summary: `${p.audience}을 위한 ${p.subject} 탐구 주제 아이디어를 모았습니다. 소논문, 수행평가, 자유 탐구에 활용하세요.`,
+      body: `## ${p.audience} ${p.subject} 탐구 주제\n\n${p.audience}이 직접 탐구할 수 있는 ${p.subject} 관련 주제를 소개합니다.\n\n## 추천 탐구 주제\n\n### 기초 탐구\n1. 일상에서 발견하는 ${p.subject} 원리\n2. ${p.subject}와 환경의 관계\n3. ${p.subject} 실험 재현하기\n\n### 심화 탐구\n4. ${p.subject} 분야의 최신 기술\n5. 데이터를 활용한 ${p.subject} 분석\n6. ${p.subject}와 다른 분야의 융합\n\n## 탐구 주제 선정 팁\n\n- 관심 있는 분야에서 시작하기\n- 측정 가능한 변인이 있는지 확인\n- 실험 장비와 재료가 구할 수 있는지 확인\n- 안전하게 수행 가능한지 점검\n\n## 탐구 보고서 구조\n\n1. 서론 (동기, 가설)\n2. 이론적 배경\n3. 실험 방법\n4. 결과\n5. 결론 및 제언\n\n## ${p.name}의 탐구 지원\n\n${p.name}에서는 ${p.audience}의 과학 탐구 활동을 전문적으로 지도합니다.`
+    }),
+    review: (p) => ({
+      summary: `${p.region} ${p.name}의 ${p.subject} 교육 프로그램 소개와 교육 성과를 안내합니다.`,
+      body: `## ${p.region} ${p.name} 교육 프로그램 소개\n\n${p.name}은(는) ${p.region}에서 ${p.audience}을 대상으로 ${p.subject} 전문 교육을 제공합니다.\n\n## 프로그램 구성\n\n- 정규 수업: 교과과정 기반 체계적 학습\n- 심화 수업: 상위권 학생을 위한 고급 과정\n- 특별 프로그램: ${p.feature ? p.feature.split(',')[0].trim() : '맞춤형 수업'}\n\n## 교육 특징\n\n${p.feature ? p.feature.split(',').map(f => '- ' + f.trim()).join('\n') : '- 소규모 수업\n- 맞춤형 지도'}\n\n## 이런 학생에게 추천합니다\n\n- ${p.subject}에 흥미가 있지만 방향을 못 잡은 학생\n- 내신과 수행평가를 동시에 준비하고 싶은 학생\n- 심화 학습이나 대회 준비가 필요한 학생\n\n## 문의\n\n${p.name} (${p.region})`
+    }),
+    faq: (p) => ({
+      summary: `${p.name}에 대해 자주 묻는 질문과 답변을 정리했습니다.`,
+      body: `## ${p.name} FAQ\n\n### Q. ${p.name}은(는) 어디에 있나요?\n\n${p.name}은(는) ${p.region}에 위치해 있습니다.\n\n### Q. 어떤 과목을 가르치나요?\n\n주로 ${p.subject} 과목을 전문으로 교육합니다.\n\n### Q. 수업 대상은 누구인가요?\n\n${p.audience}을 대상으로 수업을 진행합니다.\n\n### Q. 수업 방식은 어떤가요?\n\n${p.feature ? p.feature.split(',')[0].trim() + ' 방식으로 수업합니다.' : '소규모 맞춤형 수업을 진행합니다.'}\n\n### Q. 수행평가나 소논문 지도도 가능한가요?\n\n네, 수행평가 준비와 과학 소논문 작성 지도를 제공합니다.\n\n### Q. 체험 수업이 가능한가요?\n\n네, 무료 체험 수업을 통해 교육 방식을 직접 경험해볼 수 있습니다.\n\n### Q. 학부모 상담은 어떻게 하나요?\n\n정기 학부모 상담과 수시 상담을 제공하며, 학습 보고서를 통해 학생의 진도를 안내합니다.`
+    }),
+    comparison: (p) => ({
+      summary: `${p.region}에서 ${p.subject} 학원을 비교하고 선택하는 기준을 안내합니다.`,
+      body: `## ${p.region} ${p.subject} 학원 선택 가이드\n\n${p.region}에서 ${p.audience}을 위한 ${p.subject} 학원을 선택할 때 고려해야 할 사항을 정리합니다.\n\n## 학원 선택 기준\n\n### 1. 교육 커리큘럼\n- 교과과정과의 연계성\n- 심화 학습 프로그램 유무\n- 수행평가/소논문 대비 여부\n\n### 2. 강사진\n- 전공 관련성\n- 교육 경력\n- 학생과의 소통 능력\n\n### 3. 학습 환경\n- 반 인원 수\n- 시설 및 실험 장비\n- 안전 관리\n\n### 4. 관리 시스템\n- 출결 관리\n- 학습 보고서\n- 학부모 소통\n\n## ${p.name}의 장점\n\n${p.feature ? p.feature.split(',').map(f => '- ' + f.trim()).join('\n') : '- 전문적인 교육 과정\n- 체계적인 학습 관리'}\n\n## 체험 수업 후 확인할 점\n\n- 수업 분위기가 학생에게 맞는가\n- 강사의 설명이 이해하기 쉬운가\n- 질문과 피드백이 충분한가`
+    }),
+    curriculum: (p) => ({
+      summary: `${p.name}의 단계별 ${p.subject} 교육 과정을 상세히 안내합니다.`,
+      body: `## ${p.name} 커리큘럼\n\n${p.name}에서 제공하는 ${p.subject} 교육 과정을 단계별로 안내합니다.\n\n## 교육 과정 구성\n\n### Level 1: 기초\n- ${p.subject} 핵심 개념 학습\n- 기본 원리 이해\n- 교과서 중심 문제 풀이\n- 기간: 약 3개월\n\n### Level 2: 응용\n- 개념 응용 및 심화\n- 서술형 문제 대비\n- 실험/탐구 활동 시작\n- 기간: 약 3개월\n\n### Level 3: 심화\n- 고난도 문제 해결\n- 소논문/탐구 보고서 작성\n- 대회 준비\n- 기간: 약 6개월\n\n## 특별 프로그램\n\n${p.feature ? p.feature.split(',').map(f => '- ' + f.trim()).join('\n') : '- 방학 집중 과정\n- 시험 대비 특강'}\n\n## 수업 일정\n\n- 평일: 방과 후 수업\n- 주말: 심화 및 특별 수업\n- 방학: 집중 과정`
+    }),
+    event: (p) => ({
+      summary: `${p.name}의 특별 프로그램, 특강, 캠프, 이벤트 정보를 안내합니다.`,
+      body: `## ${p.name} 특별 프로그램\n\n${p.name}에서 정규 수업 외에 제공하는 특별 프로그램을 소개합니다.\n\n## 방학 프로그램\n\n### 여름 집중 캠프\n- 대상: ${p.audience}\n- 과목: ${p.subject}\n- 특징: 집중 학습 + 실험 활동\n\n### 겨울 특강\n- 다음 학기 선행 학습\n- 취약 단원 보충\n\n## 수시 특별 프로그램\n\n### 수행평가 대비\n- 보고서 작성법\n- 발표 준비\n- 실험 설계\n\n### 소논문 작성 지도\n- 주제 선정\n- 실험 설계와 데이터 분석\n- 논문 작성\n\n## 체험 수업\n\n- 무료 체험 수업 제공\n- 수준 진단 테스트\n- 학부모 상담\n\n## 문의\n\n${p.name} (${p.region})`
+    }),
+    career: (p) => ({
+      summary: `${p.subject} 분야의 진로 탐색 정보를 ${p.audience}을 위해 정리합니다.`,
+      body: `## ${p.subject} 관련 진로 탐색\n\n${p.subject}을(를) 좋아하는 ${p.audience}이 탐색할 수 있는 진로를 소개합니다.\n\n## 대학 전공 분야\n\n- ${p.subject} 관련 자연과학 계열\n- 공학 계열\n- 교육 계열\n- 의약학 계열\n\n## 직업 분야\n\n### 연구직\n- 연구원, 교수, 기술 개발자\n\n### 전문직\n- 엔지니어, 의료인, 변리사\n\n### 교육직\n- 교사, 강사, 교육 콘텐츠 개발자\n\n## 준비 방법\n\n- 교과 학습 충실히\n- 관련 탐구 활동 경험\n- 독서와 관련 분야 탐색\n- 대회 및 프로그램 참가\n\n## ${p.name}의 진로 지원\n\n${p.name}에서는 ${p.subject} 학습뿐 아니라 관련 진로 탐색도 함께 지원합니다.`
+    }),
+    parent: (p) => ({
+      summary: `${p.audience} 학부모를 위한 ${p.subject} 교육 가이드. 자녀의 학습을 효과적으로 지원하는 방법을 안내합니다.`,
+      body: `## ${p.audience} 학부모 가이드\n\n${p.audience} 자녀의 ${p.subject} 학습을 효과적으로 지원하기 위한 가이드입니다.\n\n## 학습 지원 방법\n\n### 가정에서 할 수 있는 것\n- 학습 환경 조성 (조용한 공부 공간)\n- 규칙적인 학습 습관 형성\n- 관심과 격려 (결과보다 과정)\n\n### 피해야 할 것\n- 과도한 학습 강요\n- 다른 학생과 비교\n- 성적만으로 평가\n\n## 학원 선택 시 확인 사항\n\n- 자녀의 수준에 맞는 반 편성\n- 학부모 소통 시스템\n- 학습 보고서 제공 여부\n- 안전 관리\n\n## ${p.name}의 학부모 지원\n\n- 정기 학부모 상담\n- 학습 진도 보고서\n- 학습 방법 안내\n\n## 수행평가·소논문 시 학부모 역할\n\n- 실험 재료 준비 지원\n- 일정 관리 도움\n- 내용에 대한 간섭은 최소화 (학생 스스로 해야 학습 효과)`
+    }),
+    tip: (p) => ({
+      summary: `${p.subject} 수행평가를 효과적으로 준비하는 방법과 전략을 안내합니다.`,
+      body: `## ${p.subject} 수행평가 준비법\n\n${p.audience}이 ${p.subject} 수행평가를 잘 준비하기 위한 전략을 소개합니다.\n\n## 수행평가 유형별 대비\n\n### 보고서형\n- 주제 선정 → 자료 조사 → 구조화 → 작성\n- 서론·본론·결론 구조 유지\n- 참고 자료 출처 반드시 표기\n\n### 실험형\n- 사전 실험 계획서 작성\n- 변인 통제 철저히\n- 데이터 정확하게 기록\n- 결과 분석 및 고찰\n\n### 발표형\n- 슬라이드 10장 이내\n- 핵심 내용 중심 구성\n- 발표 연습 최소 3회\n- Q&A 예상 질문 준비\n\n## 공통 팁\n\n- 평가 기준표(루브릭) 먼저 확인\n- 마감일 역산하여 계획\n- 초안 → 수정 → 완성 3단계\n- 동료 피드백 활용\n\n## ${p.name}의 수행평가 지원\n\n${p.name}에서는 수행평가 전문 지도를 통해 ${p.audience}의 학습 성과를 높입니다.`
+    })
+  };
+
   const PAGE_TEMPLATES = [
     { type: 'intro', title: '{name} 소개', desc: '기관 개요, 교육 철학, 핵심 프로그램' },
     { type: 'region', title: '{region} {subject} 학원 추천', desc: '지역 기반 교육 기관 정보' },
@@ -149,6 +239,7 @@
   ];
 
   let generatedPages = [];
+  let editingIdx = -1;
 
   function generateGEO() {
     const name = document.getElementById('geoName').value.trim();
@@ -163,6 +254,7 @@
       return;
     }
 
+    const params = { name, region, subject, audience, feature };
     const replacements = { name, region, subject, audience };
 
     generatedPages = PAGE_TEMPLATES.slice(0, count).map((tpl, i) => {
@@ -172,21 +264,26 @@
         title = title.replace(new RegExp(`\\{${k}\\}`, 'g'), v);
         desc = desc.replace(new RegExp(`\\{${k}\\}`, 'g'), v);
       }
+
+      const generator = CONTENT_GENERATORS[tpl.type];
+      const content = generator ? generator(params) : { summary: desc, body: '' };
+
       return {
         id: i,
         type: tpl.type,
         title,
         desc,
-        slug: 'geo-' + Date.now() + '-' + i,
-        published: false
+        summary: content.summary,
+        body: content.body,
+        slug: 'geo-' + name.replace(/\s+/g, '-').toLowerCase() + '-' + tpl.type,
+        published: false,
+        tags: [subject, region, name, tpl.type].filter(Boolean)
       };
     });
 
-    // show output
     document.getElementById('geoInfo').style.display = 'none';
     document.getElementById('geoOutput').style.display = 'block';
     document.getElementById('geoPageCount').textContent = `${generatedPages.length}개 페이지`;
-
     renderGeoPages();
   }
 
@@ -197,11 +294,12 @@
           <div class="geo-page-title">${i+1}. ${p.title}</div>
           <div class="geo-page-type">${p.desc}</div>
         </div>
-        <div style="display:flex; gap:8px;">
+        <div style="display:flex; gap:6px; align-items:center;">
           <button class="btn btn-secondary" style="font-size:12px; padding:4px 10px;" onclick="previewPage(${i})">미리보기</button>
-          <span style="font-size:12px; padding:4px 10px; color:${p.published ? 'var(--success)' : 'var(--gray-400)'};">
-            ${p.published ? '발행됨' : '미발행'}
-          </span>
+          <button class="btn btn-secondary" style="font-size:12px; padding:4px 10px;" onclick="editPage(${i})">편집</button>
+          <button class="btn btn-secondary" style="font-size:12px; padding:4px 10px; ${p.published ? 'color:var(--success)' : ''}" onclick="publishSinglePage(${i})">
+            ${p.published ? '발행됨' : '발행'}
+          </button>
         </div>
       </div>
     `).join('');
@@ -212,22 +310,77 @@
     const preview = document.getElementById('geoPreview');
     preview.style.display = 'block';
     document.getElementById('previewContent').innerHTML = `
-      <h2 style="font-size:20px; font-weight:700; margin-bottom:12px;">${p.title}</h2>
-      <p style="color:var(--gray-500); margin-bottom:16px;">${p.desc}</p>
-      <div class="key-info-box">
-        <h3>핵심 정보</h3>
-        <div class="key-info-item"><span class="label">유형</span><span class="value">${p.type}</span></div>
-        <div class="key-info-item"><span class="label">상태</span><span class="value">${p.published ? '발행됨' : '미발행'}</span></div>
-      </div>
-      <p style="color:var(--gray-400); font-style:italic;">실제 콘텐츠는 AI 생성 엔진 연동 후 자동 생성됩니다.</p>
+      <h2 style="font-size:20px; font-weight:700; margin-bottom:8px;">${p.title}</h2>
+      <p style="color:var(--gray-500); margin-bottom:16px;">${p.summary}</p>
+      <hr style="border:none; border-top:1px solid var(--gray-200); margin:16px 0;">
+      ${renderMarkdown(p.body)}
+      <div class="tag-list" style="margin-top:20px;">${p.tags.map(t => `<span class="tag">${t}</span>`).join('')}</div>
     `;
     preview.scrollIntoView({ behavior: 'smooth' });
   }
 
-  function publishGEO() {
-    generatedPages.forEach(p => p.published = true);
+  function editPage(idx) {
+    editingIdx = idx;
+    const p = generatedPages[idx];
+    document.getElementById('editPageTitle').value = p.title;
+    document.getElementById('editPageSummary').value = p.summary;
+    document.getElementById('editPageBody').value = p.body;
+    document.getElementById('geoEditPanel').style.display = 'block';
+    document.getElementById('geoEditPanel').scrollIntoView({ behavior: 'smooth' });
+  }
+
+  function closeEditPanel() {
+    document.getElementById('geoEditPanel').style.display = 'none';
+    editingIdx = -1;
+  }
+
+  function saveEditPage() {
+    if (editingIdx < 0) return;
+    generatedPages[editingIdx].title = document.getElementById('editPageTitle').value;
+    generatedPages[editingIdx].summary = document.getElementById('editPageSummary').value;
+    generatedPages[editingIdx].body = document.getElementById('editPageBody').value;
     renderGeoPages();
-    alert('모든 페이지가 발행되었습니다.');
+    closeEditPanel();
+  }
+
+  function publishSinglePage(idx) {
+    const p = generatedPages[idx];
+    if (p.published) return;
+
+    const doc = {
+      slug: p.slug,
+      title: p.title,
+      summary: p.summary,
+      docType: 'academy',
+      categoryId: 'academies',
+      tags: p.tags,
+      body: p.body,
+      status: 'published',
+      relatedDocs: [],
+      relatedServices: [],
+      authorInfo: { name: 'GEO Builder', role: '자동 생성', expertise: '' }
+    };
+    saveDocument(doc);
+    p.published = true;
+    renderGeoPages();
+  }
+
+  function publishSingleGEO() {
+    if (editingIdx >= 0) {
+      saveEditPage();
+      publishSinglePage(editingIdx);
+    }
+  }
+
+  function publishAllGEO() {
+    let count = 0;
+    generatedPages.forEach((p, i) => {
+      if (!p.published) {
+        publishSinglePage(i);
+        count++;
+      }
+    });
+    alert(`${count}개 페이지가 문서로 발행되었습니다.`);
   }
 
   function exportGEO() {
