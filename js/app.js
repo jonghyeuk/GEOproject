@@ -132,6 +132,12 @@ document.addEventListener('DOMContentLoaded', () => {
   if (footerEl) footerEl.innerHTML = getFooterHTML();
   initNav();
 
-  // page-specific init
-  if (typeof pageInit === 'function') pageInit();
+  // page-specific init — Firestore 데이터 로드 완료 후 실행
+  if (typeof pageInit === 'function') {
+    if (typeof onDataReady === 'function') {
+      onDataReady(pageInit);
+    } else {
+      pageInit();
+    }
+  }
 });

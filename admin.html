@@ -9,18 +9,44 @@
 <body>
   <div id="site-header"></div>
 
-  <div class="container page-content">
+  <!-- 로그인 화면 -->
+  <div id="loginScreen" class="container page-content" style="max-width:420px; margin-top:80px;">
+    <div class="admin-panel" style="text-align:center;">
+      <h1 style="font-size:24px; font-weight:700; margin-bottom:8px;">Admin Login</h1>
+      <p style="color:var(--gray-400); margin-bottom:24px; font-size:14px;">관리자 로그인이 필요합니다</p>
+      <div class="form-group" style="text-align:left;">
+        <label>이메일</label>
+        <input type="email" id="loginEmail" placeholder="admin@example.com" style="width:100%;">
+      </div>
+      <div class="form-group" style="text-align:left;">
+        <label>비밀번호</label>
+        <input type="password" id="loginPassword" placeholder="비밀번호" style="width:100%;" onkeydown="if(event.key==='Enter')doLogin()">
+      </div>
+      <div id="loginError" style="color:#dc2626; font-size:13px; margin-bottom:12px; display:none;"></div>
+      <button class="btn btn-primary btn-lg" style="width:100%;" onclick="doLogin()">로그인</button>
+    </div>
+  </div>
+
+  <!-- 관리자 화면 (로그인 후 표시) -->
+  <div id="adminScreen" class="container page-content" style="display:none;">
     <div class="breadcrumb">
       <a href="index.html">Explore</a>
-      <span class="sep">›</span>
+      <span class="sep">></span>
       <span>Admin</span>
     </div>
 
-    <h1 class="section-title">문서 관리</h1>
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+      <h1 class="section-title" style="margin:0;">문서 관리</h1>
+      <div style="display:flex; gap:12px; align-items:center;">
+        <span id="userEmail" style="font-size:13px; color:var(--gray-400);"></span>
+        <button class="btn btn-secondary" style="font-size:12px; padding:6px 14px;" onclick="doLogout()">로그아웃</button>
+      </div>
+    </div>
 
     <!-- 탭 네비게이션 -->
     <div class="admin-tabs">
       <button class="admin-tab active" onclick="switchTab('create')">새 문서 작성</button>
+      <button class="admin-tab" onclick="switchTab('json')">JSON 붙여넣기</button>
       <button class="admin-tab" onclick="switchTab('draft')">AI 초안 생성</button>
       <button class="admin-tab" onclick="switchTab('manage')">문서 관리</button>
       <button class="admin-tab" onclick="switchTab('data')">데이터</button>
@@ -108,7 +134,48 @@
       </div>
     </div>
 
-    <!-- 탭 2: AI 초안 생성 -->
+    <!-- 탭 2: JSON 붙여넣기 (LLM 출력 → 직접 입력) -->
+    <div id="tab-json" class="admin-tab-content">
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:32px;">
+        <div class="admin-panel">
+          <h2 class="admin-panel-title">JSON 문서 붙여넣기</h2>
+          <p style="font-size:14px; color:var(--gray-500); margin-bottom:16px;">
+            LLM(Claude, ChatGPT 등)이 생성한 JSON을 붙여넣으세요.<br>
+            단일 문서 객체 <code>{...}</code> 또는 문서 배열 <code>[{...}, {...}]</code> 모두 지원합니다.
+          </p>
+          <div class="form-group">
+            <label>JSON 입력</label>
+            <textarea id="jsonInput" placeholder='[
+  {
+    "title": "문서 제목",
+    "summary": "요약",
+    "docType": "article",
+    "categoryId": "research",
+    "tags": ["태그1", "태그2"],
+    "body": "## 내용\n\n본문...",
+    "status": "published"
+  }
+]' style="min-height:400px; font-family:monospace; font-size:13px; white-space:pre; tab-size:2;"></textarea>
+          </div>
+          <div style="display:flex; gap:12px;">
+            <button class="btn btn-primary btn-lg" style="flex:1;" onclick="parseJsonInput()">파싱 & 미리보기</button>
+            <button class="btn btn-secondary btn-lg" onclick="clearJsonInput()">초기화</button>
+          </div>
+          <div id="jsonError" style="color:#dc2626; font-size:13px; margin-top:12px; display:none;"></div>
+        </div>
+
+        <div id="jsonPreviewPanel" style="display:none;" class="admin-panel">
+          <h3 class="admin-panel-title">미리보기 <span id="jsonDocCount" style="font-size:13px; color:var(--gray-400);"></span></h3>
+          <div id="jsonPreviewList" style="max-height:500px; overflow-y:auto;"></div>
+          <div style="margin-top:20px; padding-top:16px; border-top:1px solid var(--gray-200);">
+            <button class="btn btn-primary btn-lg" style="width:100%;" onclick="saveJsonDocs()">Firestore에 저장</button>
+          </div>
+          <div id="jsonSaveResult" style="margin-top:12px; display:none;"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 탭 3: AI 초안 생성 -->
     <div id="tab-draft" class="admin-tab-content">
       <div style="display:grid; grid-template-columns:1fr 1fr; gap:32px;">
         <div class="admin-panel">
@@ -162,7 +229,7 @@
       </div>
     </div>
 
-    <!-- 탭 3: 문서 관리 -->
+    <!-- 탭 4: 문서 관리 -->
     <div id="tab-manage" class="admin-tab-content">
       <div class="admin-panel">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
@@ -176,33 +243,38 @@
       </div>
     </div>
 
-    <!-- 탭 4: 데이터 관리 -->
+    <!-- 탭 5: 데이터 관리 -->
     <div id="tab-data" class="admin-tab-content">
       <div class="admin-panel">
         <h2 class="admin-panel-title">데이터 관리</h2>
         <div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(250px, 1fr)); gap:16px;">
+          <div class="admin-action-card" onclick="migrateData()">
+            <div class="admin-action-icon">&#x1F680;</div>
+            <strong>Firestore 마이그레이션</strong>
+            <p>샘플 데이터 + localStorage 데이터를 Firestore에 업로드합니다 (최초 1회)</p>
+          </div>
           <div class="admin-action-card" onclick="exportData()">
-            <div class="admin-action-icon">📦</div>
+            <div class="admin-action-icon">&#x1F4E6;</div>
             <strong>데이터 내보내기</strong>
             <p>전체 문서, 카테고리, 서비스 데이터를 JSON으로 내보냅니다</p>
           </div>
           <div class="admin-action-card" onclick="document.getElementById('importFile').click()">
-            <div class="admin-action-icon">📥</div>
-            <strong>데이터 가져오기</strong>
-            <p>JSON 파일에서 문서 데이터를 가져옵니다</p>
+            <div class="admin-action-icon">&#x1F4E5;</div>
+            <strong>데이터 가져오기 (파일)</strong>
+            <p>JSON 파일에서 문서 데이터를 Firestore에 저장합니다</p>
             <input type="file" id="importFile" accept=".json" style="display:none;" onchange="importData(event)">
           </div>
           <div class="admin-action-card" onclick="generateSitemapData()">
-            <div class="admin-action-icon">🗺️</div>
+            <div class="admin-action-icon">&#x1F5FA;&#xFE0F;</div>
             <strong>Sitemap 데이터 생성</strong>
             <p>전체 문서 기반 sitemap XML을 생성합니다</p>
           </div>
-          <div class="admin-action-card" onclick="clearCustomData()">
-            <div class="admin-action-icon">🗑️</div>
-            <strong>커스텀 데이터 초기화</strong>
-            <p>직접 추가한 문서를 모두 삭제합니다 (샘플 유지)</p>
-          </div>
         </div>
+      </div>
+
+      <div id="migrateResult" style="display:none; margin-top:20px;" class="admin-panel">
+        <h3 class="admin-panel-title">마이그레이션 결과</h3>
+        <div id="migrateResultContent"></div>
       </div>
 
       <!-- Sitemap output -->
@@ -216,24 +288,77 @@
 
   <div id="site-footer"></div>
 
+  <!-- Firebase SDK (CDN compat) -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+  <script src="js/firebase-config.js"></script>
   <script src="data/documents.js"></script>
   <script src="js/app.js"></script>
   <script>
   let currentDraft = null;
+  let _parsedJsonDocs = null;
 
+  // ============================================================
+  // 인증
+  // ============================================================
+  auth.onAuthStateChanged(user => {
+    if (user) {
+      document.getElementById('loginScreen').style.display = 'none';
+      document.getElementById('adminScreen').style.display = 'block';
+      document.getElementById('userEmail').textContent = user.email;
+    } else {
+      document.getElementById('loginScreen').style.display = 'block';
+      document.getElementById('adminScreen').style.display = 'none';
+    }
+  });
+
+  function doLogin() {
+    const email = document.getElementById('loginEmail').value.trim();
+    const pw = document.getElementById('loginPassword').value;
+    const errEl = document.getElementById('loginError');
+    errEl.style.display = 'none';
+
+    if (!email || !pw) {
+      errEl.textContent = '이메일과 비밀번호를 입력하세요.';
+      errEl.style.display = 'block';
+      return;
+    }
+
+    auth.signInWithEmailAndPassword(email, pw)
+      .catch(err => {
+        const messages = {
+          'auth/user-not-found': '등록되지 않은 이메일입니다.',
+          'auth/wrong-password': '비밀번호가 틀렸습니다.',
+          'auth/invalid-email': '올바른 이메일 형식이 아닙니다.',
+          'auth/invalid-credential': '이메일 또는 비밀번호가 올바르지 않습니다.'
+        };
+        errEl.textContent = messages[err.code] || err.message;
+        errEl.style.display = 'block';
+      });
+  }
+
+  function doLogout() {
+    auth.signOut();
+  }
+
+  // ============================================================
+  // 페이지 초기화
+  // ============================================================
   function pageInit() {
-    // category options
     [document.getElementById('docCategory'), document.getElementById('draftCategory')].forEach(sel => {
+      if (!sel) return;
       CATEGORIES.forEach(c => {
-        sel.innerHTML += `<option value="${c.id}">${c.icon} ${c.nameKo}</option>`;
+        sel.innerHTML += '<option value="' + c.id + '">' + c.icon + ' ' + c.nameKo + '</option>';
       });
     });
     renderDocList();
-
-    // search filter
     document.getElementById('manageSearch').addEventListener('input', renderDocList);
   }
 
+  // ============================================================
+  // 탭 전환
+  // ============================================================
   function switchTab(tabId) {
     document.querySelectorAll('.admin-tab').forEach(t => t.classList.remove('active'));
     document.querySelectorAll('.admin-tab-content').forEach(c => c.classList.remove('active'));
@@ -242,31 +367,31 @@
     if (tabId === 'manage') renderDocList();
   }
 
+  // ============================================================
+  // 문서 관리 탭
+  // ============================================================
   function renderDocList() {
     const search = (document.getElementById('manageSearch').value || '').toLowerCase();
-    let docs = getAllDocuments().sort((a, b) => b.updatedAt.localeCompare(a.updatedAt));
+    let docs = getAllDocuments().sort((a, b) => (b.updatedAt || '').localeCompare(a.updatedAt || ''));
     if (search) {
-      docs = docs.filter(d => d.title.toLowerCase().includes(search) || d.tags.some(t => t.toLowerCase().includes(search)));
+      docs = docs.filter(d => d.title.toLowerCase().includes(search) || (d.tags && d.tags.some(t => t.toLowerCase().includes(search))));
     }
-    document.getElementById('docCount').textContent = `${docs.length}개 문서`;
+    document.getElementById('docCount').textContent = docs.length + '개 문서';
     document.getElementById('docList').innerHTML = docs.map(d => {
       const cat = getCategoryById(d.categoryId);
-      const isCustom = isCustomDocument(d.id);
-      return `
-      <div class="admin-doc-row">
-        <div class="admin-doc-info">
-          <a href="document.html?slug=${d.slug}" class="admin-doc-title">${d.title}</a>
-          <div class="admin-doc-meta">${cat ? cat.icon + ' ' + cat.nameKo : ''} · ${d.docType} · ${formatDate(d.updatedAt)}</div>
-          <div class="tag-list" style="margin-top:4px;">${d.tags.slice(0,4).map(t => `<span class="tag" style="font-size:11px; padding:2px 6px;">${t}</span>`).join('')}</div>
-        </div>
-        <div class="admin-doc-actions">
-          <span class="admin-status-badge ${d.status}">${d.status}</span>
-          ${isCustom ? `
-            <button class="btn btn-secondary" style="font-size:12px; padding:4px 10px;" onclick="editDoc('${d.id}')">편집</button>
-            <button class="btn btn-secondary" style="font-size:12px; padding:4px 10px; color:var(--danger);" onclick="removeDoc('${d.id}')">삭제</button>
-          ` : `<span style="font-size:11px; color:var(--gray-400);">샘플</span>`}
-        </div>
-      </div>`;
+      return '\
+      <div class="admin-doc-row">\
+        <div class="admin-doc-info">\
+          <a href="document.html?slug=' + d.slug + '" class="admin-doc-title">' + d.title + '</a>\
+          <div class="admin-doc-meta">' + (cat ? cat.icon + ' ' + cat.nameKo : '') + ' &middot; ' + d.docType + ' &middot; ' + formatDate(d.updatedAt) + '</div>\
+          <div class="tag-list" style="margin-top:4px;">' + (d.tags || []).slice(0,4).map(t => '<span class="tag" style="font-size:11px; padding:2px 6px;">' + t + '</span>').join('') + '</div>\
+        </div>\
+        <div class="admin-doc-actions">\
+          <span class="admin-status-badge ' + d.status + '">' + d.status + '</span>\
+          <button class="btn btn-secondary" style="font-size:12px; padding:4px 10px;" onclick="editDoc(\'' + d.id + '\')">편집</button>\
+          <button class="btn btn-secondary" style="font-size:12px; padding:4px 10px; color:var(--danger);" onclick="removeDoc(\'' + d.id + '\')">삭제</button>\
+        </div>\
+      </div>';
     }).join('');
   }
 
@@ -279,7 +404,7 @@
     document.getElementById('docSummary').value = doc.summary;
     document.getElementById('docCategory').value = doc.categoryId;
     document.getElementById('docType').value = doc.docType;
-    document.getElementById('docTags').value = doc.tags.join(', ');
+    document.getElementById('docTags').value = (doc.tags || []).join(', ');
     document.getElementById('docAudience').value = doc.targetAudience ? doc.targetAudience.join(', ') : '';
     document.getElementById('docDirectAnswer').value = doc.directAnswer ? doc.directAnswer.join('\n') : '';
     document.getElementById('docKeyInfo').value = doc.keyInfo ? JSON.stringify(doc.keyInfo, null, 2) : '';
@@ -289,7 +414,7 @@
     document.getElementById('formTitle').textContent = '문서 편집';
     document.getElementById('cancelEditBtn').style.display = 'inline-flex';
     switchTab('create');
-    document.querySelector('.admin-tab').classList.add('active');
+    document.querySelectorAll('.admin-tab').forEach((t,i) => t.classList.toggle('active', i === 0));
     window.scrollTo(0, 0);
   }
 
@@ -301,15 +426,15 @@
     document.getElementById('docCategory').value = '';
   }
 
-  function removeDoc(id) {
+  async function removeDoc(id) {
     const doc = getDocumentById(id);
     if (!doc) return;
-    if (!confirm(`"${doc.title}" 문서를 삭제하시겠습니까?`)) return;
-    deleteDocument(id);
+    if (!confirm('"' + doc.title + '" 문서를 삭제하시겠습니까?')) return;
+    await deleteDocument(id);
     renderDocList();
   }
 
-  function publishDoc() {
+  async function publishDoc() {
     const editId = document.getElementById('editId').value;
     const title = document.getElementById('docTitle').value.trim();
     const summary = document.getElementById('docSummary').value.trim();
@@ -347,7 +472,6 @@
       .replace(/^-|-$/g, '');
 
     if (editId) {
-      // 편집 모드
       const existing = getDocumentById(editId);
       const doc = {
         ...existing,
@@ -357,11 +481,10 @@
         faqItems: faqItems || undefined,
         status: 'published'
       };
-      updateDocument(doc);
+      await updateDocument(doc);
       alert('문서가 수정되었습니다.');
       cancelEdit();
     } else {
-      // 새 문서
       const doc = {
         slug: slug || 'doc-' + Date.now(),
         title, summary, docType, categoryId, tags, body, keyInfo,
@@ -373,7 +496,7 @@
         relatedDocs: [],
         relatedServices: []
       };
-      saveDocument(doc);
+      await saveDocument(doc);
       alert('문서가 발행되었습니다.');
       ['docTitle','docSummary','docTags','docBody','docKeyInfo','docDirectAnswer','docAudience','docFaq'].forEach(id => document.getElementById(id).value = '');
       document.getElementById('docCategory').value = '';
@@ -390,19 +513,139 @@
     const preview = document.getElementById('adminPreview');
     preview.style.display = 'block';
     const directHTML = directAnswerStr
-      ? `<div class="direct-answer-box"><h3>핵심 답변</h3>${directAnswerStr.split('\n').filter(Boolean).map(a => `<p>${a}</p>`).join('')}</div>`
+      ? '<div class="direct-answer-box"><h3>핵심 답변</h3>' + directAnswerStr.split('\n').filter(Boolean).map(a => '<p>' + a + '</p>').join('') + '</div>'
       : '';
-    document.getElementById('previewArea').innerHTML = `
-      <h2 style="font-size:22px; font-weight:700; margin-bottom:8px;">${title}</h2>
-      <p style="color:var(--gray-500); margin-bottom:16px;">${summary}</p>
-      ${directHTML}
-      <hr style="border:none; border-top:1px solid var(--gray-200); margin:16px 0;">
-      ${renderMarkdown(body)}
-    `;
+    document.getElementById('previewArea').innerHTML =
+      '<h2 style="font-size:22px; font-weight:700; margin-bottom:8px;">' + title + '</h2>' +
+      '<p style="color:var(--gray-500); margin-bottom:16px;">' + summary + '</p>' +
+      directHTML +
+      '<hr style="border:none; border-top:1px solid var(--gray-200); margin:16px 0;">' +
+      renderMarkdown(body);
     preview.scrollIntoView({ behavior: 'smooth' });
   }
 
+  // ============================================================
+  // JSON 붙여넣기 탭
+  // ============================================================
+  function parseJsonInput() {
+    const input = document.getElementById('jsonInput').value.trim();
+    const errEl = document.getElementById('jsonError');
+    errEl.style.display = 'none';
+
+    if (!input) {
+      errEl.textContent = 'JSON을 입력하세요.';
+      errEl.style.display = 'block';
+      return;
+    }
+
+    try {
+      let parsed = JSON.parse(input);
+
+      // 단일 객체면 배열로 감싸기
+      if (!Array.isArray(parsed)) {
+        if (parsed.documents && Array.isArray(parsed.documents)) {
+          parsed = parsed.documents;
+        } else {
+          parsed = [parsed];
+        }
+      }
+
+      // 유효성 검사
+      const errors = [];
+      parsed.forEach((doc, i) => {
+        if (!doc.title) errors.push('문서 ' + (i+1) + ': title 필드 없음');
+        if (!doc.categoryId) errors.push('문서 ' + (i+1) + ': categoryId 필드 없음');
+      });
+
+      if (errors.length) {
+        errEl.innerHTML = errors.join('<br>');
+        errEl.style.display = 'block';
+        return;
+      }
+
+      _parsedJsonDocs = parsed;
+
+      // 미리보기 표시
+      const panel = document.getElementById('jsonPreviewPanel');
+      panel.style.display = 'block';
+      document.getElementById('jsonDocCount').textContent = '(' + parsed.length + '개 문서)';
+      document.getElementById('jsonSaveResult').style.display = 'none';
+
+      document.getElementById('jsonPreviewList').innerHTML = parsed.map((doc, i) => {
+        const cat = getCategoryById(doc.categoryId);
+        return '\
+        <div style="padding:12px 0; border-bottom:1px solid var(--gray-100);">\
+          <div style="display:flex; justify-content:space-between; align-items:start;">\
+            <div>\
+              <strong style="font-size:14px;">' + (i+1) + '. ' + doc.title + '</strong>\
+              <div style="font-size:12px; color:var(--gray-400); margin-top:2px;">\
+                ' + (cat ? cat.icon + ' ' + cat.nameKo : doc.categoryId) + ' &middot; ' + (doc.docType || 'article') + '\
+              </div>\
+              <div style="font-size:13px; color:var(--gray-500); margin-top:4px;">' + (doc.summary || '') + '</div>\
+              <div class="tag-list" style="margin-top:4px;">' + (doc.tags || []).slice(0,5).map(t => '<span class="tag" style="font-size:11px; padding:2px 6px;">' + t + '</span>').join('') + '</div>\
+            </div>\
+          </div>\
+        </div>';
+      }).join('');
+
+      panel.scrollIntoView({ behavior: 'smooth' });
+    } catch (e) {
+      errEl.textContent = 'JSON 파싱 에러: ' + e.message;
+      errEl.style.display = 'block';
+    }
+  }
+
+  async function saveJsonDocs() {
+    if (!_parsedJsonDocs || !_parsedJsonDocs.length) return;
+
+    const btn = event.target;
+    btn.disabled = true;
+    btn.textContent = '저장 중...';
+
+    // slug 자동 생성 (없는 경우)
+    _parsedJsonDocs.forEach(doc => {
+      if (!doc.slug) {
+        doc.slug = doc.title.toLowerCase()
+          .replace(/[가-힣]+/g, m => m)
+          .replace(/[^a-z0-9가-힣]+/g, '-')
+          .replace(/^-|-$/g, '') || 'doc-' + Date.now();
+      }
+      if (!doc.status) doc.status = 'published';
+      if (!doc.tags) doc.tags = [];
+      if (!doc.relatedDocs) doc.relatedDocs = [];
+      if (!doc.relatedServices) doc.relatedServices = [];
+    });
+
+    const results = await saveDocumentsBatch(_parsedJsonDocs);
+
+    const success = results.filter(r => r.success).length;
+    const failed = results.filter(r => !r.success).length;
+
+    const resultEl = document.getElementById('jsonSaveResult');
+    resultEl.style.display = 'block';
+    resultEl.innerHTML = '<div style="padding:12px; background:' + (failed ? '#fef3c7' : '#d1fae5') + '; border-radius:var(--radius-sm); font-size:14px;">' +
+      success + '개 문서 저장 성공' + (failed ? ', ' + failed + '개 실패' : '') +
+      '</div>' +
+      (failed ? '<div style="margin-top:8px; font-size:12px; color:#dc2626;">' +
+        results.filter(r => !r.success).map(r => r.title + ': ' + r.error).join('<br>') +
+      '</div>' : '');
+
+    btn.disabled = false;
+    btn.textContent = 'Firestore에 저장';
+    renderDocList();
+  }
+
+  function clearJsonInput() {
+    document.getElementById('jsonInput').value = '';
+    document.getElementById('jsonPreviewPanel').style.display = 'none';
+    document.getElementById('jsonError').style.display = 'none';
+    document.getElementById('jsonSaveResult').style.display = 'none';
+    _parsedJsonDocs = null;
+  }
+
+  // ============================================================
   // AI 초안 생성
+  // ============================================================
   function generateDraft() {
     const title = document.getElementById('draftTitle').value.trim();
     const docType = document.getElementById('draftType').value;
@@ -423,18 +666,17 @@
 
     const resultEl = document.getElementById('draftResult');
     resultEl.style.display = 'block';
-    document.getElementById('draftPreview').innerHTML = `
-      <div style="margin-bottom:16px;">
-        <strong>제목:</strong> ${title}<br>
-        <strong>유형:</strong> ${docType}<br>
-        <strong>요약:</strong> ${template.summary}
-      </div>
-      <div style="background:var(--gray-50); padding:16px; border-radius:var(--radius-sm); font-family:monospace; font-size:13px; white-space:pre-wrap;">${template.body}</div>
-      <div style="margin-top:12px;">
-        <strong>핵심 정보:</strong>
-        <pre style="font-size:12px; background:var(--gray-50); padding:8px; border-radius:4px;">${JSON.stringify(template.keyInfo, null, 2)}</pre>
-      </div>
-    `;
+    document.getElementById('draftPreview').innerHTML =
+      '<div style="margin-bottom:16px;">' +
+        '<strong>제목:</strong> ' + title + '<br>' +
+        '<strong>유형:</strong> ' + docType + '<br>' +
+        '<strong>요약:</strong> ' + template.summary +
+      '</div>' +
+      '<div style="background:var(--gray-50); padding:16px; border-radius:var(--radius-sm); font-family:monospace; font-size:13px; white-space:pre-wrap;">' + template.body + '</div>' +
+      '<div style="margin-top:12px;">' +
+        '<strong>핵심 정보:</strong>' +
+        '<pre style="font-size:12px; background:var(--gray-50); padding:8px; border-radius:4px;">' + JSON.stringify(template.keyInfo, null, 2) + '</pre>' +
+      '</div>';
     resultEl.scrollIntoView({ behavior: 'smooth' });
   }
 
@@ -451,7 +693,41 @@
     window.scrollTo(0, 0);
   }
 
+  // ============================================================
   // 데이터 관리
+  // ============================================================
+  async function migrateData() {
+    if (!confirm('샘플 데이터 + localStorage 데이터를 Firestore에 업로드합니다.\n이미 존재하는 문서는 덮어씁니다.\n\n계속하시겠습니까?')) return;
+
+    const resultPanel = document.getElementById('migrateResult');
+    const resultContent = document.getElementById('migrateResultContent');
+    resultPanel.style.display = 'block';
+    resultContent.innerHTML = '<p style="color:var(--gray-400);">마이그레이션 중...</p>';
+
+    try {
+      const results = await migrateSampleToFirestore();
+      const success = results.filter(r => r.success).length;
+      const failed = results.filter(r => !r.success).length;
+
+      resultContent.innerHTML = '<div style="padding:12px; background:#d1fae5; border-radius:var(--radius-sm); font-size:14px;">' +
+        success + '개 문서 마이그레이션 성공' + (failed ? ', ' + failed + '개 실패' : '') +
+        '</div>' +
+        '<div style="margin-top:12px;">' +
+          results.map(r =>
+            '<div style="padding:4px 0; font-size:13px; color:' + (r.success ? '#065f46' : '#dc2626') + ';">' +
+              (r.success ? '&#x2713;' : '&#x2717;') + ' ' + r.title + (r.error ? ' — ' + r.error : '') +
+            '</div>'
+          ).join('') +
+        '</div>';
+
+      // 마이그레이션 후 데이터 다시 로드
+      await loadDocumentsFromFirestore();
+      renderDocList();
+    } catch (err) {
+      resultContent.innerHTML = '<div style="padding:12px; background:#fee2e2; border-radius:var(--radius-sm); color:#dc2626;">' + err.message + '</div>';
+    }
+  }
+
   function exportData() {
     const docs = getAllDocuments();
     const data = JSON.stringify({ documents: docs, categories: CATEGORIES, services: SERVICES }, null, 2);
@@ -464,21 +740,18 @@
     URL.revokeObjectURL(url);
   }
 
-  function importData(event) {
+  async function importData(event) {
     const file = event.target.files[0];
     if (!file) return;
     const reader = new FileReader();
-    reader.onload = function(e) {
+    reader.onload = async function(e) {
       try {
         const data = JSON.parse(e.target.result);
         if (data.documents && Array.isArray(data.documents)) {
-          const stored = localStorage.getItem('kp_documents');
-          const existing = stored ? JSON.parse(stored) : [];
-          const imported = data.documents.filter(d => d.id && d.id.startsWith('doc-custom-'));
-          const merged = [...existing, ...imported];
-          localStorage.setItem('kp_documents', JSON.stringify(merged));
+          const results = await saveDocumentsBatch(data.documents);
+          const success = results.filter(r => r.success).length;
           renderDocList();
-          alert(`${imported.length}개 문서를 가져왔습니다.`);
+          alert(success + '개 문서를 Firestore에 저장했습니다.');
         } else {
           alert('올바른 형식의 JSON 파일이 아닙니다.');
         }
@@ -498,7 +771,6 @@
     let xml = '<?xml version="1.0" encoding="UTF-8"?>\n';
     xml += '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n';
 
-    // 정적 페이지
     const staticPages = [
       { path: '/', priority: '1.0', freq: 'daily' },
       { path: '/knowledge.html', priority: '0.9', freq: 'daily' },
@@ -515,23 +787,20 @@
     ];
 
     staticPages.forEach(p => {
-      xml += `  <url>\n    <loc>${baseUrl}${p.path}</loc>\n    <lastmod>${today}</lastmod>\n    <changefreq>${p.freq}</changefreq>\n    <priority>${p.priority}</priority>\n  </url>\n`;
+      xml += '  <url>\n    <loc>' + baseUrl + p.path + '</loc>\n    <lastmod>' + today + '</lastmod>\n    <changefreq>' + p.freq + '</changefreq>\n    <priority>' + p.priority + '</priority>\n  </url>\n';
     });
 
-    // 카테고리 페이지
     CATEGORIES.forEach(c => {
-      xml += `  <url>\n    <loc>${baseUrl}/categories.html?id=${c.id}</loc>\n    <lastmod>${today}</lastmod>\n    <changefreq>weekly</changefreq>\n    <priority>0.8</priority>\n  </url>\n`;
+      xml += '  <url>\n    <loc>' + baseUrl + '/categories.html?id=' + c.id + '</loc>\n    <lastmod>' + today + '</lastmod>\n    <changefreq>weekly</changefreq>\n    <priority>0.8</priority>\n  </url>\n';
     });
 
-    // 문서 페이지
     docs.forEach(d => {
-      xml += `  <url>\n    <loc>${baseUrl}/document.html?slug=${d.slug}</loc>\n    <lastmod>${d.updatedAt}</lastmod>\n    <changefreq>monthly</changefreq>\n    <priority>0.8</priority>\n  </url>\n`;
+      xml += '  <url>\n    <loc>' + baseUrl + '/document.html?slug=' + d.slug + '</loc>\n    <lastmod>' + d.updatedAt + '</lastmod>\n    <changefreq>monthly</changefreq>\n    <priority>0.8</priority>\n  </url>\n';
     });
 
-    // 태그 페이지
     const tags = getAllTags();
     tags.forEach(([tag]) => {
-      xml += `  <url>\n    <loc>${baseUrl}/tag.html?t=${encodeURIComponent(tag)}</loc>\n    <lastmod>${today}</lastmod>\n    <changefreq>weekly</changefreq>\n    <priority>0.6</priority>\n  </url>\n`;
+      xml += '  <url>\n    <loc>' + baseUrl + '/tag.html?t=' + encodeURIComponent(tag) + '</loc>\n    <lastmod>' + today + '</lastmod>\n    <changefreq>weekly</changefreq>\n    <priority>0.6</priority>\n  </url>\n';
     });
 
     xml += '</urlset>';
@@ -545,14 +814,6 @@
     text.select();
     document.execCommand('copy');
     alert('클립보드에 복사되었습니다.');
-  }
-
-  function clearCustomData() {
-    if (confirm('커스텀으로 추가한 문서를 모두 삭제하시겠습니까? (기본 샘플 데이터는 유지됩니다)')) {
-      localStorage.removeItem('kp_documents');
-      renderDocList();
-      alert('커스텀 데이터가 초기화되었습니다.');
-    }
   }
   </script>
 

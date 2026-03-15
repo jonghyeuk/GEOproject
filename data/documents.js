@@ -1,7 +1,17 @@
 /**
  * EduAtlas - Education Data Platform
- * 교육 데이터 플랫폼 샘플 데이터
+ * Firebase Firestore 기반 데이터 레이어
+ *
+ * 아키텍처:
+ * - 페이지 로드 시 Firestore에서 전체 데이터를 메모리에 캐싱
+ * - 읽기 함수는 동기식 (캐시 기반)
+ * - 쓰기 함수는 비동기식 (Firestore + 캐시 동시 업데이트)
+ * - Firestore 연결 실패 시 내장 샘플 데이터로 폴백
  */
+
+// ============================================================
+// 내장 샘플 데이터 (Firestore 연결 전 / 실패 시 폴백)
+// ============================================================
 
 const CATEGORIES = [
   {
@@ -9,7 +19,7 @@ const CATEGORIES = [
     slug: 'academies',
     name: 'Atlas Academies',
     nameKo: '교육기관',
-    icon: '🏫',
+    icon: '\u{1F3EB}',
     description: '학원, 교육 기관, 과목별·지역별 교육 정보',
     subcategories: ['학원 소개', '지역별 학원', '과목별 학원', '교육 특징', 'AI 교육']
   },
@@ -18,7 +28,7 @@ const CATEGORIES = [
     slug: 'research',
     name: 'Atlas Research',
     nameKo: '연구',
-    icon: '🔬',
+    icon: '\u{1F52C}',
     description: '과학 소논문, 탐구 주제 선정, 연구 방법론',
     subcategories: ['과학 소논문', '연구 방법론', '데이터 분석', '선행 연구']
   },
@@ -27,7 +37,7 @@ const CATEGORIES = [
     slug: 'topics',
     name: 'Atlas Topics',
     nameKo: '탐구주제',
-    icon: '💡',
+    icon: '\u{1F4A1}',
     description: '과학·수학·기술 분야별 탐구 주제 모음',
     subcategories: ['물리', '화학', '생물', '지구과학', '융합과학']
   },
@@ -36,7 +46,7 @@ const CATEGORIES = [
     slug: 'experiments',
     name: 'Atlas Experiments',
     nameKo: '실험설계',
-    icon: '🧪',
+    icon: '\u{1F9EA}',
     description: '실험 설계, 변인 통제, 데이터 수집, 실험 매뉴얼',
     subcategories: ['실험 설계', '변인 통제', '데이터 수집', '안전 수칙']
   },
@@ -45,7 +55,7 @@ const CATEGORIES = [
     slug: 'study',
     name: 'Atlas Study',
     nameKo: '학습법',
-    icon: '📝',
+    icon: '\u{1F4DD}',
     description: '공부법, 수행평가, 진로 탐색, 학습 도구',
     subcategories: ['공부법', '수행평가', '진로', '학습 도구']
   },
@@ -54,13 +64,13 @@ const CATEGORIES = [
     slug: 'engineering',
     name: 'Atlas Engineering',
     nameKo: '공학기술',
-    icon: '⚙️',
+    icon: '\u{2699}\u{FE0F}',
     description: '반도체, 공정, 장비, 기술 트렌드 문서',
     subcategories: ['반도체', '공정', '장비', '시뮬레이터']
   }
 ];
 
-const DOCUMENTS = [
+const SAMPLE_DOCUMENTS = [
   {
     id: 'doc-001',
     slug: 'semiconductor-etching-process',
@@ -77,33 +87,7 @@ const DOCUMENTS = [
       importance: '반도체 회로 패턴 형성의 핵심 단계로, 소자의 성능과 집적도를 결정합니다.',
       types: '건식 식각(Dry Etching)과 습식 식각(Wet Etching)으로 나뉩니다.'
     },
-    body: `## 정의
-
-반도체 식각(Etching)은 포토레지스트 패턴을 마스크로 사용하여 웨이퍼 위의 박막(산화막, 금속막 등)을 선택적으로 제거하는 공정입니다.
-
-## 핵심 개념
-
-### 건식 식각 (Dry Etching)
-- 플라즈마를 이용한 식각 방식
-- 이방성 식각이 가능하여 미세 패턴에 적합
-- RIE(Reactive Ion Etching), ICP(Inductively Coupled Plasma) 등
-
-### 습식 식각 (Wet Etching)
-- 화학 용액을 이용한 식각 방식
-- 등방성 식각이 일반적
-- 비용이 저렴하고 대면적 처리에 유리
-
-## 적용 분야
-- 게이트 패터닝
-- 금속 배선 형성
-- 비아 홀 생성
-- MEMS 구조물 제작
-
-## 관련 기술
-- 포토리소그래피
-- 박막 증착
-- CMP (Chemical Mechanical Polishing)
-- ALD (Atomic Layer Deposition)`,
+    body: "## 정의\n\n반도체 식각(Etching)은 포토레지스트 패턴을 마스크로 사용하여 웨이퍼 위의 박막(산화막, 금속막 등)을 선택적으로 제거하는 공정입니다.\n\n## 핵심 개념\n\n### 건식 식각 (Dry Etching)\n- 플라즈마를 이용한 식각 방식\n- 이방성 식각이 가능하여 미세 패턴에 적합\n- RIE(Reactive Ion Etching), ICP(Inductively Coupled Plasma) 등\n\n### 습식 식각 (Wet Etching)\n- 화학 용액을 이용한 식각 방식\n- 등방성 식각이 일반적\n- 비용이 저렴하고 대면적 처리에 유리\n\n## 적용 분야\n- 게이트 패터닝\n- 금속 배선 형성\n- 비아 홀 생성\n- MEMS 구조물 제작\n\n## 관련 기술\n- 포토리소그래피\n- 박막 증착\n- CMP (Chemical Mechanical Polishing)\n- ALD (Atomic Layer Deposition)",
     relatedDocs: ['doc-002', 'doc-003'],
     relatedServices: ['semiconductor-platform']
   },
@@ -118,7 +102,6 @@ const DOCUMENTS = [
     status: 'published',
     createdAt: '2026-03-08',
     updatedAt: '2026-03-12',
-    // --- GEO v2 필드 ---
     directAnswer: [
       '과학 소논문은 서론→이론적 배경→연구 방법→결과→결론의 5단계 구조로 작성합니다.',
       '가장 중요한 것은 변인 통제와 반복 실험이며, 이 두 가지가 빠지면 신뢰할 수 있는 결론을 낼 수 없습니다.',
@@ -200,37 +183,7 @@ const DOCUMENTS = [
       importance: '반도체 미세화의 핵심 기술로, 공정 한계가 곧 기술 세대를 결정합니다.',
       types: 'DUV(Deep Ultraviolet), EUV(Extreme Ultraviolet) 리소그래피'
     },
-    body: `## 정의
-
-포토리소그래피(Photolithography)는 감광액(Photoresist)이 도포된 웨이퍼에 빛을 조사하여 마스크의 패턴을 전사하는 공정입니다.
-
-## 공정 단계
-
-### 1. 감광액 도포 (Coating)
-- 스핀 코팅으로 균일한 감광막 형성
-- 두께 제어가 핵심
-
-### 2. 소프트 베이크 (Soft Bake)
-- 용매 제거
-- 감광막 안정화
-
-### 3. 노광 (Exposure)
-- 마스크를 통해 UV 조사
-- 감광액의 화학적 변화 유도
-
-### 4. 현상 (Development)
-- 노광 부분 또는 비노광 부분 제거
-- Positive / Negative 레지스트
-
-### 5. 하드 베이크 (Hard Bake)
-- 패턴 안정화
-- 식각 내성 강화
-
-## 최신 기술
-- EUV (13.5nm 파장)
-- 멀티 패터닝
-- 고NA EUV
-- DSA (Directed Self-Assembly)`,
+    body: "## 정의\n\n포토리소그래피(Photolithography)는 감광액(Photoresist)이 도포된 웨이퍼에 빛을 조사하여 마스크의 패턴을 전사하는 공정입니다.\n\n## 공정 단계\n\n### 1. 감광액 도포 (Coating)\n- 스핀 코팅으로 균일한 감광막 형성\n- 두께 제어가 핵심\n\n### 2. 소프트 베이크 (Soft Bake)\n- 용매 제거\n- 감광막 안정화\n\n### 3. 노광 (Exposure)\n- 마스크를 통해 UV 조사\n- 감광액의 화학적 변화 유도\n\n### 4. 현상 (Development)\n- 노광 부분 또는 비노광 부분 제거\n- Positive / Negative 레지스트\n\n### 5. 하드 베이크 (Hard Bake)\n- 패턴 안정화\n- 식각 내성 강화\n\n## 최신 기술\n- EUV (13.5nm 파장)\n- 멀티 패터닝\n- 고NA EUV\n- DSA (Directed Self-Assembly)",
     relatedDocs: ['doc-001'],
     relatedServices: ['semiconductor-platform']
   },
@@ -250,42 +203,7 @@ const DOCUMENTS = [
       audience: '중학교 1~3학년',
       difficulty: '초급~중급'
     },
-    body: `## 물리 분야
-
-1. 종이비행기 날개 모양에 따른 비행 거리 비교
-2. 탄성 재질에 따른 공의 반발 계수 측정
-3. 빛의 색깔이 식물 성장에 미치는 영향
-4. 경사면 각도에 따른 물체 가속도 변화
-5. 소리의 주파수에 따른 진동 패턴 관찰
-6. 자석의 세기와 거리의 관계
-7. 단열재 종류별 보온 효과 비교
-8. 풍력발전기 날개 수와 발전량 관계
-9. 물의 깊이에 따른 수압 변화
-10. 렌즈의 곡률과 초점 거리 관계
-
-## 화학 분야
-
-11. 천연 지시약의 pH 변색 범위 비교
-12. 비타민C 함량 비교 (과일별)
-13. 금속의 반응성 서열 확인 실험
-14. 온도에 따른 용해도 변화
-15. 전해질 용액의 전도도 비교
-
-## 생물 분야
-
-16. 음악이 식물 성장에 미치는 영향
-17. 손 세정제 종류별 살균 효과
-18. 발효 조건에 따른 요구르트 생성량
-19. 씨앗 발아에 영향을 미치는 환경 요인
-20. 미세먼지가 식물 기공에 미치는 영향
-
-## 지구과학 분야
-
-21. 토양 종류별 수분 보유력 비교
-22. 구름 생성 실험 (간이 구름 상자)
-23. 자외선 차단제의 UV 차단 효과 비교
-24. 암석 풍화 과정 시뮬레이션
-25. 지진파 전달 속도와 매질의 관계`,
+    body: "## 물리 분야\n\n1. 종이비행기 날개 모양에 따른 비행 거리 비교\n2. 탄성 재질에 따른 공의 반발 계수 측정\n3. 빛의 색깔이 식물 성장에 미치는 영향\n4. 경사면 각도에 따른 물체 가속도 변화\n5. 소리의 주파수에 따른 진동 패턴 관찰\n6. 자석의 세기와 거리의 관계\n7. 단열재 종류별 보온 효과 비교\n8. 풍력발전기 날개 수와 발전량 관계\n9. 물의 깊이에 따른 수압 변화\n10. 렌즈의 곡률과 초점 거리 관계\n\n## 화학 분야\n\n11. 천연 지시약의 pH 변색 범위 비교\n12. 비타민C 함량 비교 (과일별)\n13. 금속의 반응성 서열 확인 실험\n14. 온도에 따른 용해도 변화\n15. 전해질 용액의 전도도 비교\n\n## 생물 분야\n\n16. 음악이 식물 성장에 미치는 영향\n17. 손 세정제 종류별 살균 효과\n18. 발효 조건에 따른 요구르트 생성량\n19. 씨앗 발아에 영향을 미치는 환경 요인\n20. 미세먼지가 식물 기공에 미치는 영향\n\n## 지구과학 분야\n\n21. 토양 종류별 수분 보유력 비교\n22. 구름 생성 실험 (간이 구름 상자)\n23. 자외선 차단제의 UV 차단 효과 비교\n24. 암석 풍화 과정 시뮬레이션\n25. 지진파 전달 속도와 매질의 관계",
     relatedDocs: ['doc-002', 'doc-005'],
     relatedServices: ['littlescience']
   },
@@ -300,7 +218,6 @@ const DOCUMENTS = [
     status: 'published',
     createdAt: '2026-02-28',
     updatedAt: '2026-03-10',
-    // --- GEO v2 필드 ---
     directAnswer: [
       '과학 실험 설계의 핵심은 독립변인·종속변인·통제변인을 명확히 정의하고, 대조군을 설정하는 것입니다.',
       '모든 실험은 최소 3회 반복해야 하며, 한 번에 하나의 변인만 바꿔야 결과를 신뢰할 수 있습니다.',
@@ -399,38 +316,7 @@ const DOCUMENTS = [
       importance: '미래 사회 대비를 위한 필수 역량이자, 교육 효율성을 높이는 핵심 도구입니다.',
       trends: 'AI 튜터, 자동 평가, 맞춤형 학습 경로, 창작 보조 도구'
     },
-    body: `## 정의
-
-AI 교육은 인공지능 기술을 활용하여 학습 과정을 개선하고, 학생 개개인에 맞춘 교육을 제공하는 접근 방식입니다.
-
-## 주요 트렌드
-
-### 1. AI 튜터링
-- 24시간 개인 맞춤 학습 지원
-- 학생 수준에 따른 난이도 조절
-- 즉각적 피드백 제공
-
-### 2. 자동 평가 시스템
-- 서술형 답안 자동 채점
-- 학습 분석 대시보드
-- 취약점 진단
-
-### 3. 창작 보조 도구
-- AI 글쓰기 보조
-- 코딩 학습 도우미
-- 과학 탐구 주제 생성
-
-## 교사를 위한 활용 방법
-- 수업 자료 생성
-- 평가 문항 제작
-- 학생 맞춤 피드백
-- 수업 설계 보조
-
-## 주의사항
-- AI 의존도 과다 방지
-- 비판적 사고 유지
-- 저작권 및 윤리 교육
-- 정보 검증 습관`,
+    body: "## 정의\n\nAI 교육은 인공지능 기술을 활용하여 학습 과정을 개선하고, 학생 개개인에 맞춘 교육을 제공하는 접근 방식입니다.\n\n## 주요 트렌드\n\n### 1. AI 튜터링\n- 24시간 개인 맞춤 학습 지원\n- 학생 수준에 따른 난이도 조절\n- 즉각적 피드백 제공\n\n### 2. 자동 평가 시스템\n- 서술형 답안 자동 채점\n- 학습 분석 대시보드\n- 취약점 진단\n\n### 3. 창작 보조 도구\n- AI 글쓰기 보조\n- 코딩 학습 도우미\n- 과학 탐구 주제 생성\n\n## 교사를 위한 활용 방법\n- 수업 자료 생성\n- 평가 문항 제작\n- 학생 맞춤 피드백\n- 수업 설계 보조\n\n## 주의사항\n- AI 의존도 과다 방지\n- 비판적 사고 유지\n- 저작권 및 윤리 교육\n- 정보 검증 습관",
     relatedDocs: ['doc-002'],
     relatedServices: ['littlescience']
   },
@@ -450,37 +336,7 @@ AI 교육은 인공지능 기술을 활용하여 학습 과정을 개선하고, 
       types: '보고서, 발표, 실험, 포트폴리오, 프로젝트',
       audience: '중학생, 고등학생'
     },
-    body: `## 수행평가란?
-
-수행평가는 단순 암기가 아닌, 학생이 직접 수행한 과정과 결과물을 평가하는 방식입니다.
-
-## 유형별 준비 전략
-
-### 보고서형
-- 구조화된 글쓰기 연습
-- 참고자료 인용 방법 학습
-- 핵심 → 근거 → 결론 구조
-
-### 발표형
-- 슬라이드 구조화
-- 발표 연습 최소 3회
-- Q&A 예상 질문 준비
-
-### 실험형
-- 사전 실험 계획서 작성
-- 데이터 기록 습관
-- 결과 분석 및 해석
-
-### 프로젝트형
-- 역할 분담 명확히
-- 주간 진행 체크
-- 최종 산출물 품질 관리
-
-## 공통 학습 팁
-- 평가 기준표 먼저 확인
-- 기한 관리 (역산 스케줄링)
-- 초안 → 수정 → 완성 3단계
-- 동료 피드백 활용`,
+    body: "## 수행평가란?\n\n수행평가는 단순 암기가 아닌, 학생이 직접 수행한 과정과 결과물을 평가하는 방식입니다.\n\n## 유형별 준비 전략\n\n### 보고서형\n- 구조화된 글쓰기 연습\n- 참고자료 인용 방법 학습\n- 핵심 → 근거 → 결론 구조\n\n### 발표형\n- 슬라이드 구조화\n- 발표 연습 최소 3회\n- Q&A 예상 질문 준비\n\n### 실험형\n- 사전 실험 계획서 작성\n- 데이터 기록 습관\n- 결과 분석 및 해석\n\n### 프로젝트형\n- 역할 분담 명확히\n- 주간 진행 체크\n- 최종 산출물 품질 관리\n\n## 공통 학습 팁\n- 평가 기준표 먼저 확인\n- 기한 관리 (역산 스케줄링)\n- 초안 → 수정 → 완성 3단계\n- 동료 피드백 활용",
     relatedDocs: ['doc-004'],
     relatedServices: []
   }
@@ -492,7 +348,7 @@ const SERVICES = [
     name: 'LittleScienceAI',
     description: '과학논문 주제 탐색 AI 도우미',
     url: '#',
-    icon: '🧪',
+    icon: '\u{1F9EA}',
     color: '#667eea'
   },
   {
@@ -500,19 +356,92 @@ const SERVICES = [
     name: '반도체 플랫폼',
     description: '반도체 공정·장비·기술 정보 플랫폼',
     url: '#',
-    icon: '💎',
+    icon: '\u{1F48E}',
     color: '#764ba2'
   }
 ];
 
-// Data access functions
-function getAllDocuments() {
-  const stored = localStorage.getItem('kp_documents');
-  if (stored) {
-    const custom = JSON.parse(stored);
-    return [...DOCUMENTS, ...custom];
+// ============================================================
+// 데이터 캐시 (Firestore 데이터를 메모리에 유지)
+// ============================================================
+
+let _cachedDocs = null;        // Firestore에서 로드된 문서 (null = 아직 로드 안됨)
+let _firestoreReady = false;   // Firestore 초기 로드 완료 여부
+let _dataReadyCallbacks = [];  // 데이터 로드 완료 콜백
+
+/**
+ * Firestore에서 모든 문서를 로드하여 캐시
+ * 실패 시 샘플 데이터 + localStorage 폴백
+ */
+async function loadDocumentsFromFirestore() {
+  // Firebase가 없으면 폴백
+  if (typeof db === 'undefined') {
+    console.warn('[EduAtlas] Firebase not loaded, using sample data');
+    _cachedDocs = [...SAMPLE_DOCUMENTS];
+    _loadLocalStorageFallback();
+    _firestoreReady = true;
+    _fireDataReadyCallbacks();
+    return;
   }
-  return DOCUMENTS;
+
+  try {
+    const snapshot = await db.collection('documents').get();
+    if (snapshot.empty) {
+      // Firestore가 비어있으면 샘플 데이터 사용
+      console.log('[EduAtlas] Firestore empty, using sample data');
+      _cachedDocs = [...SAMPLE_DOCUMENTS];
+    } else {
+      _cachedDocs = [];
+      snapshot.forEach(doc => {
+        _cachedDocs.push(doc.data());
+      });
+      console.log('[EduAtlas] Loaded ' + _cachedDocs.length + ' docs from Firestore');
+    }
+  } catch (err) {
+    console.warn('[EduAtlas] Firestore load failed, using fallback:', err.message);
+    _cachedDocs = [...SAMPLE_DOCUMENTS];
+    _loadLocalStorageFallback();
+  }
+
+  _firestoreReady = true;
+  _fireDataReadyCallbacks();
+}
+
+function _loadLocalStorageFallback() {
+  try {
+    const stored = localStorage.getItem('kp_documents');
+    if (stored) {
+      const custom = JSON.parse(stored);
+      _cachedDocs = [..._cachedDocs, ...custom];
+    }
+  } catch(e) { /* ignore */ }
+}
+
+function _fireDataReadyCallbacks() {
+  _dataReadyCallbacks.forEach(fn => fn());
+  _dataReadyCallbacks = [];
+}
+
+/**
+ * 데이터 로드 완료 시 콜백 실행
+ * 이미 로드되었으면 즉시 실행
+ */
+function onDataReady(callback) {
+  if (_firestoreReady) {
+    callback();
+  } else {
+    _dataReadyCallbacks.push(callback);
+  }
+}
+
+// ============================================================
+// 읽기 함수 (동기식 — 캐시 기반)
+// ============================================================
+
+function getAllDocuments() {
+  if (_cachedDocs !== null) return _cachedDocs;
+  // 아직 Firestore 로드 전이면 샘플 데이터 반환
+  return SAMPLE_DOCUMENTS;
 }
 
 function getDocumentBySlug(slug) {
@@ -528,7 +457,7 @@ function getDocumentsByCategory(categoryId) {
 }
 
 function getDocumentsByTag(tag) {
-  return getAllDocuments().filter(d => d.tags.includes(tag) && d.status === 'published');
+  return getAllDocuments().filter(d => d.tags && d.tags.includes(tag) && d.status === 'published');
 }
 
 function searchDocuments(query) {
@@ -537,8 +466,8 @@ function searchDocuments(query) {
     return d.status === 'published' && (
       d.title.toLowerCase().includes(q) ||
       d.summary.toLowerCase().includes(q) ||
-      d.tags.some(t => t.toLowerCase().includes(q)) ||
-      d.body.toLowerCase().includes(q)
+      (d.tags && d.tags.some(t => t.toLowerCase().includes(q))) ||
+      (d.body && d.body.toLowerCase().includes(q))
     );
   });
 }
@@ -555,7 +484,7 @@ function getCategoryById(id) {
 function getAllTags() {
   const tags = {};
   getAllDocuments().forEach(d => {
-    if (d.status === 'published') {
+    if (d.status === 'published' && d.tags) {
       d.tags.forEach(t => {
         tags[t] = (tags[t] || 0) + 1;
       });
@@ -564,59 +493,174 @@ function getAllTags() {
   return Object.entries(tags).sort((a, b) => b[1] - a[1]);
 }
 
-function saveDocument(doc) {
-  const stored = localStorage.getItem('kp_documents');
-  const custom = stored ? JSON.parse(stored) : [];
+// ============================================================
+// 쓰기 함수 (비동기 — Firestore + 캐시 동시 업데이트)
+// ============================================================
+
+async function saveDocument(doc) {
   doc.id = 'doc-custom-' + Date.now();
   doc.createdAt = new Date().toISOString().slice(0, 10);
   doc.updatedAt = doc.createdAt;
-  custom.push(doc);
-  localStorage.setItem('kp_documents', JSON.stringify(custom));
+
+  // 캐시 업데이트
+  if (_cachedDocs) {
+    _cachedDocs.push(doc);
+  }
+
+  // Firestore 저장
+  if (typeof db !== 'undefined') {
+    try {
+      await db.collection('documents').doc(doc.id).set(doc);
+    } catch (err) {
+      console.error('[EduAtlas] Firestore save failed:', err);
+      _saveToLocalStorage(doc);
+    }
+  } else {
+    _saveToLocalStorage(doc);
+  }
+
   return doc;
 }
 
-function updateDocument(doc) {
-  const stored = localStorage.getItem('kp_documents');
-  if (!stored) return null;
-  const custom = JSON.parse(stored);
-  const idx = custom.findIndex(d => d.id === doc.id);
-  if (idx === -1) return null;
+async function updateDocument(doc) {
   doc.updatedAt = new Date().toISOString().slice(0, 10);
-  custom[idx] = doc;
-  localStorage.setItem('kp_documents', JSON.stringify(custom));
+
+  // 캐시 업데이트
+  if (_cachedDocs) {
+    const idx = _cachedDocs.findIndex(d => d.id === doc.id);
+    if (idx !== -1) _cachedDocs[idx] = doc;
+  }
+
+  // Firestore 업데이트
+  if (typeof db !== 'undefined') {
+    try {
+      await db.collection('documents').doc(doc.id).set(doc);
+    } catch (err) {
+      console.error('[EduAtlas] Firestore update failed:', err);
+    }
+  }
+
   return doc;
 }
 
-function deleteDocument(id) {
-  const stored = localStorage.getItem('kp_documents');
-  if (!stored) return false;
-  const custom = JSON.parse(stored).filter(d => d.id !== id);
-  localStorage.setItem('kp_documents', JSON.stringify(custom));
+async function deleteDocument(id) {
+  // 캐시에서 제거
+  if (_cachedDocs) {
+    _cachedDocs = _cachedDocs.filter(d => d.id !== id);
+  }
+
+  // Firestore에서 삭제
+  if (typeof db !== 'undefined') {
+    try {
+      await db.collection('documents').doc(id).delete();
+    } catch (err) {
+      console.error('[EduAtlas] Firestore delete failed:', err);
+    }
+  }
+
   return true;
+}
+
+/**
+ * 여러 문서를 Firestore에 일괄 저장 (JSON 붙여넣기용)
+ */
+async function saveDocumentsBatch(docs) {
+  const results = [];
+  for (const doc of docs) {
+    if (!doc.id) doc.id = 'doc-custom-' + Date.now() + '-' + Math.random().toString(36).substr(2, 5);
+    if (!doc.createdAt) doc.createdAt = new Date().toISOString().slice(0, 10);
+    if (!doc.updatedAt) doc.updatedAt = doc.createdAt;
+    if (!doc.status) doc.status = 'published';
+
+    // 캐시 업데이트
+    if (_cachedDocs) {
+      const existIdx = _cachedDocs.findIndex(d => d.id === doc.id);
+      if (existIdx !== -1) {
+        _cachedDocs[existIdx] = doc;
+      } else {
+        _cachedDocs.push(doc);
+      }
+    }
+
+    // Firestore 저장
+    if (typeof db !== 'undefined') {
+      try {
+        await db.collection('documents').doc(doc.id).set(doc);
+        results.push({ id: doc.id, title: doc.title, success: true });
+      } catch (err) {
+        results.push({ id: doc.id, title: doc.title, success: false, error: err.message });
+      }
+    }
+  }
+  return results;
+}
+
+/**
+ * 샘플 데이터를 Firestore에 마이그레이션 (1회성)
+ */
+async function migrateSampleToFirestore() {
+  if (typeof db === 'undefined') {
+    throw new Error('Firebase not connected');
+  }
+
+  const results = [];
+  for (const doc of SAMPLE_DOCUMENTS) {
+    try {
+      await db.collection('documents').doc(doc.id).set(doc);
+      results.push({ id: doc.id, title: doc.title, success: true });
+    } catch (err) {
+      results.push({ id: doc.id, title: doc.title, success: false, error: err.message });
+    }
+  }
+
+  // localStorage 데이터도 마이그레이션
+  try {
+    const stored = localStorage.getItem('kp_documents');
+    if (stored) {
+      const custom = JSON.parse(stored);
+      for (const doc of custom) {
+        try {
+          await db.collection('documents').doc(doc.id).set(doc);
+          results.push({ id: doc.id, title: doc.title, success: true });
+        } catch (err) {
+          results.push({ id: doc.id, title: doc.title, success: false, error: err.message });
+        }
+      }
+    }
+  } catch(e) { /* ignore */ }
+
+  return results;
+}
+
+function _saveToLocalStorage(doc) {
+  try {
+    const stored = localStorage.getItem('kp_documents');
+    const custom = stored ? JSON.parse(stored) : [];
+    custom.push(doc);
+    localStorage.setItem('kp_documents', JSON.stringify(custom));
+  } catch(e) { /* ignore */ }
 }
 
 function isCustomDocument(id) {
   return id && id.startsWith('doc-custom-');
 }
 
-/**
- * 태그 겹침 기반 관련 문서 자동 추천
- */
+// ============================================================
+// AI / 추천 함수
+// ============================================================
+
 function getRecommendedDocs(doc, limit) {
   limit = limit || 5;
   const all = getAllDocuments().filter(d => d.id !== doc.id && d.status === 'published');
   const scored = all.map(d => {
     let score = 0;
-    // 태그 겹침
-    const tagOverlap = doc.tags.filter(t => d.tags.includes(t)).length;
-    score += tagOverlap * 3;
-    // 같은 카테고리
+    if (doc.tags && d.tags) {
+      const tagOverlap = doc.tags.filter(t => d.tags.includes(t)).length;
+      score += tagOverlap * 3;
+    }
     if (d.categoryId === doc.categoryId) score += 2;
-    // 같은 docType
     if (d.docType === doc.docType) score += 1;
-    // 클러스터 연결
     if (doc.cluster && doc.cluster.relatedClusterSlugs && doc.cluster.relatedClusterSlugs.includes(d.slug)) score += 5;
-    // 엔티티 겹침
     if (doc.entities && d.entities) {
       const entOverlap = doc.entities.filter(e => d.entities.includes(e)).length;
       score += entOverlap * 2;
@@ -626,12 +670,8 @@ function getRecommendedDocs(doc, limit) {
   return scored.filter(s => s.score > 0).sort((a, b) => b.score - a.score).slice(0, limit).map(s => s.doc);
 }
 
-/**
- * 본문에서 다른 문서 제목/엔티티를 찾아 내부 링크로 교체
- */
 function autoLinkEntities(html, currentSlug) {
   const allDocs = getAllDocuments().filter(d => d.status === 'published' && d.slug !== currentSlug);
-  // 엔티티 목록 수집 (긴 것 우선 매칭)
   const linkMap = [];
   allDocs.forEach(d => {
     linkMap.push({ text: d.title, slug: d.slug });
@@ -644,56 +684,56 @@ function autoLinkEntities(html, currentSlug) {
   const linked = new Set();
   linkMap.forEach(({ text, slug }) => {
     if (linked.has(slug)) return;
-    // <a> 태그 내부나 <h2>, <h3> 내부는 건드리지 않음
     const escaped = text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
     const regex = new RegExp('(?<!<[^>]*)\\b(' + escaped + ')\\b(?![^<]*>)', 'i');
     if (regex.test(html)) {
-      html = html.replace(regex, `<a href="document.html?slug=${slug}" class="entity-link">$1</a>`);
+      html = html.replace(regex, '<a href="document.html?slug=' + slug + '" class="entity-link">$1</a>');
       linked.add(slug);
     }
   });
   return html;
 }
 
-/**
- * AI 초안 생성 (템플릿 기반)
- */
 function generateDraftTemplate(docType, params) {
   const { title, subject, audience, categoryId } = params;
   const templates = {
     article: {
-      summary: `${subject || title}의 핵심 개념, 원리, 응용 분야를 구조화하여 설명합니다.`,
-      body: `## 정의\n\n${title}은(는) ...\n\n## 핵심 개념\n\n### 1. 기본 원리\n- \n- \n- \n\n### 2. 주요 특징\n- \n- \n\n## 적용 분야\n- \n- \n\n## 관련 기술\n- \n- `,
+      summary: (subject || title) + '의 핵심 개념, 원리, 응용 분야를 구조화하여 설명합니다.',
+      body: '## 정의\n\n' + title + '은(는) ...\n\n## 핵심 개념\n\n### 1. 기본 원리\n- \n- \n- \n\n### 2. 주요 특징\n- \n- \n\n## 적용 분야\n- \n- \n\n## 관련 기술\n- \n- ',
       keyInfo: { definition: '', importance: '', types: '' }
     },
     topic: {
-      summary: `${audience || '학생'}을 위한 ${subject || title} 관련 탐구 주제를 분야별로 정리했습니다.`,
-      body: `## 분야별 탐구 주제\n\n### 분야 1\n1. \n2. \n3. \n\n### 분야 2\n4. \n5. \n6. \n\n## 주제 선정 팁\n- 일상의 궁금증에서 출발\n- 측정 가능한 변인 설정\n- 반복 실험 가능한 주제\n\n## 주의사항\n- `,
+      summary: (audience || '학생') + '을 위한 ' + (subject || title) + ' 관련 탐구 주제를 분야별로 정리했습니다.',
+      body: '## 분야별 탐구 주제\n\n### 분야 1\n1. \n2. \n3. \n\n### 분야 2\n4. \n5. \n6. \n\n## 주제 선정 팁\n- 일상의 궁금증에서 출발\n- 측정 가능한 변인 설정\n- 반복 실험 가능한 주제\n\n## 주의사항\n- ',
       keyInfo: { definition: '', audience: audience || '', difficulty: '초급~중급' }
     },
     guide: {
-      summary: `${title}을 위한 효과적인 전략과 방법을 단계별로 정리합니다.`,
-      body: `## 개요\n\n...\n\n## 단계별 방법\n\n### 1단계\n- \n\n### 2단계\n- \n\n### 3단계\n- \n\n## 핵심 팁\n- \n- \n\n## 주의할 점\n- \n- `,
+      summary: title + '을 위한 효과적인 전략과 방법을 단계별로 정리합니다.',
+      body: '## 개요\n\n...\n\n## 단계별 방법\n\n### 1단계\n- \n\n### 2단계\n- \n\n### 3단계\n- \n\n## 핵심 팁\n- \n- \n\n## 주의할 점\n- \n- ',
       keyInfo: { definition: '', types: '', audience: audience || '' }
     },
     academy: {
-      summary: `${title}의 교육 프로그램, 특징, 위치 정보를 안내합니다.`,
-      body: `## 기관 소개\n\n...\n\n## 교육 프로그램\n\n### 주요 과목\n- \n\n### 특징\n- \n\n## 위치 및 연락처\n- 주소: \n- 연락처: \n\n## 교육 방식\n- `,
+      summary: title + '의 교육 프로그램, 특징, 위치 정보를 안내합니다.',
+      body: '## 기관 소개\n\n...\n\n## 교육 프로그램\n\n### 주요 과목\n- \n\n### 특징\n- \n\n## 위치 및 연락처\n- 주소: \n- 연락처: \n\n## 교육 방식\n- ',
       keyInfo: { name: title, location: '', subjects: '' }
     },
     company: {
-      summary: `${title}의 사업 분야, 기술력, 주요 제품 정보를 정리합니다.`,
-      body: `## 회사 소개\n\n...\n\n## 주요 사업 분야\n- \n- \n\n## 기술력\n- \n\n## 주요 제품/서비스\n- \n- `,
+      summary: title + '의 사업 분야, 기술력, 주요 제품 정보를 정리합니다.',
+      body: '## 회사 소개\n\n...\n\n## 주요 사업 분야\n- \n- \n\n## 기술력\n- \n\n## 주요 제품/서비스\n- \n- ',
       keyInfo: { name: title, industry: '', headquarters: '' }
     },
     concept: {
-      summary: `${title}의 정의, 원리, 관련 개념을 체계적으로 정리합니다.`,
-      body: `## 정의\n\n...\n\n## 핵심 원리\n- \n- \n\n## 관련 개념\n- \n\n## 응용\n- \n\n## 참고 자료\n- `,
+      summary: title + '의 정의, 원리, 관련 개념을 체계적으로 정리합니다.',
+      body: '## 정의\n\n...\n\n## 핵심 원리\n- \n- \n\n## 관련 개념\n- \n\n## 응용\n- \n\n## 참고 자료\n- ',
       keyInfo: { definition: '', importance: '' }
     }
   };
   return templates[docType] || templates.article;
 }
+
+// ============================================================
+// 유틸리티 함수
+// ============================================================
 
 function formatDate(dateStr) {
   const d = new Date(dateStr);
@@ -713,35 +753,45 @@ function renderMarkdown(md) {
     .replace(/\n/g, '<br>');
 }
 
-/**
- * contentBlocks 렌더러
- * 타입: heading, paragraph, list, table, quote, note
- */
 function renderContentBlocks(blocks) {
   if (!blocks || !blocks.length) return '';
   return blocks.map(block => {
     switch (block.type) {
       case 'heading':
         const tag = 'h' + (block.level || 2);
-        return `<${tag}>${block.text}</${tag}>`;
+        return '<' + tag + '>' + block.text + '</' + tag + '>';
       case 'paragraph':
-        return `<p>${block.text}</p>`;
+        return '<p>' + block.text + '</p>';
       case 'list':
         const listTag = block.ordered ? 'ol' : 'ul';
-        const items = block.items.map(item => `<li>${item}</li>`).join('');
-        return `<${listTag}>${items}</${listTag}>`;
+        const items = block.items.map(item => '<li>' + item + '</li>').join('');
+        return '<' + listTag + '>' + items + '</' + listTag + '>';
       case 'table':
-        const ths = block.headers.map(h => `<th>${h}</th>`).join('');
+        const ths = block.headers.map(h => '<th>' + h + '</th>').join('');
         const trs = block.rows.map(row =>
-          '<tr>' + row.map(cell => `<td>${cell}</td>`).join('') + '</tr>'
+          '<tr>' + row.map(cell => '<td>' + cell + '</td>').join('') + '</tr>'
         ).join('');
-        return `<table><thead><tr>${ths}</tr></thead><tbody>${trs}</tbody></table>`;
+        return '<table><thead><tr>' + ths + '</tr></thead><tbody>' + trs + '</tbody></table>';
       case 'quote':
-        return `<blockquote>${block.text}</blockquote>`;
+        return '<blockquote>' + block.text + '</blockquote>';
       case 'note':
-        return `<div class="content-note"><strong>${block.label || '참고'}</strong> ${block.text}</div>`;
+        return '<div class="content-note"><strong>' + (block.label || '참고') + '</strong> ' + block.text + '</div>';
       default:
         return '';
     }
   }).join('\n');
+}
+
+// ============================================================
+// 초기화 — Firestore 데이터 로드 시작
+// ============================================================
+
+// Firebase SDK 로드 후 자동 실행
+if (typeof firebase !== 'undefined' && typeof db !== 'undefined') {
+  loadDocumentsFromFirestore();
+} else {
+  // Firebase 없으면 샘플 데이터로 즉시 시작
+  _cachedDocs = [...SAMPLE_DOCUMENTS];
+  _loadLocalStorageFallback();
+  _firestoreReady = true;
 }
