@@ -1,5 +1,5 @@
 /**
- * LittleScience Knowledge Platform - 공통 JS
+ * EduAtlas Knowledge Platform - 공통 JS
  */
 
 // ---- Navigation ----
@@ -28,16 +28,17 @@ function getHeaderHTML() {
   <header class="site-header">
     <div class="header-inner">
       <a href="index.html" class="logo">
-        <span>📘</span> LittleScience
+        <span>🌐</span> EduAtlas
       </a>
       <button class="mobile-toggle" aria-label="메뉴">☰</button>
       <nav>
         <ul class="nav-links">
-          <li><a href="index.html">Home</a></li>
-          <li><a href="knowledge.html">Knowledge</a></li>
-          <li><a href="categories.html">Categories</a></li>
-          <li><a href="geo-builder.html">GEO Builder</a></li>
-          <li><a href="services.html">Services</a></li>
+          <li><a href="index.html">Explore</a></li>
+          <li><a href="categories.html?id=academies">Academies</a></li>
+          <li><a href="categories.html?id=research">Research</a></li>
+          <li><a href="categories.html?id=topics">Topics</a></li>
+          <li><a href="categories.html?id=experiments">Experiments</a></li>
+          <li><a href="categories.html?id=study">Study</a></li>
           <li><a href="search.html">Search</a></li>
         </ul>
       </nav>
@@ -52,18 +53,21 @@ function getFooterHTML() {
     <div class="footer-inner">
       <div class="footer-grid">
         <div>
-          <div class="footer-brand">📘 LittleScience Knowledge Platform</div>
-          <p class="footer-desc">교육·연구·기술 정보를 AI가 읽기 좋은 구조로 축적하는 문서형 데이터 플랫폼</p>
+          <div class="footer-brand">🌐 EduAtlas</div>
+          <p class="footer-desc">Explore Education Atlas — 교육 데이터를 지도처럼 탐색하는 플랫폼</p>
         </div>
         <div class="footer-section">
-          <h4>Platform</h4>
-          <a href="knowledge.html">Knowledge</a>
-          <a href="categories.html">Categories</a>
-          <a href="search.html">Search</a>
+          <h4>Atlas</h4>
+          <a href="categories.html?id=academies">Academies</a>
+          <a href="categories.html?id=research">Research</a>
+          <a href="categories.html?id=topics">Topics</a>
+          <a href="categories.html?id=experiments">Experiments</a>
+          <a href="categories.html?id=study">Study</a>
         </div>
         <div class="footer-section">
           <h4>Tools</h4>
           <a href="geo-builder.html">GEO Builder</a>
+          <a href="search.html">Search</a>
           <a href="admin.html">Admin</a>
         </div>
         <div class="footer-section">
@@ -73,7 +77,7 @@ function getFooterHTML() {
         </div>
       </div>
       <div class="footer-bottom">
-        &copy; 2026 LittleScience Knowledge Platform. All rights reserved.
+        &copy; 2026 EduAtlas. All rights reserved.
       </div>
     </div>
   </footer>`;

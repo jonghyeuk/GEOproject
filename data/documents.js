@@ -1,53 +1,62 @@
 /**
- * LittleScience Knowledge Platform - Sample Data
- * 문서형 지식 데이터 플랫폼 샘플 데이터
+ * EduAtlas - Education Data Platform
+ * 교육 데이터 플랫폼 샘플 데이터
  */
 
 const CATEGORIES = [
   {
-    id: 'education',
-    slug: 'education',
-    name: 'Education',
-    nameKo: '교육',
-    icon: '📚',
-    description: '교육 방법, AI 교육, 프로젝트 수업, 커리큘럼 관련 문서',
-    subcategories: ['교육 방법', 'AI 교육', '프로젝트 수업', '커리큘럼']
+    id: 'academies',
+    slug: 'academies',
+    name: 'Atlas Academies',
+    nameKo: '교육기관',
+    icon: '🏫',
+    description: '학원, 교육 기관, 과목별·지역별 교육 정보',
+    subcategories: ['학원 소개', '지역별 학원', '과목별 학원', '교육 특징', 'AI 교육']
   },
   {
     id: 'research',
     slug: 'research',
-    name: 'Research',
+    name: 'Atlas Research',
     nameKo: '연구',
     icon: '🔬',
-    description: '과학 소논문, 탐구 주제, 실험 설계, 데이터 분석 관련 문서',
-    subcategories: ['과학 소논문', '탐구 주제', '실험 설계', '데이터 분석']
+    description: '과학 소논문, 탐구 주제 선정, 연구 방법론',
+    subcategories: ['과학 소논문', '연구 방법론', '데이터 분석', '선행 연구']
   },
   {
-    id: 'engineering',
-    slug: 'engineering',
-    name: 'Engineering',
-    nameKo: '공학',
-    icon: '⚙️',
-    description: '반도체, 공정, 장비, 시뮬레이터 관련 기술 문서',
-    subcategories: ['반도체', '공정', '장비', '시뮬레이터']
+    id: 'topics',
+    slug: 'topics',
+    name: 'Atlas Topics',
+    nameKo: '탐구주제',
+    icon: '💡',
+    description: '과학·수학·기술 분야별 탐구 주제 모음',
+    subcategories: ['물리', '화학', '생물', '지구과학', '융합과학']
   },
   {
-    id: 'academy',
-    slug: 'academy',
-    name: 'Academy',
-    nameKo: '학원/기관',
-    icon: '🏫',
-    description: '학원 소개, 지역 학원, 과목별 학원, 교육 특징',
-    subcategories: ['학원 소개', '지역 학원', '과목별 학원', '교육 특징']
+    id: 'experiments',
+    slug: 'experiments',
+    name: 'Atlas Experiments',
+    nameKo: '실험설계',
+    icon: '🧪',
+    description: '실험 설계, 변인 통제, 데이터 수집, 실험 매뉴얼',
+    subcategories: ['실험 설계', '변인 통제', '데이터 수집', '안전 수칙']
   },
   {
     id: 'study',
     slug: 'study',
-    name: 'Study',
-    nameKo: '학습',
+    name: 'Atlas Study',
+    nameKo: '학습법',
     icon: '📝',
-    description: '공부법, 수행평가, 진로, 학습 도구 관련 문서',
+    description: '공부법, 수행평가, 진로 탐색, 학습 도구',
     subcategories: ['공부법', '수행평가', '진로', '학습 도구']
+  },
+  {
+    id: 'engineering',
+    slug: 'engineering',
+    name: 'Atlas Engineering',
+    nameKo: '공학기술',
+    icon: '⚙️',
+    description: '반도체, 공정, 장비, 기술 트렌드 문서',
+    subcategories: ['반도체', '공정', '장비', '시뮬레이터']
   }
 ];
 
@@ -105,7 +114,7 @@ const DOCUMENTS = [
     summary: '중학생이 과학 소논문을 작성할 때 필요한 구조, 방법론, 주제 선정부터 결론까지의 과정을 단계별로 안내합니다.',
     docType: 'article',
     categoryId: 'research',
-    tags: ['소논문', '과학탐구', '중학생', '연구방법', '실험설계'],
+    tags: ['소논문', '과학탐구', '중학생', '연구방법', '실험설계', 'Atlas Research'],
     status: 'published',
     createdAt: '2026-03-08',
     updatedAt: '2026-03-12',
@@ -214,7 +223,7 @@ const DOCUMENTS = [
     title: '중학생 과학 탐구 주제 50선',
     summary: '중학교 과학 교과과정에 맞는 탐구 주제 50가지를 물리, 화학, 생물, 지구과학 분야별로 정리했습니다.',
     docType: 'topic',
-    categoryId: 'research',
+    categoryId: 'topics',
     tags: ['탐구주제', '중학생', '과학실험', '물리', '화학', '생물', '지구과학'],
     status: 'published',
     createdAt: '2026-03-01',
@@ -269,7 +278,7 @@ const DOCUMENTS = [
     title: '과학 실험 설계 방법론',
     summary: '올바른 과학 실험 설계를 위한 변인 통제, 대조군 설정, 반복 실험, 데이터 수집 방법을 체계적으로 정리합니다.',
     docType: 'article',
-    categoryId: 'research',
+    categoryId: 'experiments',
     tags: ['실험설계', '변인통제', '대조군', '과학적방법'],
     status: 'published',
     createdAt: '2026-02-28',
@@ -322,7 +331,7 @@ const DOCUMENTS = [
     title: '2026년 AI 교육 트렌드와 활용 방법',
     summary: 'AI 기술이 교육 현장에서 어떻게 활용되고 있는지, 교사와 학생을 위한 실질적인 AI 도구와 방법론을 정리합니다.',
     docType: 'article',
-    categoryId: 'education',
+    categoryId: 'academies',
     tags: ['AI교육', '에듀테크', '교육혁신', 'ChatGPT', '학습도구'],
     status: 'published',
     createdAt: '2026-03-12',

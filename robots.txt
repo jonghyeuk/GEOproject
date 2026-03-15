@@ -2,4 +2,4 @@ User-agent: *
 Allow: /
 Disallow: /admin.html
 
-Sitemap: https://littlescience.web.app/sitemap.xml
+Sitemap: https://geoproject-8fc76.web.app/sitemap.xml
