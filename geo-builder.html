@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GEO Builder - LittleScience Knowledge Platform</title>
+  <meta name="description" content="교육 기관을 위한 AI 최적화 페이지 자동 생성기">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div id="site-header"></div>
+
+  <div class="container page-content">
+    <div class="breadcrumb">
+      <a href="index.html">Home</a>
+      <span class="sep">›</span>
+      <span>GEO Builder</span>
+    </div>
+
+    <div style="text-align:center; margin-bottom:40px;">
+      <h1 style="font-size:32px; font-weight:800; color:var(--gray-900);">GEO Builder</h1>
+      <p style="color:var(--gray-500); max-width:520px; margin:8px auto 0;">교육 기관 정보를 입력하면 AI 검색에 최적화된 페이지를 자동 생성합니다</p>
+    </div>
+
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:40px; align-items:start;" id="geoLayout">
+      <!-- Input Form -->
+      <div style="background:white; border:1px solid var(--gray-200); border-radius:var(--radius); padding:28px;">
+        <h2 style="font-size:18px; font-weight:600; margin-bottom:20px;">기관 정보 입력</h2>
+
+        <div class="form-group">
+          <label>기관명 *</label>
+          <input type="text" id="geoName" placeholder="예: 리틀사이언스 교육원">
+        </div>
+
+        <div class="form-group">
+          <label>지역 *</label>
+          <input type="text" id="geoRegion" placeholder="예: 서울 강남구">
+        </div>
+
+        <div class="form-group">
+          <label>과목 *</label>
+          <input type="text" id="geoSubject" placeholder="예: 과학, 수학">
+        </div>
+
+        <div class="form-group">
+          <label>대상</label>
+          <input type="text" id="geoAudience" placeholder="예: 중학생, 고등학생">
+        </div>
+
+        <div class="form-group">
+          <label>교육 특징</label>
+          <textarea id="geoFeature" placeholder="예: 1:1 맞춤 실험 수업, 소논문 지도, AI 활용 탐구"></textarea>
+        </div>
+
+        <div class="form-group">
+          <label>톤</label>
+          <select id="geoTone">
+            <option value="professional">전문적</option>
+            <option value="friendly">친근한</option>
+            <option value="academic">학술적</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>생성 페이지 수</label>
+          <select id="geoCount">
+            <option value="5">5 페이지</option>
+            <option value="10" selected>10 페이지 (기본)</option>
+            <option value="15">15 페이지</option>
+          </select>
+        </div>
+
+        <button class="btn btn-primary btn-lg" style="width:100%;" onclick="generateGEO()">
+          페이지 생성하기
+        </button>
+      </div>
+
+      <!-- Output -->
+      <div>
+        <div id="geoOutput" style="display:none;">
+          <div style="background:white; border:1px solid var(--gray-200); border-radius:var(--radius); padding:28px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+              <h2 style="font-size:18px; font-weight:600;">생성된 페이지</h2>
+              <span id="geoPageCount" style="font-size:13px; color:var(--primary); font-weight:500;"></span>
+            </div>
+            <div id="geoPages"></div>
+            <div style="margin-top:20px; display:flex; gap:12px;">
+              <button class="btn btn-primary" onclick="publishGEO()">전체 발행</button>
+              <button class="btn btn-secondary" onclick="exportGEO()">내보내기</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Preview -->
+        <div id="geoPreview" style="display:none; margin-top:20px;">
+          <div style="background:white; border:1px solid var(--gray-200); border-radius:var(--radius); padding:28px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+              <h3 style="font-size:16px; font-weight:600;">미리보기</h3>
+              <button class="btn btn-secondary" style="font-size:12px; padding:6px 12px;" onclick="document.getElementById('geoPreview').style.display='none'">닫기</button>
+            </div>
+            <div id="previewContent" style="font-size:14px; line-height:1.8; color:var(--gray-700);"></div>
+          </div>
+        </div>
+
+        <!-- Info (before generation) -->
+        <div id="geoInfo">
+          <div style="background:var(--gray-50); border:1px solid var(--gray-200); border-radius:var(--radius); padding:28px;">
+            <h3 style="font-size:16px; font-weight:600; margin-bottom:16px;">GEO Builder란?</h3>
+            <p style="font-size:14px; color:var(--gray-600); line-height:1.7; margin-bottom:16px;">
+              GEO(Generative Engine Optimization)는 AI 검색 엔진에 최적화된 구조화 페이지를 생성하는 기술입니다.
+            </p>
+            <h4 style="font-size:14px; font-weight:600; color:var(--gray-700); margin-bottom:8px;">생성되는 페이지 유형</h4>
+            <ul style="font-size:14px; color:var(--gray-600); margin-left:20px; line-height:1.8;">
+              <li>기관 소개 페이지</li>
+              <li>지역 + 과목 페이지</li>
+              <li>교육 특징 페이지</li>
+              <li>공부법 / 학습 주제 페이지</li>
+              <li>FAQ 페이지</li>
+            </ul>
+            <h4 style="font-size:14px; font-weight:600; color:var(--gray-700); margin:16px 0 8px;">구조</h4>
+            <p style="font-size:14px; color:var(--gray-600);">사람용 30% + AI용 70% 구조로 설계됩니다.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="site-footer"></div>
+
+  <script src="data/documents.js"></script>
+  <script src="js/app.js"></script>
+  <script>
+  const PAGE_TEMPLATES = [
+    { type: 'intro', title: '{name} 소개', desc: '기관 개요, 교육 철학, 핵심 프로그램' },
+    { type: 'region', title: '{region} {subject} 학원 추천', desc: '지역 기반 교육 기관 정보' },
+    { type: 'subject', title: '{subject} 교육 프로그램 안내', desc: '과목별 커리큘럼과 학습 방법' },
+    { type: 'audience', title: '{audience}을 위한 {subject} 학습법', desc: '대상별 맞춤 학습 전략' },
+    { type: 'feature', title: '{name}의 교육 특징', desc: '차별화된 교육 방식 소개' },
+    { type: 'study', title: '{subject} 공부법 가이드', desc: '효과적인 학습 방법론' },
+    { type: 'topic', title: '{audience} {subject} 탐구 주제', desc: '실험 및 탐구 주제 모음' },
+    { type: 'review', title: '{region} {name} 교육 후기', desc: '교육 프로그램 후기와 성과' },
+    { type: 'faq', title: '{name} 자주 묻는 질문', desc: '입학, 수업, 비용 관련 FAQ' },
+    { type: 'comparison', title: '{region} {subject} 학원 비교', desc: '교육 기관 비교 정보' },
+    { type: 'curriculum', title: '{name} 커리큘럼 상세', desc: '단계별 교육 과정 안내' },
+    { type: 'event', title: '{name} 특별 프로그램', desc: '특강, 캠프, 이벤트 정보' },
+    { type: 'career', title: '{subject} 관련 진로 탐색', desc: '과목과 연결된 진로 정보' },
+    { type: 'parent', title: '{audience} 학부모 가이드', desc: '학부모를 위한 교육 정보' },
+    { type: 'tip', title: '{subject} 수행평가 준비법', desc: '수행평가 대비 전략' }
+  ];
+
+  let generatedPages = [];
+
+  function generateGEO() {
+    const name = document.getElementById('geoName').value.trim();
+    const region = document.getElementById('geoRegion').value.trim();
+    const subject = document.getElementById('geoSubject').value.trim();
+    const audience = document.getElementById('geoAudience').value.trim() || '학생';
+    const feature = document.getElementById('geoFeature').value.trim();
+    const count = parseInt(document.getElementById('geoCount').value);
+
+    if (!name || !region || !subject) {
+      alert('기관명, 지역, 과목은 필수 입력입니다.');
+      return;
+    }
+
+    const replacements = { name, region, subject, audience };
+
+    generatedPages = PAGE_TEMPLATES.slice(0, count).map((tpl, i) => {
+      let title = tpl.title;
+      let desc = tpl.desc;
+      for (const [k, v] of Object.entries(replacements)) {
+        title = title.replace(new RegExp(`\\{${k}\\}`, 'g'), v);
+        desc = desc.replace(new RegExp(`\\{${k}\\}`, 'g'), v);
+      }
+      return {
+        id: i,
+        type: tpl.type,
+        title,
+        desc,
+        slug: 'geo-' + Date.now() + '-' + i,
+        published: false
+      };
+    });
+
+    // show output
+    document.getElementById('geoInfo').style.display = 'none';
+    document.getElementById('geoOutput').style.display = 'block';
+    document.getElementById('geoPageCount').textContent = `${generatedPages.length}개 페이지`;
+
+    renderGeoPages();
+  }
+
+  function renderGeoPages() {
+    document.getElementById('geoPages').innerHTML = generatedPages.map((p, i) => `
+      <div class="geo-page-item">
+        <div>
+          <div class="geo-page-title">${i+1}. ${p.title}</div>
+          <div class="geo-page-type">${p.desc}</div>
+        </div>
+        <div style="display:flex; gap:8px;">
+          <button class="btn btn-secondary" style="font-size:12px; padding:4px 10px;" onclick="previewPage(${i})">미리보기</button>
+          <span style="font-size:12px; padding:4px 10px; color:${p.published ? 'var(--success)' : 'var(--gray-400)'};">
+            ${p.published ? '발행됨' : '미발행'}
+          </span>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  function previewPage(idx) {
+    const p = generatedPages[idx];
+    const preview = document.getElementById('geoPreview');
+    preview.style.display = 'block';
+    document.getElementById('previewContent').innerHTML = `
+      <h2 style="font-size:20px; font-weight:700; margin-bottom:12px;">${p.title}</h2>
+      <p style="color:var(--gray-500); margin-bottom:16px;">${p.desc}</p>
+      <div class="key-info-box">
+        <h3>핵심 정보</h3>
+        <div class="key-info-item"><span class="label">유형</span><span class="value">${p.type}</span></div>
+        <div class="key-info-item"><span class="label">상태</span><span class="value">${p.published ? '발행됨' : '미발행'}</span></div>
+      </div>
+      <p style="color:var(--gray-400); font-style:italic;">실제 콘텐츠는 AI 생성 엔진 연동 후 자동 생성됩니다.</p>
+    `;
+    preview.scrollIntoView({ behavior: 'smooth' });
+  }
+
+  function publishGEO() {
+    generatedPages.forEach(p => p.published = true);
+    renderGeoPages();
+    alert('모든 페이지가 발행되었습니다.');
+  }
+
+  function exportGEO() {
+    const data = JSON.stringify(generatedPages, null, 2);
+    const blob = new Blob([data], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'geo-pages.json';
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+  </script>
+</body>
+</html>

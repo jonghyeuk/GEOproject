@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Categories - LittleScience Knowledge Platform</title>
+  <meta name="description" content="교육, 연구, 공학, 학원, 학습 분야별 구조화된 지식 허브">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div id="site-header"></div>
+
+  <div class="container page-content">
+    <div class="breadcrumb" id="breadcrumb">
+      <a href="index.html">Home</a>
+      <span class="sep">›</span>
+      <span>Categories</span>
+    </div>
+
+    <div id="pageContent"></div>
+  </div>
+
+  <div id="site-footer"></div>
+
+  <script src="data/documents.js"></script>
+  <script src="js/app.js"></script>
+  <script>
+  function pageInit() {
+    const catId = getParam('id');
+
+    if (catId) {
+      renderCategoryDetail(catId);
+    } else {
+      renderCategoryList();
+    }
+  }
+
+  function renderCategoryList() {
+    const content = document.getElementById('pageContent');
+    content.innerHTML = `
+      <h1 class="section-title">Categories</h1>
+      <p class="section-subtitle">분야별 지식 허브를 탐색하세요</p>
+      <div id="catCards"></div>`;
+
+    const cards = CATEGORIES.map(cat => {
+      const docs = getDocumentsByCategory(cat.id);
+      const tags = {};
+      docs.forEach(d => d.tags.forEach(t => { tags[t] = (tags[t]||0)+1; }));
+      const topTags = Object.entries(tags).sort((a,b) => b[1]-a[1]).slice(0,5);
+
+      return `
+      <div style="background:white; border:1px solid var(--gray-200); border-radius:var(--radius); padding:28px; margin-bottom:20px; cursor:pointer;" onclick="location.href='categories.html?id=${cat.id}'">
+        <div style="display:flex; align-items:center; gap:16px; margin-bottom:12px;">
+          <span style="font-size:36px;">${cat.icon}</span>
+          <div>
+            <div style="font-size:20px; font-weight:700; color:var(--gray-900);">${cat.name}</div>
+            <div style="font-size:14px; color:var(--gray-400);">${cat.nameKo} · ${docs.length}개 문서</div>
+          </div>
+        </div>
+        <p style="font-size:14px; color:var(--gray-500); margin-bottom:12px;">${cat.description}</p>
+        <div style="margin-bottom:12px;">
+          <span style="font-size:12px; color:var(--gray-400);">하위 분류: </span>
+          ${cat.subcategories.map(s => `<span class="tag">${s}</span>`).join(' ')}
+        </div>
+        ${topTags.length ? `<div><span style="font-size:12px; color:var(--gray-400);">인기 태그: </span>${topTags.map(([t]) => `<span class="tag">${t}</span>`).join(' ')}</div>` : ''}
+      </div>`;
+    }).join('');
+
+    document.getElementById('catCards').innerHTML = cards;
+  }
+
+  function renderCategoryDetail(catId) {
+    const cat = getCategoryById(catId);
+    if (!cat) {
+      document.getElementById('pageContent').innerHTML = `
+        <div class="empty-state">
+          <div class="empty-icon">📂</div>
+          <h3>카테고리를 찾을 수 없습니다</h3>
+          <p><a href="categories.html">카테고리 목록으로</a></p>
+        </div>`;
+      return;
+    }
+
+    document.title = cat.nameKo + ' - Categories - LittleScience';
+
+    // breadcrumb update
+    document.getElementById('breadcrumb').innerHTML = `
+      <a href="index.html">Home</a><span class="sep">›</span>
+      <a href="categories.html">Categories</a><span class="sep">›</span>
+      <span>${cat.nameKo}</span>`;
+
+    const docs = getDocumentsByCategory(cat.id).sort((a,b) => b.updatedAt.localeCompare(a.updatedAt));
+    const tags = {};
+    docs.forEach(d => d.tags.forEach(t => { tags[t] = (tags[t]||0)+1; }));
+    const topTags = Object.entries(tags).sort((a,b) => b[1]-a[1]).slice(0,10);
+
+    document.getElementById('pageContent').innerHTML = `
+      <div style="display:flex; align-items:center; gap:16px; margin-bottom:8px;">
+        <span style="font-size:48px;">${cat.icon}</span>
+        <div>
+          <h1 style="font-size:28px; font-weight:800; color:var(--gray-900);">${cat.name}</h1>
+          <p style="color:var(--gray-500);">${cat.nameKo} · ${docs.length}개 문서</p>
+        </div>
+      </div>
+      <p style="color:var(--gray-600); margin-bottom:24px;">${cat.description}</p>
+
+      <!-- 하위 분류 -->
+      <div style="margin-bottom:24px;">
+        <h3 style="font-size:14px; color:var(--gray-500); margin-bottom:8px;">하위 분류</h3>
+        <div class="tag-list">
+          ${cat.subcategories.map(s => `<span class="tag" style="font-size:13px; padding:6px 14px;">${s}</span>`).join('')}
+        </div>
+      </div>
+
+      <!-- 인기 태그 -->
+      ${topTags.length ? `
+      <div style="margin-bottom:32px;">
+        <h3 style="font-size:14px; color:var(--gray-500); margin-bottom:8px;">인기 태그</h3>
+        <div class="tag-list">
+          ${topTags.map(([t,c]) => `<a href="search.html?q=${encodeURIComponent(t)}" class="tag">${t} (${c})</a>`).join('')}
+        </div>
+      </div>` : ''}
+
+      <!-- 문서 목록 -->
+      <h2 class="section-title">문서 목록</h2>
+      ${docs.length ? `<div class="card-grid">${docs.map(d => renderDocCard(d)).join('')}</div>` :
+        `<div class="empty-state"><div class="empty-icon">📄</div><h3>아직 문서가 없습니다</h3></div>`}
+    `;
+  }
+  </script>
+</body>
+</html>

@@ -4,7 +4,22 @@
     "ignore": [
       "firebase.json",
       "**/.*",
-      "**/node_modules/**"
+      "**/node_modules/**",
+      "PLAN.md"
+    ],
+    "headers": [
+      {
+        "source": "**/*.html",
+        "headers": [
+          { "key": "Cache-Control", "value": "no-cache" }
+        ]
+      },
+      {
+        "source": "**/*.{js,css}",
+        "headers": [
+          { "key": "Cache-Control", "value": "max-age=3600" }
+        ]
+      }
     ],
     "rewrites": [
       {
