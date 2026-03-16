@@ -2,4 +2,8 @@ User-agent: *
 Allow: /
 Disallow: /admin.html
 
+# Static sitemap (initial documents)
 Sitemap: https://geoproject-8fc76.web.app/sitemap.xml
+
+# Dynamic sitemap (auto-generated from Firestore, always up-to-date)
+Sitemap: https://geoproject-8fc76.web.app/sitemap-dynamic.xml

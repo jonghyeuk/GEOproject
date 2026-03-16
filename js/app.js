@@ -27,19 +27,19 @@ function getHeaderHTML() {
   return `
   <header class="site-header">
     <div class="header-inner">
-      <a href="index.html" class="logo">
+      <a href="/" class="logo">
         <span>🌐</span> EduAtlas
       </a>
       <button class="mobile-toggle" aria-label="메뉴">☰</button>
       <nav>
         <ul class="nav-links">
-          <li><a href="index.html">Explore</a></li>
-          <li><a href="categories.html?id=academies">Academies</a></li>
-          <li><a href="categories.html?id=research">Research</a></li>
-          <li><a href="categories.html?id=topics">Topics</a></li>
-          <li><a href="categories.html?id=experiments">Experiments</a></li>
-          <li><a href="categories.html?id=study">Study</a></li>
-          <li><a href="search.html">Search</a></li>
+          <li><a href="/">Explore</a></li>
+          <li><a href="/categories/academies">Academies</a></li>
+          <li><a href="/categories/research">Research</a></li>
+          <li><a href="/categories/topics">Topics</a></li>
+          <li><a href="/categories/experiments">Experiments</a></li>
+          <li><a href="/categories/study">Study</a></li>
+          <li><a href="/search.html">Search</a></li>
         </ul>
       </nav>
     </div>
@@ -58,11 +58,11 @@ function getFooterHTML() {
         </div>
         <div class="footer-section">
           <h4>Atlas</h4>
-          <a href="categories.html?id=academies">Academies</a>
-          <a href="categories.html?id=research">Research</a>
-          <a href="categories.html?id=topics">Topics</a>
-          <a href="categories.html?id=experiments">Experiments</a>
-          <a href="categories.html?id=study">Study</a>
+          <a href="/categories/academies">Academies</a>
+          <a href="/categories/research">Research</a>
+          <a href="/categories/topics">Topics</a>
+          <a href="/categories/experiments">Experiments</a>
+          <a href="/categories/study">Study</a>
         </div>
         <div class="footer-section">
           <h4>Tools</h4>
@@ -93,7 +93,7 @@ function renderDocCard(doc) {
     ? doc.directAnswer[0]
     : doc.summary;
   return `
-  <a href="document.html?slug=${doc.slug}" class="card">
+  <a href="/documents/${doc.slug}" class="card">
     <div class="card-title">${doc.title}</div>
     <div class="card-desc">${desc}</div>
     <div class="card-meta">
@@ -110,7 +110,7 @@ function renderDocCard(doc) {
 function renderCatCard(cat) {
   const count = getDocumentsByCategory(cat.id).length;
   return `
-  <a href="categories.html?id=${cat.id}" class="cat-card">
+  <a href="/categories/${cat.id}" class="cat-card">
     <div class="cat-icon">${cat.icon}</div>
     <div class="cat-name">${cat.name}</div>
     <div class="cat-name-ko">${cat.nameKo}</div>

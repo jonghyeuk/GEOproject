@@ -687,7 +687,7 @@ function autoLinkEntities(html, currentSlug) {
     const escaped = text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
     const regex = new RegExp('(?<!<[^>]*)\\b(' + escaped + ')\\b(?![^<]*>)', 'i');
     if (regex.test(html)) {
-      html = html.replace(regex, '<a href="document.html?slug=' + slug + '" class="entity-link">$1</a>');
+      html = html.replace(regex, '<a href="/documents/' + slug + '" class="entity-link">$1</a>');
       linked.add(slug);
     }
   });
