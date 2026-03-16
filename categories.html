@@ -5,6 +5,16 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Categories - EduAtlas</title>
   <meta name="description" content="교육, 연구, 공학, 학원, 학습 분야별 구조화된 지식 허브">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://geoproject-8fc76.web.app/categories.html">
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Categories - EduAtlas">
+  <meta property="og:description" content="교육, 연구, 공학, 학원, 학습 분야별 구조화된 지식 허브">
+  <meta property="og:url" content="https://geoproject-8fc76.web.app/categories.html">
+  <meta property="og:site_name" content="EduAtlas">
+
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
@@ -53,7 +63,7 @@
       const topTags = Object.entries(tags).sort((a,b) => b[1]-a[1]).slice(0,5);
 
       return `
-      <div style="background:white; border:1px solid var(--gray-200); border-radius:var(--radius); padding:28px; margin-bottom:20px; cursor:pointer;" onclick="location.href='categories.html?id=${cat.id}'">
+      <div style="background:white; border:1px solid var(--gray-200); border-radius:var(--radius); padding:28px; margin-bottom:20px; cursor:pointer;" onclick="location.href='/categories/${cat.id}'">
         <div style="display:flex; align-items:center; gap:16px; margin-bottom:12px;">
           <span style="font-size:36px;">${cat.icon}</span>
           <div>
@@ -94,7 +104,7 @@
       "@type": "CollectionPage",
       "name": cat.name + ' - ' + cat.nameKo,
       "description": cat.description,
-      "url": "https://geoproject-8fc76.web.app/categories.html?id=" + cat.id,
+      "url": "https://geoproject-8fc76.web.app/categories/" + cat.id,
       "isPartOf": { "@type": "WebSite", "name": "EduAtlas", "url": "https://geoproject-8fc76.web.app/" }
     };
     const s = document.createElement('script');

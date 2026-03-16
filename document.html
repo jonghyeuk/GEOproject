@@ -110,7 +110,7 @@
         "@type": "EducationalOrganization",
         "name": doc.title,
         "description": doc.seoDescription || doc.summary,
-        "url": "https://geoproject-8fc76.web.app/document.html?slug=" + doc.slug
+        "url": "https://geoproject-8fc76.web.app/documents/" + doc.slug
       };
       if (doc.keyInfo) {
         if (doc.keyInfo.location) eduOrgSchema.address = { "@type": "PostalAddress", "addressLocality": doc.keyInfo.location };
@@ -128,7 +128,7 @@
       "@type": "BreadcrumbList",
       "itemListElement": [
         { "@type": "ListItem", "position": 1, "name": "EduAtlas", "item": "https://geoproject-8fc76.web.app/" },
-        cat ? { "@type": "ListItem", "position": 2, "name": cat.nameKo, "item": "https://geoproject-8fc76.web.app/categories.html?id=" + cat.id } : null,
+        cat ? { "@type": "ListItem", "position": 2, "name": cat.nameKo, "item": "https://geoproject-8fc76.web.app/categories/" + cat.id } : null,
         { "@type": "ListItem", "position": cat ? 3 : 2, "name": doc.title }
       ].filter(Boolean)
     };
@@ -139,13 +139,13 @@
 
     // breadcrumb (visible)
     document.getElementById('breadcrumb').innerHTML = `
-      <a href="index.html">Explore</a><span class="sep">›</span>
-      ${cat ? `<a href="categories.html?id=${cat.id}">${cat.nameKo}</a><span class="sep">›</span>` : ''}
+      <a href="/">Explore</a><span class="sep">›</span>
+      ${cat ? `<a href="/categories/${cat.id}">${cat.nameKo}</a><span class="sep">›</span>` : ''}
       <span>${doc.title}</span>`;
 
     // header
     document.getElementById('docHeader').innerHTML = `
-      ${cat ? `<a href="categories.html?id=${cat.id}" class="doc-category">${cat.icon} ${cat.nameKo}</a>` : ''}
+      ${cat ? `<a href="/categories/${cat.id}" class="doc-category">${cat.icon} ${cat.nameKo}</a>` : ''}
       <h1>${doc.title}</h1>
       <p class="doc-summary">${doc.summary}</p>
       <div class="doc-meta">
@@ -234,7 +234,7 @@
         <div class="cluster-topic">${doc.cluster.pillarTopic}</div>
         <div class="cluster-sub">${doc.cluster.subTopic} · ${doc.cluster.intentType}</div>
         ${clusterDocs.length ? clusterDocs.map(d =>
-          `<a href="document.html?slug=${d.slug}" class="related-link">${d.title}</a>`
+          `<a href="/documents/${d.slug}" class="related-link">${d.title}</a>`
         ).join('') : ''}
       </div>`;
     }
@@ -248,7 +248,7 @@
     const finalRelated = allRelated.slice(0, 6);
     if (finalRelated.length) {
       sidebarHTML += `<div class="sidebar-section"><h3>관련 문서</h3>
-        ${finalRelated.map(r => `<a href="document.html?slug=${r.slug}" class="related-link">${r.title}</a>`).join('')}
+        ${finalRelated.map(r => `<a href="/documents/${r.slug}" class="related-link">${r.title}</a>`).join('')}
       </div>`;
     }
 
@@ -256,8 +256,8 @@
     if (cat) {
       const catDocs = getDocumentsByCategory(cat.id).filter(d => d.id !== doc.id).slice(0, 5);
       sidebarHTML += `<div class="sidebar-section"><h3>${cat.icon} ${cat.nameKo} 문서</h3>
-        ${catDocs.map(d => `<a href="document.html?slug=${d.slug}" class="related-link">${d.title}</a>`).join('')}
-        <a href="categories.html?id=${cat.id}" class="related-link" style="color:var(--primary)">전체 보기 →</a>
+        ${catDocs.map(d => `<a href="/documents/${d.slug}" class="related-link">${d.title}</a>`).join('')}
+        <a href="/categories/${cat.id}" class="related-link" style="color:var(--primary)">전체 보기 →</a>
       </div>`;
     }
 

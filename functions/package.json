@@ -1,0 +1,13 @@
+{
+  "name": "eduatlas-functions",
+  "version": "1.0.0",
+  "description": "EduAtlas SSR Cloud Functions",
+  "main": "index.js",
+  "engines": {
+    "node": "18"
+  },
+  "dependencies": {
+    "firebase-admin": "^13.7.0",
+    "firebase-functions": "^7.1.1"
+  }
+}

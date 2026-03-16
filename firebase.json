@@ -2,6 +2,9 @@
   "firestore": {
     "rules": "firestore.rules"
   },
+  "functions": {
+    "source": "functions"
+  },
   "hosting": {
     "public": ".",
     "ignore": [
@@ -9,6 +12,7 @@
       "firestore.rules",
       "**/.*",
       "**/node_modules/**",
+      "functions/**",
       "PLAN.md",
       "prompts/**"
     ],
@@ -28,8 +32,20 @@
     ],
     "rewrites": [
       {
-        "source": "**",
-        "destination": "/index.html"
+        "source": "/documents/**",
+        "function": "ssrDocument"
+      },
+      {
+        "source": "/categories",
+        "function": "ssrCategory"
+      },
+      {
+        "source": "/categories/**",
+        "function": "ssrCategory"
+      },
+      {
+        "source": "/sitemap-dynamic.xml",
+        "function": "dynamicSitemap"
       }
     ]
   }
