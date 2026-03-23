@@ -244,6 +244,14 @@ input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 20p
 ::-webkit-scrollbar { width: 6px; }
 ::-webkit-scrollbar-track { background: var(--bg-primary); }
 ::-webkit-scrollbar-thumb { background: var(--text-dim); border-radius: 3px; }
+.official-banner { display:flex; align-items:center; justify-content:center; gap:10px; margin:32px auto 0; padding:16px 24px; max-width:600px; background:linear-gradient(135deg,rgba(0,229,255,0.06),rgba(179,136,255,0.06)); border:1px solid rgba(0,229,255,0.2); border-radius:14px; font-size:14px; color:var(--text-secondary); }
+.official-banner .official-icon { font-size:22px; }
+.official-banner a { color:var(--accent-cyan); font-weight:700; text-decoration:none; transition:color 0.2s; }
+.official-banner a:hover { color:var(--accent-purple); text-shadow:0 0 8px rgba(0,229,255,0.4); }
+.teacher-system-notice { text-align:center; margin:20px auto 0; padding:18px 24px; max-width:520px; background:linear-gradient(135deg,rgba(57,255,20,0.05),rgba(0,229,255,0.05)); border:1px solid rgba(57,255,20,0.2); border-radius:14px; }
+.teacher-system-notice p { font-size:14px; color:var(--text-secondary); margin-bottom:8px; }
+.teacher-system-notice a { display:inline-block; color:var(--accent-green); font-family:'Orbitron',sans-serif; font-size:13px; font-weight:600; text-decoration:none; letter-spacing:1px; transition:all 0.2s; }
+.teacher-system-notice a:hover { color:var(--accent-cyan); text-shadow:0 0 8px rgba(57,255,20,0.4); }
 </style>
 </head>
 <body>
@@ -326,6 +334,7 @@ input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 20p
         <p>이론은 충분합니다. <span class="highlight">시뮬레이터</span> 탭에서 변수를 고정하고 기체의 행동을 확인하세요.</p>
         <div style="text-align:center; margin-top:16px;"><button class="btn-prove" onclick="switchTab('simulator')" style="font-size:14px; padding: 12px 28px;">🔬 시뮬레이터 시작하기 →</button></div>
       </div>
+<div class="official-banner"><span class="official-icon">🔬</span><span>더 많은 실험과 학습 콘텐츠는 <a href="https://kr.littlescienceclass.com" target="_blank" rel="noopener">정식버전</a>에서 이용하세요</span></div>
     </div>
   </div>
   <div class="section" id="sec-simulator">
@@ -350,6 +359,7 @@ input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 20p
         </div>
         <div class="process-info" id="process-info"><h4>등압 과정 (Isobaric)</h4><p>압력을 고정합니다. 온도를 올리면 부피가 증가합니다. (샤를의 법칙: V ∝ T)</p></div>
       </div>
+<div class="official-banner"><span class="official-icon">🔬</span><span>더 많은 실험과 학습 콘텐츠는 <a href="https://kr.littlescienceclass.com" target="_blank" rel="noopener">정식버전</a>에서 이용하세요</span></div>
     </div>
   </div>
   <div class="section" id="sec-prep">
@@ -409,6 +419,7 @@ void loop() {
 }</code></pre>
       </div>
     </div>
+<div class="official-banner"><span class="official-icon">🔬</span><span>더 많은 실험과 학습 콘텐츠는 <a href="https://kr.littlescienceclass.com" target="_blank" rel="noopener">정식버전</a>에서 이용하세요</span></div>
   </div>
   <div class="section" id="sec-method">
     <h2>📋 실험 방법</h2>
@@ -420,6 +431,7 @@ void loop() {
       <div class="method-step"><div class="step-num">5</div><div class="step-content"><h3>데이터 수집</h3><p>각 실험에서 최소 5개 데이터 포인트를 수집합니다. 시리얼 모니터의 값을 결과보고 탭에 입력합니다.</p></div></div>
       <div class="method-step"><div class="step-num">6</div><div class="step-content"><h3>분석 및 보고</h3><p>결과보고 탭에서 PV=nRT로 계산한 이론값과 실험값을 비교합니다.</p></div></div>
     </div>
+<div class="official-banner"><span class="official-icon">🔬</span><span>더 많은 실험과 학습 콘텐츠는 <a href="https://kr.littlescienceclass.com" target="_blank" rel="noopener">정식버전</a>에서 이용하세요</span></div>
   </div>
   <div class="section" id="sec-report">
     <h2>📝 결과 보고서</h2>
@@ -438,6 +450,7 @@ void loop() {
           </tbody></table>
           <button class="btn-prove" onclick="verifyBoyle()">보일의 법칙 검증하기</button>
           <div class="verify-result" id="boyle-result"></div>
+<div class="teacher-system-notice"><p>📋 정식버전에서는 선생님 평가시스템을 이용할 수 있습니다.</p><a href="https://kr.littlescienceclass.com" target="_blank" rel="noopener">kr.littlescienceclass.com →</a></div>
         </div>
         <div class="data-input-group" style="margin-top:24px;">
           <h4>등적 실험 (게이-뤼삭 법칙) — 부피 일정</h4>
@@ -451,6 +464,7 @@ void loop() {
           </tbody></table>
           <button class="btn-prove" onclick="verifyGL()">게이-뤼삭 법칙 검증하기</button>
           <div class="verify-result" id="gl-result"></div>
+<div class="teacher-system-notice"><p>📋 정식버전에서는 선생님 평가시스템을 이용할 수 있습니다.</p><a href="https://kr.littlescienceclass.com" target="_blank" rel="noopener">kr.littlescienceclass.com →</a></div>
         </div>
       </div>
       <div class="report-card">
@@ -469,9 +483,11 @@ void loop() {
           <div class="input-row"><label>당신의 답 n =</label><input type="number" id="app-n" step="0.0001"> <span>mol</span></div>
           <button class="btn-prove" onclick="checkAppCalc()">정답 확인</button>
           <div class="verify-result" id="app-result"></div>
+<div class="teacher-system-notice"><p>📋 정식버전에서는 선생님 평가시스템을 이용할 수 있습니다.</p><a href="https://kr.littlescienceclass.com" target="_blank" rel="noopener">kr.littlescienceclass.com →</a></div>
         </div>
       </div>
     </div>
+<div class="official-banner"><span class="official-icon">🔬</span><span>더 많은 실험과 학습 콘텐츠는 <a href="https://kr.littlescienceclass.com" target="_blank" rel="noopener">정식버전</a>에서 이용하세요</span></div>
   </div>
   <div class="section" id="sec-quiz">
     <h2>🎯 이상기체 법칙 퀴즈</h2>
@@ -482,10 +498,12 @@ void loop() {
       <button class="btn-prove" id="quiz-next" onclick="quizNav(1)">다음 →</button>
     </div>
     <div class="quiz-score" id="quiz-score" style="display:none;"></div>
+<div class="official-banner"><span class="official-icon">🔬</span><span>더 많은 실험과 학습 콘텐츠는 <a href="https://kr.littlescienceclass.com" target="_blank" rel="noopener">정식버전</a>에서 이용하세요</span></div>
   </div>
   <div class="section" id="sec-examples">
     <h2>🌍 실생활 속 이상기체 법칙</h2>
     <div class="examples-grid" id="examples-grid"></div>
+<div class="official-banner"><span class="official-icon">🔬</span><span>더 많은 실험과 학습 콘텐츠는 <a href="https://kr.littlescienceclass.com" target="_blank" rel="noopener">정식버전</a>에서 이용하세요</span></div>
   </div>
 </div><!-- end .app -->
 <script>
@@ -672,7 +690,7 @@ var quizAnswers={}, quizSubmitted=false;
 function renderQuiz() {
   document.getElementById('quiz-container').innerHTML=quizData.map(function(q,i){
     return '<div class="quiz-card" id="qcard-'+i+'"><div class="quiz-num">Q'+String(i+1).padStart(2,'0')+'</div><div class="quiz-q">'+q.q+'</div><div class="quiz-options">'+q.opts.map(function(o,j){return '<div class="quiz-opt" data-qi="'+i+'" data-oi="'+j+'" onclick="selectQuizOpt('+i+','+j+')">'+o+'</div>';}).join('')+'</div><div class="quiz-explain" id="qexp-'+i+'">💡 '+q.ex+'</div></div>';
-  }).join('')+'<div style="text-align:center;margin:24px 0;"><button class="btn-prove" onclick="submitQuiz()" style="font-size:14px;padding:14px 40px;">📊 채점하기</button></div>';
+  }).join('')+'<div style="text-align:center;margin:24px 0;"><button class="btn-prove" onclick="submitQuiz()" style="font-size:14px;padding:14px 40px;">📊 채점하기</button></div><div class="teacher-system-notice"><p>📋 정식버전에서는 선생님 평가시스템을 이용할 수 있습니다.</p><a href="https://kr.littlescienceclass.com" target="_blank" rel="noopener">kr.littlescienceclass.com →</a></div>';
 }
 function selectQuizOpt(qi,oi){if(quizSubmitted)return;quizAnswers[qi]=oi;document.querySelectorAll('.quiz-opt[data-qi="'+qi+'"]').forEach(function(el){el.classList.toggle('selected',parseInt(el.dataset.oi)===oi);});}
 function submitQuiz(){
