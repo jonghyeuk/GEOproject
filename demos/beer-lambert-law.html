@@ -227,6 +227,14 @@ input[type="range"]::-webkit-slider-thumb { -webkit-appearance:none; width:20px;
 ::-webkit-scrollbar { width:6px; }
 ::-webkit-scrollbar-track { background:var(--bg-primary); }
 ::-webkit-scrollbar-thumb { background:var(--text-dim); border-radius:3px; }
+.official-banner { display:flex; align-items:center; justify-content:center; gap:10px; margin:32px auto 0; padding:16px 24px; max-width:600px; background:linear-gradient(135deg,rgba(0,229,255,0.06),rgba(179,136,255,0.06)); border:1px solid rgba(0,229,255,0.2); border-radius:14px; font-size:14px; color:var(--text-secondary); }
+.official-banner .official-icon { font-size:22px; }
+.official-banner a { color:var(--accent-cyan); font-weight:700; text-decoration:none; transition:color 0.2s; }
+.official-banner a:hover { color:var(--accent-purple); text-shadow:0 0 8px rgba(0,229,255,0.4); }
+.teacher-system-notice { text-align:center; margin:20px auto 0; padding:18px 24px; max-width:520px; background:linear-gradient(135deg,rgba(57,255,20,0.05),rgba(0,229,255,0.05)); border:1px solid rgba(57,255,20,0.2); border-radius:14px; }
+.teacher-system-notice p { font-size:14px; color:var(--text-secondary); margin-bottom:8px; }
+.teacher-system-notice a { display:inline-block; color:var(--accent-green); font-family:'Orbitron',sans-serif; font-size:13px; font-weight:600; text-decoration:none; letter-spacing:1px; transition:all 0.2s; }
+.teacher-system-notice a:hover { color:var(--accent-cyan); text-shadow:0 0 8px rgba(57,255,20,0.4); }
 </style>
 </head>
 <body>
@@ -306,6 +314,7 @@ input[type="range"]::-webkit-slider-thumb { -webkit-appearance:none; width:20px;
         <p>• <span class="highlight">비단색광</span>: 여러 파장이 섞인 빛으로 측정하면 오차 발생</p>
         <p>프리즘 분광기 실험에서는 주로 <span class="highlight">슬릿 폭에 의한 비단색광 효과</span>와 <span class="highlight">스마트폰 카메라의 비선형 반응</span>이 오차의 주요 원인입니다.</p>
       </div>
+<div class="official-banner"><span class="official-icon">🔬</span><span>더 많은 실험과 학습 콘텐츠는 <a href="https://kr.littlescienceclass.com" target="_blank" rel="noopener">정식버전</a>에서 이용하세요</span></div>
     </div>
   </div>
   <!-- 2. SIMULATOR -->
@@ -332,6 +341,7 @@ input[type="range"]::-webkit-slider-thumb { -webkit-appearance:none; width:20px;
           <div class="chart-container"><div class="graph-title">농도 vs 흡광도 (Beer-Lambert)</div><canvas id="chart-beer" width="400" height="250"></canvas></div>
         </div>
       </div>
+<div class="official-banner"><span class="official-icon">🔬</span><span>더 많은 실험과 학습 콘텐츠는 <a href="https://kr.littlescienceclass.com" target="_blank" rel="noopener">정식버전</a>에서 이용하세요</span></div>
     </div>
   </div>
   <!-- 3. PREP -->
@@ -341,6 +351,7 @@ input[type="range"]::-webkit-slider-thumb { -webkit-appearance:none; width:20px;
       <div class="story-card"><h2>📦 측정 장치 (교사 사전 제작, 재사용)</h2><p>투명 아크릴 밀폐 용기 안에 광학 부품을 고정하여 제작합니다. 한 번 만들면 반복 사용 가능합니다.</p><div class="story-svg-container" id="svg-box-device"></div><h3>장치 내부 구성 (광학 경로 순서)</h3><div class="prep-grid"><div class="prep-item"><div class="prep-icon">💡</div><div class="prep-detail"><strong>백색 LED 모듈</strong><span>USB 전원 또는 건전지 구동. 용기 안쪽 벽에 글루건으로 고정.</span></div></div><div class="prep-item"><div class="prep-icon">▫</div><div class="prep-detail"><strong>슬릿</strong><span>알루미늄 판 또는 검정 테이프 위에 면도칼 2장으로 ~0.5mm 간격. LED 앞에 고정.</span></div></div><div class="prep-item"><div class="prep-icon">🧊</div><div class="prep-detail"><strong>시료 삽입구</strong><span>용기 뚜껑에 각형 구멍을 뚫어 시료 용기를 위에서 넣고 뺄 수 있게.</span></div></div><div class="prep-item"><div class="prep-icon">🔺</div><div class="prep-detail"><strong>유리 프리즘 (정삼각형)</strong><span>시료 뒤쪽에 고정. 최소 편향 각도로 정렬 후 글루건으로 고정.</span></div></div><div class="prep-item"><div class="prep-icon">📱</div><div class="prep-detail"><strong>촬영창</strong><span>용기 측면에 스마트폰 렌즈 크기의 구멍. 프리즘에서 분산된 스펙트럼을 촬영.</span></div></div></div><h3>외부광 차단</h3><p>투명 용기 외벽을 <span class="highlight">검정 시트지</span>로 감싸되, 한 면만 투명하게 남겨 <span class="highlight">내부 구조 관찰창</span>으로 활용합니다.</p></div>
       <div class="story-card"><h2>🧪 학생 준비물</h2><div class="prep-grid"><div class="prep-item"><div class="prep-icon">🔴</div><div class="prep-detail"><strong>식용색소 적색2호</strong><span>제과용. 조별 공유.</span></div></div><div class="prep-item"><div class="prep-icon">💧</div><div class="prep-detail"><strong>증류수</strong><span>수돗물 가능하나 증류수 권장.</span></div></div><div class="prep-item"><div class="prep-icon">💉</div><div class="prep-detail"><strong>스포이트 × 5</strong><span>정밀 희석용.</span></div></div><div class="prep-item"><div class="prep-icon">🧊</div><div class="prep-detail"><strong>각형 투명 용기 × 6</strong><span><strong>원형 불가.</strong> 시료 삽입구에 맞는 크기.</span></div></div><div class="prep-item"><div class="prep-icon">📱</div><div class="prep-detail"><strong>스마트폰</strong><span>수동 노출 모드 지원 필요.</span></div></div></div></div>
       <div class="story-card"><h2>⚠ 유의사항</h2><div class="caution-list"><div class="caution-item caution-danger"><span class="caution-badge">DANGER</span><p>슬릿 제작 시 면도칼 — <strong>반드시 교사가 사전 제작</strong>.</p></div><div class="caution-item caution-danger"><span class="caution-badge">DANGER</span><p>유리 프리즘은 <strong>장치 내부에 고정된 상태로 사용</strong>. 학생이 직접 만지지 않도록.</p></div><div class="caution-item caution-warn"><span class="caution-badge">WARNING</span><p>식용색소는 옷·피부에 착색. 장갑 착용 권장.</p></div><div class="caution-item caution-warn"><span class="caution-badge">WARNING</span><p><strong>카메라 노출(ISO, 셔터속도) 고정</strong>. 자동 노출이면 밝기 비교 불가.</p></div><div class="caution-item caution-info"><span class="caution-badge">INFO</span><p>시료 용기 교체 시 <strong>항상 같은 방향</strong>으로 삽입.</p></div><div class="caution-item caution-info"><span class="caution-badge">INFO</span><p>관찰창을 통해 프리즘 분산을 직접 관찰할 수 있습니다.</p></div></div></div>
+<div class="official-banner"><span class="official-icon">🔬</span><span>더 많은 실험과 학습 콘텐츠는 <a href="https://kr.littlescienceclass.com" target="_blank" rel="noopener">정식버전</a>에서 이용하세요</span></div>
     </div>
   </div>
   <!-- 4. METHOD -->
@@ -352,6 +363,7 @@ input[type="range"]::-webkit-slider-thumb { -webkit-appearance:none; width:20px;
       <div class="story-card"><span class="step-number">04</span><h2>STEP 4 — 농도별 투과 스펙트럼 촬영 (15분)</h2><p>S1~S5 순서로 시료를 교체하며 촬영. 총 6장. 농도가 높아질수록 흡수 피크 영역이 어두워지는 것을 확인.</p></div>
       <div class="story-card"><span class="step-number">05</span><h2>STEP 5 — ImageJ로 픽셀 밝기 분석 (30분)</h2><p>다운로드: <span style="color:var(--accent-cyan);">https://imagej.net/ij/download.html</span></p><h3>단계별 가이드</h3><div class="tutorial-step"><div class="tutorial-num">1</div><div class="tutorial-content"><strong>사진 열기</strong><p>File → Open → S0 사진 선택</p></div></div><div class="tutorial-step"><div class="tutorial-num">2</div><div class="tutorial-content"><strong>스펙트럼에 선 긋기</strong><p><span class="key-combo">직선 도구</span>로 스펙트럼 위에 보라→빨강 방향 수평선</p></div></div><div class="tutorial-step"><div class="tutorial-num">3</div><div class="tutorial-content"><strong>밝기 프로파일 추출</strong><p><span class="key-combo">Analyze → Plot Profile</span> (단축키 <span class="key-combo">K</span>)</p></div></div><div class="tutorial-step"><div class="tutorial-num">4</div><div class="tutorial-content"><strong>흡수 피크 위치 확인</strong><p>520nm(초록) 부근에서 밝기가 뚜렷하게 감소하는 위치</p></div></div><div class="tutorial-step"><div class="tutorial-num">5</div><div class="tutorial-content"><strong>수치 데이터 추출</strong><p>Plot Profile → <span class="key-combo">List</span> → Copy → 엑셀에 붙여넣기</p></div></div><div class="tutorial-step"><div class="tutorial-num">6</div><div class="tutorial-content"><strong>동일 위치 반복</strong><p><span class="key-combo">Edit → Selection → Restore Selection</span> (<span class="key-combo">Ctrl+Shift+E</span>)로 선 위치 복원</p></div></div><div class="tutorial-step"><div class="tutorial-num">7</div><div class="tutorial-content"><strong>평균 밝기 측정</strong><p>흡수 피크 ±10픽셀 범위의 평균 = I₀ 또는 I</p></div></div><div class="tutorial-step"><div class="tutorial-num">8</div><div class="tutorial-content"><strong>흡광도 계산</strong><p><span class="key-combo">A = -LOG10(I / I₀)</span></p></div></div></div>
       <div class="story-card"><span class="step-number">06</span><h2>STEP 6 — 그래프 작성 및 분석 (15분)</h2><p>X축: 상대 농도, Y축: 흡광도 산점도 → 추세선 → <span class="highlight">R² > 0.95</span>이면 법칙 성립.</p></div>
+<div class="official-banner"><span class="official-icon">🔬</span><span>더 많은 실험과 학습 콘텐츠는 <a href="https://kr.littlescienceclass.com" target="_blank" rel="noopener">정식버전</a>에서 이용하세요</span></div>
     </div>
   </div>
   <!-- 5. REPORT + QUIZ -->
@@ -369,6 +381,8 @@ input[type="range"]::-webkit-slider-thumb { -webkit-appearance:none; width:20px;
       <div id="quiz-container"></div>
       <div class="quiz-result" id="quiz-result" style="display:none;"><div class="story-card" style="text-align:center;"><h2 id="quiz-score-title"></h2><div class="quiz-score" id="quiz-score"></div><p id="quiz-comment" style="color:var(--text-secondary);margin-top:8px;"></p></div></div>
       <div id="submit-section"><button class="btn-submit" id="btn-submit" onclick="submitReport()">📤 제출하기</button><div class="submit-status" id="submit-status"></div></div>
+<div class="teacher-system-notice"><p>📋 정식버전에서는 선생님 평가시스템을 이용할 수 있습니다.</p><a href="https://kr.littlescienceclass.com" target="_blank" rel="noopener">kr.littlescienceclass.com →</a></div>
+<div class="official-banner"><span class="official-icon">🔬</span><span>더 많은 실험과 학습 콘텐츠는 <a href="https://kr.littlescienceclass.com" target="_blank" rel="noopener">정식버전</a>에서 이용하세요</span></div>
     </div>
   </div>
   <!-- 6. EXAMPLES -->
