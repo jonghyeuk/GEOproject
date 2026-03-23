@@ -362,7 +362,53 @@ const SAMPLE_DOCUMENTS = [
       importance: '화학 분석, 의료 검사, 환경 모니터링 등 광범위하게 활용되는 핵심 원리입니다.',
       audience: '고등학교 2~3학년 학생 및 과학 교사'
     },
-    relatedDocs: ['doc-002', 'doc-004'],
+    relatedDocs: ['doc-002', 'doc-004', 'doc-interactive-002'],
+    relatedServices: []
+  },
+  {
+    id: 'doc-interactive-002',
+    slug: 'planck-constant-led-simulator',
+    title: '플랑크 상수 측정 시뮬레이터',
+    summary: 'USB 가변전원과 5색 LED로 플랑크 상수를 직접 측정하는 인터렉티브 시뮬레이션. 문턱 전압과 파장의 관계에서 양자역학의 근본 상수 h를 구합니다.',
+    docType: 'interactive',
+    categoryId: 'interactive',
+    tags: ['플랑크 상수', '양자역학', 'LED', '밴드갭', '물리', '시뮬레이션', '실험'],
+    status: 'published',
+    createdAt: '2026-03-23',
+    updatedAt: '2026-03-23',
+    directAnswer: [
+      '플랑크 상수 h = 6.626 × 10⁻³⁴ J·s는 에너지의 최소 단위(양자)를 결정하는 근본 상수입니다.',
+      'LED의 문턱 전압(Vth)과 파장(λ)의 관계 Vth = (hc/e) × (1/λ)를 이용하여 h를 측정합니다.',
+      '5색 LED의 Vth vs 1/λ 그래프의 기울기에서 h = 기울기 × e / c로 플랑크 상수를 계산합니다.'
+    ],
+    targetAudience: ['고등학교 2~3학년', '물리 교사', '양자역학 관심 학생'],
+    entities: ['플랑크 상수', '양자역학', 'LED', '밴드갭', '문턱 전압', '광전효과'],
+    cluster: {
+      pillarTopic: '양자역학과 에너지 양자화',
+      subTopic: '플랑크 상수 LED 측정',
+      intentType: 'interactive',
+      relatedClusterSlugs: ['beer-lambert-law-simulator']
+    },
+    contentBlocks: [
+      { type: 'heading', level: 2, text: '시뮬레이터 소개' },
+      { type: 'paragraph', text: 'USB 가변전원과 LED로 플랑크 상수를 측정하는 실험을 가상으로 체험할 수 있는 인터렉티브 시뮬레이터입니다.' }
+    ],
+    faqItems: [
+      { question: '플랑크 상수란 무엇인가요?', answer: '에너지의 최소 단위를 결정하는 양자역학의 근본 상수입니다 (h = 6.626 × 10⁻³⁴ J·s).' },
+      { question: 'LED로 어떻게 플랑크 상수를 측정하나요?', answer: 'LED 문턱 전압(Vth)과 파장(λ)의 관계 eVth = hc/λ를 이용합니다. Vth vs 1/λ 그래프 기울기에서 h를 구합니다.' },
+      { question: '아두이노가 필요한가요?', answer: '아닙니다. USB 5V + 포텐시오미터 + 330Ω 저항 + 멀티미터만으로 측정 가능합니다.' }
+    ],
+    authorInfo: { name: 'EduAtlas 편집팀', role: '인터렉티브 콘텐츠 개발', expertise: '물리 교육, 양자역학 실험' },
+    seoTitle: '플랑크 상수 측정 시뮬레이터 - LED로 양자역학 체험',
+    seoDescription: 'USB 가변전원과 5색 LED로 플랑크 상수를 직접 측정하는 인터렉티브 시뮬레이터.',
+    schemaTypes: ['Article', 'FAQPage'],
+    technicalMeta: { canonicalPath: '/demos/planck-constant.html', indexable: true, externalUrl: 'demos/planck-constant.html' },
+    keyInfo: {
+      definition: '플랑크 상수는 에너지와 진동수의 비례 상수로, 양자역학의 가장 기본적인 물리 상수입니다.',
+      importance: '반도체, 태양전지, 레이저, MRI 등 현대 기술의 근간을 이루는 상수입니다.',
+      audience: '고등학교 2~3학년 학생 및 물리 교사'
+    },
+    relatedDocs: ['doc-interactive-001'],
     relatedServices: []
   }
 ];
