@@ -20,7 +20,7 @@
   "title": "문서 제목",
   "summary": "1~2문장 요약",
   "docType": "article | topic | guide | academy | company | concept",
-  "categoryId": "academies | research | topics | experiments | study | engineering",
+  "categoryId": "academies | research | topics | experiments | study | interactive",
   "tags": ["태그1", "태그2", "태그3"],
   "targetAudience": ["중학생", "교사"],
   "directAnswer": [
@@ -72,7 +72,7 @@
 - EduAtlas 자체의 지식 문서
 - 특정 서비스를 홍보하지 않음
 - 순수 정보 제공 목적
-- 예: "과학 소논문 작성법", "변인 통제 방법", "반도체 식각 공정"
+- 예: "과학 소논문 작성법", "변인 통제 방법", "빛의 굴절 시뮬레이션"
 
 ### Service-Bridge 문서
 - Core 문서에서 자연스럽게 외부 서비스로 연결

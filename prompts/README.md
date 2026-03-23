@@ -30,7 +30,7 @@
 | `01_topics_generator.md` | Topics (탐구주제) | 중학생 과학 탐구 주제 20선 |
 | `02_research_generator.md` | Research (연구) | 소논문 작성법, 연구 설계 |
 | `03_experiments_generator.md` | Experiments (실험) | 실험 설계, 변인 통제 |
-| `04_engineering_generator.md` | Engineering (공학) | 반도체 공정, 기술 원리 |
+| `04_interactive_generator.md` | Interactive (인터렉티브) | 과학 원리 시뮬레이션, 체험형 콘텐츠 |
 | `05_study_generator.md` | Study (학습법) | 공부법, 수행평가 준비 |
 | `06_academies_generator.md` | Academies (교육기관) | 학원 소개, 교육 방법론 |
 

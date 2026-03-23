@@ -50,10 +50,16 @@
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://geoproject-8fc76.web.app/categories/engineering</loc>
-    <lastmod>2026-03-16</lastmod>
+    <loc>https://geoproject-8fc76.web.app/categories/interactive</loc>
+    <lastmod>2026-03-22</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://geoproject-8fc76.web.app/interactive.html</loc>
+    <lastmod>2026-03-22</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
   </url>
   <url>
     <loc>https://geoproject-8fc76.web.app/search.html</loc>
@@ -112,20 +118,8 @@
   </url>
   <!-- Document pages (clean URLs via Cloud Function SSR) -->
   <url>
-    <loc>https://geoproject-8fc76.web.app/documents/semiconductor-etching-process</loc>
-    <lastmod>2026-03-10</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
     <loc>https://geoproject-8fc76.web.app/documents/science-research-paper-guide</loc>
     <lastmod>2026-03-12</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://geoproject-8fc76.web.app/documents/semiconductor-photolithography</loc>
-    <lastmod>2026-03-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>

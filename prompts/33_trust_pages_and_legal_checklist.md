@@ -12,7 +12,7 @@ SEO/GEO에서 사이트 신뢰도를 높이는 기본 요소입니다.
 - [x] 플랫폼이 무엇을 하는지 설명
 - [x] 어떤 분야를 다루는지 (Atlas 카테고리 6개)
 - [x] 운영 주체 명시
-- [x] 연결 서비스 안내 (LittleScienceAI, 반도체 플랫폼)
+- [x] 연결 서비스 안내 (LittleScienceAI)
 - [x] 면책 안내 ("학습 참고 목적")
 - [x] Organization JSON-LD
 

@@ -4,12 +4,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Services - EduAtlas</title>
-  <meta name="description" content="LittleScienceAI, 반도체 플랫폼 등 연결 서비스">
+  <meta name="description" content="LittleScienceAI 등 연결 서비스">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://geoproject-8fc76.web.app/services.html">
   <meta property="og:type" content="website">
   <meta property="og:title" content="Services - EduAtlas">
-  <meta property="og:description" content="LittleScienceAI, 반도체 플랫폼 등 연결 서비스">
+  <meta property="og:description" content="LittleScienceAI 등 연결 서비스">
   <meta property="og:url" content="https://geoproject-8fc76.web.app/services.html">
   <meta property="og:site_name" content="EduAtlas">
   <link rel="stylesheet" href="css/style.css">
@@ -51,28 +51,6 @@
       <div id="littlescienceDocs" class="card-grid"></div>
     </div>
 
-    <!-- 반도체 플랫폼 -->
-    <div style="background:white; border:1px solid var(--gray-200); border-radius:var(--radius-lg); padding:40px; margin-bottom:24px;">
-      <div style="display:flex; align-items:center; gap:20px; margin-bottom:20px;">
-        <span style="font-size:48px;">💎</span>
-        <div>
-          <h2 style="font-size:24px; font-weight:700; color:var(--gray-900);">반도체 플랫폼</h2>
-          <p style="color:var(--gray-500);">반도체 공정·장비·기술 정보 플랫폼</p>
-        </div>
-      </div>
-      <p style="color:var(--gray-600); line-height:1.8; margin-bottom:20px;">
-        반도체 산업의 핵심 공정, 장비, 기술 정보를 체계적으로 정리하고 제공하는 플랫폼입니다.
-        식각, 증착, 리소그래피 등 주요 공정부터 최신 기술 트렌드까지 다룹니다.
-      </p>
-      <div style="display:flex; flex-wrap:wrap; gap:8px; margin-bottom:20px;">
-        <span class="tag">반도체</span>
-        <span class="tag">공정</span>
-        <span class="tag">장비</span>
-        <span class="tag">기술 정보</span>
-      </div>
-      <h3 style="font-size:15px; font-weight:600; color:var(--gray-700); margin-bottom:12px;">관련 문서</h3>
-      <div id="semiDocs" class="card-grid"></div>
-    </div>
 
     <!-- GEO Builder -->
     <div style="background:linear-gradient(135deg,#f0f9ff,#ede9fe); border:1px solid var(--gray-200); border-radius:var(--radius-lg); padding:40px; text-align:center;">
@@ -99,11 +77,6 @@
     document.getElementById('littlescienceDocs').innerHTML =
       lsDocs.map(d => renderDocCard(d)).join('') || '<p style="color:var(--gray-400)">관련 문서가 없습니다</p>';
 
-    const semiDocs = getAllDocuments().filter(d =>
-      d.status === 'published' && d.relatedServices && d.relatedServices.includes('semiconductor-platform')
-    );
-    document.getElementById('semiDocs').innerHTML =
-      semiDocs.map(d => renderDocCard(d)).join('') || '<p style="color:var(--gray-400)">관련 문서가 없습니다</p>';
   }
   </script>
 </body>
