@@ -690,7 +690,7 @@ var quizAnswers={}, quizSubmitted=false;
 function renderQuiz() {
   document.getElementById('quiz-container').innerHTML=quizData.map(function(q,i){
     return '<div class="quiz-card" id="qcard-'+i+'"><div class="quiz-num">Q'+String(i+1).padStart(2,'0')+'</div><div class="quiz-q">'+q.q+'</div><div class="quiz-options">'+q.opts.map(function(o,j){return '<div class="quiz-opt" data-qi="'+i+'" data-oi="'+j+'" onclick="selectQuizOpt('+i+','+j+')">'+o+'</div>';}).join('')+'</div><div class="quiz-explain" id="qexp-'+i+'">💡 '+q.ex+'</div></div>';
-  }).join('')+'<div style="text-align:center;margin:24px 0;"><button class="btn-prove" onclick="submitQuiz()" style="font-size:14px;padding:14px 40px;">📊 채점하기</button></div>';
+  }).join('')+'<div style="text-align:center;margin:24px 0;"><button class="btn-prove" onclick="submitQuiz()" style="font-size:14px;padding:14px 40px;">📊 채점하기</button></div><div class="teacher-system-notice"><p>📋 정식버전에서는 선생님 평가시스템을 이용할 수 있습니다.</p><a href="https://kr.littlescienceclass.com" target="_blank" rel="noopener">kr.littlescienceclass.com →</a></div>';
 }
 function selectQuizOpt(qi,oi){if(quizSubmitted)return;quizAnswers[qi]=oi;document.querySelectorAll('.quiz-opt[data-qi="'+qi+'"]').forEach(function(el){el.classList.toggle('selected',parseInt(el.dataset.oi)===oi);});}
 function submitQuiz(){
