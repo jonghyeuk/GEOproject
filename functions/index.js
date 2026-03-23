@@ -25,7 +25,7 @@ const CATEGORIES = [
   { id: "topics", name: "Atlas Topics", nameKo: "탐구주제", icon: "\u{1F4A1}" },
   { id: "experiments", name: "Atlas Experiments", nameKo: "실험설계", icon: "\u{1F9EA}" },
   { id: "study", name: "Atlas Study", nameKo: "학습법", icon: "\u{1F4DD}" },
-  { id: "engineering", name: "Atlas Engineering", nameKo: "공학기술", icon: "\u{2699}\u{FE0F}" },
+  { id: "interactive", name: "Atlas Interactive", nameKo: "인터렉티브 실험실", icon: "\u{1F3AE}" },
 ];
 
 function getCategoryById(id) {

@@ -60,37 +60,17 @@ const CATEGORIES = [
     subcategories: ['공부법', '수행평가', '진로', '학습 도구']
   },
   {
-    id: 'engineering',
-    slug: 'engineering',
-    name: 'Atlas Engineering',
-    nameKo: '공학기술',
-    icon: '\u{2699}\u{FE0F}',
-    description: '반도체, 공정, 장비, 기술 트렌드 문서',
-    subcategories: ['반도체', '공정', '장비', '시뮬레이터']
+    id: 'interactive',
+    slug: 'interactive',
+    name: 'Atlas Interactive',
+    nameKo: '인터렉티브 실험실',
+    icon: '\u{1F3AE}',
+    description: '과학 원리를 직접 체험하는 인터렉티브 시뮬레이션',
+    subcategories: ['물리', '화학', '생물', '지구과학', '융합']
   }
 ];
 
 const SAMPLE_DOCUMENTS = [
-  {
-    id: 'doc-001',
-    slug: 'semiconductor-etching-process',
-    title: '반도체 식각(Etching) 공정의 이해',
-    summary: '반도체 제조 공정에서 식각의 역할, 건식 식각과 습식 식각의 차이, 주요 기술과 응용 분야를 구조화하여 설명합니다.',
-    docType: 'article',
-    categoryId: 'engineering',
-    tags: ['반도체', '식각', '공정', '건식식각', '습식식각'],
-    status: 'published',
-    createdAt: '2026-03-10',
-    updatedAt: '2026-03-10',
-    keyInfo: {
-      definition: '반도체 식각(Etching)은 웨이퍼 표면의 불필요한 부분을 선택적으로 제거하는 공정입니다.',
-      importance: '반도체 회로 패턴 형성의 핵심 단계로, 소자의 성능과 집적도를 결정합니다.',
-      types: '건식 식각(Dry Etching)과 습식 식각(Wet Etching)으로 나뉩니다.'
-    },
-    body: "## 정의\n\n반도체 식각(Etching)은 포토레지스트 패턴을 마스크로 사용하여 웨이퍼 위의 박막(산화막, 금속막 등)을 선택적으로 제거하는 공정입니다.\n\n## 핵심 개념\n\n### 건식 식각 (Dry Etching)\n- 플라즈마를 이용한 식각 방식\n- 이방성 식각이 가능하여 미세 패턴에 적합\n- RIE(Reactive Ion Etching), ICP(Inductively Coupled Plasma) 등\n\n### 습식 식각 (Wet Etching)\n- 화학 용액을 이용한 식각 방식\n- 등방성 식각이 일반적\n- 비용이 저렴하고 대면적 처리에 유리\n\n## 적용 분야\n- 게이트 패터닝\n- 금속 배선 형성\n- 비아 홀 생성\n- MEMS 구조물 제작\n\n## 관련 기술\n- 포토리소그래피\n- 박막 증착\n- CMP (Chemical Mechanical Polishing)\n- ALD (Atomic Layer Deposition)",
-    relatedDocs: ['doc-002', 'doc-003'],
-    relatedServices: ['semiconductor-platform']
-  },
   {
     id: 'doc-002',
     slug: 'science-research-paper-guide',
@@ -166,26 +146,6 @@ const SAMPLE_DOCUMENTS = [
     },
     relatedDocs: ['doc-004', 'doc-005'],
     relatedServices: ['littlescience']
-  },
-  {
-    id: 'doc-003',
-    slug: 'semiconductor-photolithography',
-    title: '포토리소그래피(Photolithography) 공정 개요',
-    summary: '반도체 제조의 핵심 공정인 포토리소그래피의 원리, 단계, 최신 기술 동향을 구조적으로 정리합니다.',
-    docType: 'article',
-    categoryId: 'engineering',
-    tags: ['반도체', '포토리소그래피', '노광', 'EUV', '공정'],
-    status: 'published',
-    createdAt: '2026-03-05',
-    updatedAt: '2026-03-05',
-    keyInfo: {
-      definition: '포토리소그래피는 빛을 이용하여 웨이퍼 위에 회로 패턴을 전사하는 공정입니다.',
-      importance: '반도체 미세화의 핵심 기술로, 공정 한계가 곧 기술 세대를 결정합니다.',
-      types: 'DUV(Deep Ultraviolet), EUV(Extreme Ultraviolet) 리소그래피'
-    },
-    body: "## 정의\n\n포토리소그래피(Photolithography)는 감광액(Photoresist)이 도포된 웨이퍼에 빛을 조사하여 마스크의 패턴을 전사하는 공정입니다.\n\n## 공정 단계\n\n### 1. 감광액 도포 (Coating)\n- 스핀 코팅으로 균일한 감광막 형성\n- 두께 제어가 핵심\n\n### 2. 소프트 베이크 (Soft Bake)\n- 용매 제거\n- 감광막 안정화\n\n### 3. 노광 (Exposure)\n- 마스크를 통해 UV 조사\n- 감광액의 화학적 변화 유도\n\n### 4. 현상 (Development)\n- 노광 부분 또는 비노광 부분 제거\n- Positive / Negative 레지스트\n\n### 5. 하드 베이크 (Hard Bake)\n- 패턴 안정화\n- 식각 내성 강화\n\n## 최신 기술\n- EUV (13.5nm 파장)\n- 멀티 패터닝\n- 고NA EUV\n- DSA (Directed Self-Assembly)",
-    relatedDocs: ['doc-001'],
-    relatedServices: ['semiconductor-platform']
   },
   {
     id: 'doc-004',
@@ -351,14 +311,6 @@ const SERVICES = [
     icon: '\u{1F9EA}',
     color: '#667eea'
   },
-  {
-    id: 'semiconductor-platform',
-    name: '반도체 플랫폼',
-    description: '반도체 공정·장비·기술 정보 플랫폼',
-    url: '#',
-    icon: '\u{1F48E}',
-    color: '#764ba2'
-  }
 ];
 
 // ============================================================

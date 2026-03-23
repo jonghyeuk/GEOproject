@@ -65,7 +65,7 @@
 | 필드 | 타입 | 설명 |
 |------|------|------|
 | `relatedDocs` | string[] | 수동 연결 문서 ID 목록 |
-| `relatedServices` | string[] | 연결 서비스 ID (`"littlescience"`, `"semiconductor-platform"`) |
+| `relatedServices` | string[] | 연결 서비스 ID (`"littlescience"`) |
 
 ## Bridge 전용 필드 (선택)
 
