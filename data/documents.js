@@ -408,7 +408,53 @@ const SAMPLE_DOCUMENTS = [
       importance: '반도체, 태양전지, 레이저, MRI 등 현대 기술의 근간을 이루는 상수입니다.',
       audience: '고등학교 2~3학년 학생 및 물리 교사'
     },
-    relatedDocs: ['doc-interactive-001'],
+    relatedDocs: ['doc-interactive-001', 'doc-interactive-003'],
+    relatedServices: []
+  },
+  {
+    id: 'doc-interactive-003',
+    slug: 'ideal-gas-law-simulator',
+    title: '이상기체 법칙 시뮬레이터',
+    summary: 'PV=nRT 이상기체 법칙 인터랙티브 시뮬레이터. 보일, 샤를, 게이-뤼삭 법칙을 시각적으로 체험하고 아두이노 BMP280 센서로 등적 과정을 검증합니다.',
+    docType: 'interactive',
+    categoryId: 'interactive',
+    tags: ['이상기체', 'PV=nRT', '보일의 법칙', '샤를의 법칙', '게이-뤼삭', '화학', '물리', '시뮬레이션', '아두이노'],
+    status: 'published',
+    createdAt: '2026-03-23',
+    updatedAt: '2026-03-23',
+    directAnswer: [
+      'PV = nRT는 이상기체의 압력(P), 부피(V), 온도(T), 몰수(n)의 관계를 나타내는 상태방정식입니다.',
+      '등압(P 고정): V ∝ T (샤를), 등적(V 고정): P ∝ T (게이-뤼삭), 등온(T 고정): PV = const (보일)',
+      '아두이노 + BMP280 + DS18B20으로 밀폐 페트병의 등적 과정(P/T = const)을 정량 검증할 수 있습니다.'
+    ],
+    targetAudience: ['고등학교 1~3학년', '화학/물리 교사', '과학 탐구 학생'],
+    entities: ['이상기체 법칙', '보일의 법칙', '샤를의 법칙', '게이-뤼삭 법칙', '몰', '아보가드로 수'],
+    cluster: {
+      pillarTopic: '기체의 성질과 상태방정식',
+      subTopic: '이상기체 법칙 시뮬레이션',
+      intentType: 'interactive',
+      relatedClusterSlugs: ['beer-lambert-law-simulator', 'planck-constant-led-simulator']
+    },
+    contentBlocks: [
+      { type: 'heading', level: 2, text: '시뮬레이터 소개' },
+      { type: 'paragraph', text: 'PV=nRT 이상기체 법칙을 변수 고정 조건별로 시각화하고, 아두이노 센서 실험으로 검증하는 인터렉티브 시뮬레이터입니다.' }
+    ],
+    faqItems: [
+      { question: '이상기체 법칙이란?', answer: 'PV=nRT로, 이상적인 기체의 압력·부피·온도·몰수 사이의 관계를 나타내는 상태방정식입니다.' },
+      { question: '시뮬레이터에서 어떤 법칙을 체험할 수 있나요?', answer: '보일의 법칙(등온), 샤를의 법칙(등압), 게이-뤼삭 법칙(등적)을 변수 고정 버튼으로 전환하며 체험합니다.' },
+      { question: '실제 실험은 어떻게 하나요?', answer: '아두이노 + BMP280 기압센서 + DS18B20 온도센서로 밀폐 페트병의 등적 과정을 측정하여 P/T = const를 검증합니다.' }
+    ],
+    authorInfo: { name: 'EduAtlas 편집팀', role: '인터렉티브 콘텐츠 개발', expertise: '화학/물리 교육' },
+    seoTitle: '이상기체 법칙 시뮬레이터 - PV=nRT 인터랙티브 체험',
+    seoDescription: 'PV=nRT 이상기체 법칙 시뮬레이터. 보일, 샤를, 게이-뤼삭 법칙을 시각적으로 체험하고 아두이노 센서로 검증합니다.',
+    schemaTypes: ['Article', 'FAQPage'],
+    technicalMeta: { canonicalPath: '/demos/ideal-gas-law.html', indexable: true, externalUrl: 'demos/ideal-gas-law.html' },
+    keyInfo: {
+      definition: '이상기체 법칙(PV=nRT)은 기체의 압력, 부피, 온도, 몰수 사이의 관계를 나타내는 상태방정식입니다.',
+      importance: '화학 반응의 기체 계산, 산업 공정, 기상학, 의료 장비 등에 핵심적으로 활용됩니다.',
+      audience: '고등학교 1~3학년 학생 및 과학 교사'
+    },
+    relatedDocs: ['doc-interactive-001', 'doc-interactive-002'],
     relatedServices: []
   }
 ];
