@@ -39,6 +39,7 @@ function getHeaderHTML() {
           <li><a href="/categories/topics">Topics</a></li>
           <li><a href="/categories/experiments">Experiments</a></li>
           <li><a href="/categories/study">Study</a></li>
+          <li><a href="/interactive.html">Interactive</a></li>
           <li><a href="/search.html">Search</a></li>
         </ul>
       </nav>
@@ -63,6 +64,7 @@ function getFooterHTML() {
           <a href="/categories/topics">Topics</a>
           <a href="/categories/experiments">Experiments</a>
           <a href="/categories/study">Study</a>
+          <a href="/interactive.html">Interactive</a>
         </div>
         <div class="footer-section">
           <h4>Tools</h4>

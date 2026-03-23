@@ -299,6 +299,71 @@ const SAMPLE_DOCUMENTS = [
     body: "## 수행평가란?\n\n수행평가는 단순 암기가 아닌, 학생이 직접 수행한 과정과 결과물을 평가하는 방식입니다.\n\n## 유형별 준비 전략\n\n### 보고서형\n- 구조화된 글쓰기 연습\n- 참고자료 인용 방법 학습\n- 핵심 → 근거 → 결론 구조\n\n### 발표형\n- 슬라이드 구조화\n- 발표 연습 최소 3회\n- Q&A 예상 질문 준비\n\n### 실험형\n- 사전 실험 계획서 작성\n- 데이터 기록 습관\n- 결과 분석 및 해석\n\n### 프로젝트형\n- 역할 분담 명확히\n- 주간 진행 체크\n- 최종 산출물 품질 관리\n\n## 공통 학습 팁\n- 평가 기준표 먼저 확인\n- 기한 관리 (역산 스케줄링)\n- 초안 → 수정 → 완성 3단계\n- 동료 피드백 활용",
     relatedDocs: ['doc-004'],
     relatedServices: []
+  },
+  {
+    id: 'doc-interactive-001',
+    slug: 'beer-lambert-law-simulator',
+    title: 'Beer-Lambert 법칙 시뮬레이터',
+    summary: '프리즘 분광기로 검증하는 빛의 흡수 법칙. 농도·경로길이·몰흡광계수를 조절하며 흡광도와 투과율을 체험하는 인터렉티브 시뮬레이션입니다.',
+    docType: 'interactive',
+    categoryId: 'interactive',
+    tags: ['Beer-Lambert', '흡광도', '투과율', '분광학', '화학', '물리', '시뮬레이션', '실험'],
+    status: 'published',
+    createdAt: '2026-03-23',
+    updatedAt: '2026-03-23',
+    directAnswer: [
+      'Beer-Lambert 법칙은 A = εlc로, 용액의 흡광도(A)가 몰흡광계수(ε), 경로길이(l), 농도(c)에 비례함을 나타냅니다.',
+      '이 시뮬레이터에서 농도와 경로길이를 조절하며 흡광도·투과율 변화를 실시간으로 확인할 수 있습니다.',
+      '이론 학습, 시뮬레이션, 실험 준비, 보고서 작성, 퀴즈까지 한번에 수행할 수 있는 올인원 실험 도구입니다.'
+    ],
+    targetAudience: ['고등학교 2~3학년', '과학 교사', '화학·물리 관심 학생'],
+    entities: ['Beer-Lambert 법칙', '흡광도', '투과율', '프리즘', '분광학', '몰흡광계수'],
+    cluster: {
+      pillarTopic: '분광학과 빛의 흡수',
+      subTopic: 'Beer-Lambert 법칙 시뮬레이션',
+      intentType: 'interactive',
+      relatedClusterSlugs: ['experiment-design-methodology']
+    },
+    contentBlocks: [
+      { type: 'heading', level: 2, text: '시뮬레이터 소개' },
+      { type: 'paragraph', text: '이 인터렉티브 시뮬레이터는 Beer-Lambert 법칙(A = εlc)을 직접 체험할 수 있도록 설계되었습니다.' },
+      { type: 'heading', level: 2, text: '주요 기능' },
+      { type: 'list', ordered: false, items: [
+        '이론 — 빛의 흡수, 법칙 유도, 프리즘 분산 원리',
+        '시뮬레이터 — 농도/경로/ε 슬라이더 + 실시간 그래프',
+        '실험준비 — 프리즘 박스 장치 구성, 준비물, 유의사항',
+        '실험방법 — 6단계 실험 절차, ImageJ 분석 가이드',
+        '결과보고 — 데이터 입력, 자동 계산 검증, 성찰, 퀴즈, 제출',
+        '실생활 예제 — 혈액검사, 수질검사, DNA 정량 등 6가지'
+      ]},
+      { type: 'heading', level: 2, text: '사용 방법' },
+      { type: 'paragraph', text: '아래 링크를 클릭하여 시뮬레이터를 실행하세요. 탭 메뉴로 이론→시뮬레이터→실험→보고서 순서로 진행합니다.' }
+    ],
+    faqItems: [
+      { question: 'Beer-Lambert 법칙이란 무엇인가요?', answer: '용액의 흡광도가 몰흡광계수, 빛의 경로길이, 용액 농도의 곱과 같다는 법칙입니다 (A = εlc).' },
+      { question: '이 시뮬레이터로 무엇을 배울 수 있나요?', answer: '농도 변화에 따른 흡광도의 선형 변화, 투과 스펙트럼의 변화, 프리즘 분산 원리 등을 직접 조작하며 배울 수 있습니다.' },
+      { question: '교사 모드는 어떻게 사용하나요?', answer: '시뮬레이터 우하단의 "선생님" 버튼을 클릭하면 학생 제출 현황을 확인하고 CSV로 내보낼 수 있습니다.' }
+    ],
+    authorInfo: {
+      name: 'EduAtlas 편집팀',
+      role: '인터렉티브 콘텐츠 개발',
+      expertise: '과학 교육, 시뮬레이션 설계'
+    },
+    seoTitle: 'Beer-Lambert 법칙 시뮬레이터 - 흡광도·투과율 인터렉티브 실험',
+    seoDescription: '프리즘 분광기로 검증하는 Beer-Lambert 법칙 인터렉티브 시뮬레이터. 농도·경로길이·몰흡광계수를 조절하며 흡광도와 투과율을 실시간 체험합니다.',
+    schemaTypes: ['Article', 'FAQPage'],
+    technicalMeta: {
+      canonicalPath: '/demos/beer-lambert-law.html',
+      indexable: true,
+      externalUrl: 'demos/beer-lambert-law.html'
+    },
+    keyInfo: {
+      definition: 'Beer-Lambert 법칙은 용액의 흡광도가 농도에 비례한다는 분광학의 기본 법칙입니다.',
+      importance: '화학 분석, 의료 검사, 환경 모니터링 등 광범위하게 활용되는 핵심 원리입니다.',
+      audience: '고등학교 2~3학년 학생 및 과학 교사'
+    },
+    relatedDocs: ['doc-002', 'doc-004'],
+    relatedServices: []
   }
 ];
 
