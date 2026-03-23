@@ -299,6 +299,163 @@ const SAMPLE_DOCUMENTS = [
     body: "## 수행평가란?\n\n수행평가는 단순 암기가 아닌, 학생이 직접 수행한 과정과 결과물을 평가하는 방식입니다.\n\n## 유형별 준비 전략\n\n### 보고서형\n- 구조화된 글쓰기 연습\n- 참고자료 인용 방법 학습\n- 핵심 → 근거 → 결론 구조\n\n### 발표형\n- 슬라이드 구조화\n- 발표 연습 최소 3회\n- Q&A 예상 질문 준비\n\n### 실험형\n- 사전 실험 계획서 작성\n- 데이터 기록 습관\n- 결과 분석 및 해석\n\n### 프로젝트형\n- 역할 분담 명확히\n- 주간 진행 체크\n- 최종 산출물 품질 관리\n\n## 공통 학습 팁\n- 평가 기준표 먼저 확인\n- 기한 관리 (역산 스케줄링)\n- 초안 → 수정 → 완성 3단계\n- 동료 피드백 활용",
     relatedDocs: ['doc-004'],
     relatedServices: []
+  },
+  {
+    id: 'doc-interactive-001',
+    slug: 'beer-lambert-law-simulator',
+    title: 'Beer-Lambert 법칙 시뮬레이터',
+    summary: '프리즘 분광기로 검증하는 빛의 흡수 법칙. 농도·경로길이·몰흡광계수를 조절하며 흡광도와 투과율을 체험하는 인터렉티브 시뮬레이션입니다.',
+    docType: 'interactive',
+    categoryId: 'interactive',
+    tags: ['Beer-Lambert', '흡광도', '투과율', '분광학', '화학', '물리', '시뮬레이션', '실험'],
+    status: 'published',
+    createdAt: '2026-03-23',
+    updatedAt: '2026-03-23',
+    directAnswer: [
+      'Beer-Lambert 법칙은 A = εlc로, 용액의 흡광도(A)가 몰흡광계수(ε), 경로길이(l), 농도(c)에 비례함을 나타냅니다.',
+      '이 시뮬레이터에서 농도와 경로길이를 조절하며 흡광도·투과율 변화를 실시간으로 확인할 수 있습니다.',
+      '이론 학습, 시뮬레이션, 실험 준비, 보고서 작성, 퀴즈까지 한번에 수행할 수 있는 올인원 실험 도구입니다.'
+    ],
+    targetAudience: ['고등학교 2~3학년', '과학 교사', '화학·물리 관심 학생'],
+    entities: ['Beer-Lambert 법칙', '흡광도', '투과율', '프리즘', '분광학', '몰흡광계수'],
+    cluster: {
+      pillarTopic: '분광학과 빛의 흡수',
+      subTopic: 'Beer-Lambert 법칙 시뮬레이션',
+      intentType: 'interactive',
+      relatedClusterSlugs: ['experiment-design-methodology']
+    },
+    contentBlocks: [
+      { type: 'heading', level: 2, text: '시뮬레이터 소개' },
+      { type: 'paragraph', text: '이 인터렉티브 시뮬레이터는 Beer-Lambert 법칙(A = εlc)을 직접 체험할 수 있도록 설계되었습니다.' },
+      { type: 'heading', level: 2, text: '주요 기능' },
+      { type: 'list', ordered: false, items: [
+        '이론 — 빛의 흡수, 법칙 유도, 프리즘 분산 원리',
+        '시뮬레이터 — 농도/경로/ε 슬라이더 + 실시간 그래프',
+        '실험준비 — 프리즘 박스 장치 구성, 준비물, 유의사항',
+        '실험방법 — 6단계 실험 절차, ImageJ 분석 가이드',
+        '결과보고 — 데이터 입력, 자동 계산 검증, 성찰, 퀴즈, 제출',
+        '실생활 예제 — 혈액검사, 수질검사, DNA 정량 등 6가지'
+      ]},
+      { type: 'heading', level: 2, text: '사용 방법' },
+      { type: 'paragraph', text: '아래 링크를 클릭하여 시뮬레이터를 실행하세요. 탭 메뉴로 이론→시뮬레이터→실험→보고서 순서로 진행합니다.' }
+    ],
+    faqItems: [
+      { question: 'Beer-Lambert 법칙이란 무엇인가요?', answer: '용액의 흡광도가 몰흡광계수, 빛의 경로길이, 용액 농도의 곱과 같다는 법칙입니다 (A = εlc).' },
+      { question: '이 시뮬레이터로 무엇을 배울 수 있나요?', answer: '농도 변화에 따른 흡광도의 선형 변화, 투과 스펙트럼의 변화, 프리즘 분산 원리 등을 직접 조작하며 배울 수 있습니다.' },
+      { question: '교사 모드는 어떻게 사용하나요?', answer: '시뮬레이터 우하단의 "선생님" 버튼을 클릭하면 학생 제출 현황을 확인하고 CSV로 내보낼 수 있습니다.' }
+    ],
+    authorInfo: {
+      name: 'EduAtlas 편집팀',
+      role: '인터렉티브 콘텐츠 개발',
+      expertise: '과학 교육, 시뮬레이션 설계'
+    },
+    seoTitle: 'Beer-Lambert 법칙 시뮬레이터 - 흡광도·투과율 인터렉티브 실험',
+    seoDescription: '프리즘 분광기로 검증하는 Beer-Lambert 법칙 인터렉티브 시뮬레이터. 농도·경로길이·몰흡광계수를 조절하며 흡광도와 투과율을 실시간 체험합니다.',
+    schemaTypes: ['Article', 'FAQPage'],
+    technicalMeta: {
+      canonicalPath: '/demos/beer-lambert-law.html',
+      indexable: true,
+      externalUrl: 'demos/beer-lambert-law.html'
+    },
+    keyInfo: {
+      definition: 'Beer-Lambert 법칙은 용액의 흡광도가 농도에 비례한다는 분광학의 기본 법칙입니다.',
+      importance: '화학 분석, 의료 검사, 환경 모니터링 등 광범위하게 활용되는 핵심 원리입니다.',
+      audience: '고등학교 2~3학년 학생 및 과학 교사'
+    },
+    relatedDocs: ['doc-002', 'doc-004', 'doc-interactive-002'],
+    relatedServices: []
+  },
+  {
+    id: 'doc-interactive-002',
+    slug: 'planck-constant-led-simulator',
+    title: '플랑크 상수 측정 시뮬레이터',
+    summary: 'USB 가변전원과 5색 LED로 플랑크 상수를 직접 측정하는 인터렉티브 시뮬레이션. 문턱 전압과 파장의 관계에서 양자역학의 근본 상수 h를 구합니다.',
+    docType: 'interactive',
+    categoryId: 'interactive',
+    tags: ['플랑크 상수', '양자역학', 'LED', '밴드갭', '물리', '시뮬레이션', '실험'],
+    status: 'published',
+    createdAt: '2026-03-23',
+    updatedAt: '2026-03-23',
+    directAnswer: [
+      '플랑크 상수 h = 6.626 × 10⁻³⁴ J·s는 에너지의 최소 단위(양자)를 결정하는 근본 상수입니다.',
+      'LED의 문턱 전압(Vth)과 파장(λ)의 관계 Vth = (hc/e) × (1/λ)를 이용하여 h를 측정합니다.',
+      '5색 LED의 Vth vs 1/λ 그래프의 기울기에서 h = 기울기 × e / c로 플랑크 상수를 계산합니다.'
+    ],
+    targetAudience: ['고등학교 2~3학년', '물리 교사', '양자역학 관심 학생'],
+    entities: ['플랑크 상수', '양자역학', 'LED', '밴드갭', '문턱 전압', '광전효과'],
+    cluster: {
+      pillarTopic: '양자역학과 에너지 양자화',
+      subTopic: '플랑크 상수 LED 측정',
+      intentType: 'interactive',
+      relatedClusterSlugs: ['beer-lambert-law-simulator']
+    },
+    contentBlocks: [
+      { type: 'heading', level: 2, text: '시뮬레이터 소개' },
+      { type: 'paragraph', text: 'USB 가변전원과 LED로 플랑크 상수를 측정하는 실험을 가상으로 체험할 수 있는 인터렉티브 시뮬레이터입니다.' }
+    ],
+    faqItems: [
+      { question: '플랑크 상수란 무엇인가요?', answer: '에너지의 최소 단위를 결정하는 양자역학의 근본 상수입니다 (h = 6.626 × 10⁻³⁴ J·s).' },
+      { question: 'LED로 어떻게 플랑크 상수를 측정하나요?', answer: 'LED 문턱 전압(Vth)과 파장(λ)의 관계 eVth = hc/λ를 이용합니다. Vth vs 1/λ 그래프 기울기에서 h를 구합니다.' },
+      { question: '아두이노가 필요한가요?', answer: '아닙니다. USB 5V + 포텐시오미터 + 330Ω 저항 + 멀티미터만으로 측정 가능합니다.' }
+    ],
+    authorInfo: { name: 'EduAtlas 편집팀', role: '인터렉티브 콘텐츠 개발', expertise: '물리 교육, 양자역학 실험' },
+    seoTitle: '플랑크 상수 측정 시뮬레이터 - LED로 양자역학 체험',
+    seoDescription: 'USB 가변전원과 5색 LED로 플랑크 상수를 직접 측정하는 인터렉티브 시뮬레이터.',
+    schemaTypes: ['Article', 'FAQPage'],
+    technicalMeta: { canonicalPath: '/demos/planck-constant.html', indexable: true, externalUrl: 'demos/planck-constant.html' },
+    keyInfo: {
+      definition: '플랑크 상수는 에너지와 진동수의 비례 상수로, 양자역학의 가장 기본적인 물리 상수입니다.',
+      importance: '반도체, 태양전지, 레이저, MRI 등 현대 기술의 근간을 이루는 상수입니다.',
+      audience: '고등학교 2~3학년 학생 및 물리 교사'
+    },
+    relatedDocs: ['doc-interactive-001', 'doc-interactive-003'],
+    relatedServices: []
+  },
+  {
+    id: 'doc-interactive-003',
+    slug: 'ideal-gas-law-simulator',
+    title: '이상기체 법칙 시뮬레이터',
+    summary: 'PV=nRT 이상기체 법칙 인터랙티브 시뮬레이터. 보일, 샤를, 게이-뤼삭 법칙을 시각적으로 체험하고 아두이노 BMP280 센서로 등적 과정을 검증합니다.',
+    docType: 'interactive',
+    categoryId: 'interactive',
+    tags: ['이상기체', 'PV=nRT', '보일의 법칙', '샤를의 법칙', '게이-뤼삭', '화학', '물리', '시뮬레이션', '아두이노'],
+    status: 'published',
+    createdAt: '2026-03-23',
+    updatedAt: '2026-03-23',
+    directAnswer: [
+      'PV = nRT는 이상기체의 압력(P), 부피(V), 온도(T), 몰수(n)의 관계를 나타내는 상태방정식입니다.',
+      '등압(P 고정): V ∝ T (샤를), 등적(V 고정): P ∝ T (게이-뤼삭), 등온(T 고정): PV = const (보일)',
+      '아두이노 + BMP280 + DS18B20으로 밀폐 페트병의 등적 과정(P/T = const)을 정량 검증할 수 있습니다.'
+    ],
+    targetAudience: ['고등학교 1~3학년', '화학/물리 교사', '과학 탐구 학생'],
+    entities: ['이상기체 법칙', '보일의 법칙', '샤를의 법칙', '게이-뤼삭 법칙', '몰', '아보가드로 수'],
+    cluster: {
+      pillarTopic: '기체의 성질과 상태방정식',
+      subTopic: '이상기체 법칙 시뮬레이션',
+      intentType: 'interactive',
+      relatedClusterSlugs: ['beer-lambert-law-simulator', 'planck-constant-led-simulator']
+    },
+    contentBlocks: [
+      { type: 'heading', level: 2, text: '시뮬레이터 소개' },
+      { type: 'paragraph', text: 'PV=nRT 이상기체 법칙을 변수 고정 조건별로 시각화하고, 아두이노 센서 실험으로 검증하는 인터렉티브 시뮬레이터입니다.' }
+    ],
+    faqItems: [
+      { question: '이상기체 법칙이란?', answer: 'PV=nRT로, 이상적인 기체의 압력·부피·온도·몰수 사이의 관계를 나타내는 상태방정식입니다.' },
+      { question: '시뮬레이터에서 어떤 법칙을 체험할 수 있나요?', answer: '보일의 법칙(등온), 샤를의 법칙(등압), 게이-뤼삭 법칙(등적)을 변수 고정 버튼으로 전환하며 체험합니다.' },
+      { question: '실제 실험은 어떻게 하나요?', answer: '아두이노 + BMP280 기압센서 + DS18B20 온도센서로 밀폐 페트병의 등적 과정을 측정하여 P/T = const를 검증합니다.' }
+    ],
+    authorInfo: { name: 'EduAtlas 편집팀', role: '인터렉티브 콘텐츠 개발', expertise: '화학/물리 교육' },
+    seoTitle: '이상기체 법칙 시뮬레이터 - PV=nRT 인터랙티브 체험',
+    seoDescription: 'PV=nRT 이상기체 법칙 시뮬레이터. 보일, 샤를, 게이-뤼삭 법칙을 시각적으로 체험하고 아두이노 센서로 검증합니다.',
+    schemaTypes: ['Article', 'FAQPage'],
+    technicalMeta: { canonicalPath: '/demos/ideal-gas-law.html', indexable: true, externalUrl: 'demos/ideal-gas-law.html' },
+    keyInfo: {
+      definition: '이상기체 법칙(PV=nRT)은 기체의 압력, 부피, 온도, 몰수 사이의 관계를 나타내는 상태방정식입니다.',
+      importance: '화학 반응의 기체 계산, 산업 공정, 기상학, 의료 장비 등에 핵심적으로 활용됩니다.',
+      audience: '고등학교 1~3학년 학생 및 과학 교사'
+    },
+    relatedDocs: ['doc-interactive-001', 'doc-interactive-002'],
+    relatedServices: []
   }
 ];
 

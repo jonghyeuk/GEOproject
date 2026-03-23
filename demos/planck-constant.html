@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>플랑크 상수 측정 시뮬레이터 - EduAtlas Interactive</title>
+<meta name="description" content="USB 가변전원과 LED로 플랑크 상수를 직접 측정하는 인터렉티브 시뮬레이터. 5색 LED의 문턱 전압으로 양자역학의 근본 상수 h를 구합니다.">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://geoproject-8fc76.web.app/demos/planck-constant.html">
+<meta property="og:type" content="article">
+<meta property="og:title" content="플랑크 상수 측정 시뮬레이터 - EduAtlas Interactive">
+<meta property="og:description" content="USB 가변전원과 LED로 플랑크 상수를 직접 측정하는 인터렉티브 시뮬레이터">
+<meta property="og:url" content="https://geoproject-8fc76.web.app/demos/planck-constant.html">
+<meta property="og:site_name" content="EduAtlas">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "LearningResource",
+  "name": "플랑크 상수 측정 시뮬레이터",
+  "description": "USB 가변전원과 LED로 플랑크 상수를 직접 측정하는 인터렉티브 시뮬레이터",
+  "educationalLevel": "고등학교",
+  "learningResourceType": "Simulation",
+  "teaches": ["플랑크 상수", "양자역학", "LED", "밴드갭", "광전효과"],
+  "inLanguage": "ko",
+  "isPartOf": {
+    "@type": "WebSite",
+    "name": "EduAtlas",
+    "url": "https://geoproject-8fc76.web.app/"
+  }
+}
+</script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Noto+Sans+KR:wght@300;400;500;700;900&family=Orbitron:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+/* EduAtlas top bar */
+.eduatlas-topbar { position:sticky; top:0; z-index:999; background:#111827; border-bottom:1px solid rgba(0,229,255,0.15); padding:10px 20px; display:flex; justify-content:space-between; align-items:center; font-family:'Noto Sans KR',sans-serif; }
+.eduatlas-topbar a { color:#90a4ae; text-decoration:none; font-size:13px; transition:color 0.2s; }
+.eduatlas-topbar a:hover { color:#00e5ff; }
+.eduatlas-topbar .logo { font-size:15px; font-weight:700; color:#e8eaf6; }
+.eduatlas-topbar .logo span { margin-right:6px; }
+.eduatlas-topbar .breadcrumb-nav { display:flex; align-items:center; gap:6px; font-size:13px; }
+.eduatlas-topbar .breadcrumb-nav .sep { color:#546e7a; }
+.eduatlas-topbar .breadcrumb-nav .current { color:#00e5ff; font-weight:600; }
+.eduatlas-topbar .tags { display:flex; gap:4px; }
+.eduatlas-topbar .tag-badge { font-size:11px; padding:2px 8px; border-radius:6px; }
+.tag-phys { background:rgba(179,136,255,0.1); border:1px solid rgba(179,136,255,0.3); color:#b388ff; }
+.tag-quantum { background:rgba(0,229,255,0.1); border:1px solid rgba(0,229,255,0.3); color:#00e5ff; }
+/* Original simulator styles */
+:root {
+  --bg-primary: #0a0e1a; --bg-secondary: #111827; --bg-card: #1a2236; --bg-panel: #0f1629;
+  --accent-cyan: #00e5ff; --accent-orange: #ff6b35; --accent-green: #39ff14;
+  --accent-purple: #b388ff; --accent-red: #ff1744; --accent-yellow: #ffd600;
+  --text-primary: #e8eaf6; --text-secondary: #90a4ae; --text-dim: #546e7a;
+  --border: rgba(0, 229, 255, 0.15);
+  --glow-cyan: 0 0 20px rgba(0, 229, 255, 0.3); --glow-orange: 0 0 20px rgba(255, 107, 53, 0.3);
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { background: var(--bg-primary); color: var(--text-primary); font-family: 'Noto Sans KR', sans-serif; min-height: 100vh; overflow-x: hidden; }
+.bg-grid { position: fixed; inset: 0; z-index: 0; background-image: linear-gradient(rgba(0,229,255,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(0,229,255,0.03) 1px, transparent 1px); background-size: 60px 60px; animation: gridShift 20s linear infinite; }
+@keyframes gridShift { to { background-position: 60px 60px; } }
+.bg-glow { position: fixed; z-index: 0; width: 600px; height: 600px; border-radius: 50%; filter: blur(150px); opacity: 0.08; pointer-events: none; }
+.bg-glow-1 { top: -200px; left: -200px; background: var(--accent-purple); }
+.bg-glow-2 { bottom: -200px; right: -200px; background: var(--accent-cyan); }
+.app { position: relative; z-index: 1; max-width: 1400px; margin: 0 auto; padding: 20px; }
+.nav-tabs { display: flex; gap: 4px; background: var(--bg-secondary); border-radius: 16px; padding: 6px; margin-bottom: 24px; border: 1px solid var(--border); overflow-x: auto; }
+.nav-tab { flex: 1; min-width: 100px; padding: 14px 14px; background: transparent; border: none; border-radius: 12px; color: var(--text-secondary); font-family: 'Noto Sans KR', sans-serif; font-weight: 500; font-size: 14px; cursor: pointer; transition: all 0.3s ease; display: flex; align-items: center; justify-content: center; gap: 8px; white-space: nowrap; }
+.nav-tab:hover { color: var(--text-primary); background: rgba(0,229,255,0.05); }
+.nav-tab.active { background: linear-gradient(135deg, rgba(0,229,255,0.15), rgba(0,229,255,0.05)); color: var(--accent-cyan); box-shadow: var(--glow-cyan); font-weight: 700; }
+.nav-tab .tab-icon { font-size: 18px; }
+.section { display: none; animation: fadeIn 0.4s ease; }
+.section.active { display: block; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+.hero { text-align: center; padding: 40px 20px 30px; }
+.hero h1 { font-family: 'Orbitron', sans-serif; font-size: clamp(24px, 5vw, 44px); font-weight: 900; background: linear-gradient(135deg, var(--accent-purple), var(--accent-cyan)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 8px; letter-spacing: 2px; }
+.hero .subtitle { font-size: 16px; color: var(--text-secondary); font-weight: 300; }
+.hero .equation { font-family: 'Orbitron', sans-serif; font-size: clamp(18px, 3.5vw, 32px); color: var(--accent-orange); margin-top: 12px; text-shadow: var(--glow-orange); }
+.story-section { max-width: 920px; margin: 0 auto; }
+.story-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px; padding: 32px; margin-bottom: 24px; position: relative; overflow: hidden; }
+.story-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, var(--accent-purple), var(--accent-cyan), var(--accent-orange)); }
+.story-card h2 { font-family: 'Orbitron', sans-serif; font-size: 20px; color: var(--accent-cyan); margin-bottom: 16px; }
+.story-card h3 { font-size: 17px; color: var(--accent-orange); margin: 20px 0 10px; }
+.story-card p { color: var(--text-secondary); line-height: 1.9; font-size: 15px; margin-bottom: 12px; }
+.hl { color: var(--accent-cyan); font-weight: 700; }
+.hl-o { color: var(--accent-orange); font-weight: 700; }
+.hl-p { color: var(--accent-purple); font-weight: 700; }
+.hl-g { color: var(--accent-green); font-weight: 700; }
+.hl-r { color: var(--accent-red); font-weight: 700; }
+.formula-box { background: var(--bg-panel); border: 1px solid var(--border); border-radius: 12px; padding: 20px; text-align: center; margin: 16px 0; font-family: 'Orbitron', sans-serif; font-size: 22px; color: var(--accent-orange); text-shadow: var(--glow-orange); }
+.svg-wrap { display: flex; justify-content: center; margin: 24px 0; }
+.svg-wrap svg { max-width: 100%; height: auto; }
+.analogy-box { background: rgba(179,136,255,0.06); border: 1px solid rgba(179,136,255,0.2); border-radius: 12px; padding: 20px; margin: 16px 0; }
+.analogy-box .analogy-icon { font-size: 32px; float: left; margin-right: 14px; margin-top: -4px; }
+.analogy-box p { color: var(--accent-purple); font-size: 14px; line-height: 1.8; margin: 0; }
+.think-box { background: rgba(255,214,0,0.05); border: 1px solid rgba(255,214,0,0.2); border-radius: 12px; padding: 18px; margin: 16px 0; }
+.think-box p { color: var(--accent-yellow); font-size: 14px; line-height: 1.8; margin: 0; }
+.key-num-row { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; margin: 20px 0; }
+.key-num { background: var(--bg-panel); border: 1px solid var(--border); border-radius: 12px; padding: 16px 20px; text-align: center; min-width: 140px; }
+.key-num .kn-val { font-family: 'Orbitron', sans-serif; font-size: 20px; font-weight: 700; }
+.key-num .kn-label { font-size: 11px; color: var(--text-secondary); margin-top: 4px; }
+.timeline { position: relative; padding-left: 40px; margin: 20px 0; }
+.timeline::before { content: ''; position: absolute; left: 14px; top: 0; bottom: 0; width: 2px; background: linear-gradient(180deg, var(--accent-purple), var(--accent-cyan)); }
+.tl-item { position: relative; margin-bottom: 24px; }
+.tl-dot { position: absolute; left: -40px; top: 4px; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px; border: 2px solid var(--accent-cyan); background: var(--bg-primary); }
+.tl-year { font-family: 'Orbitron', sans-serif; font-size: 13px; color: var(--accent-orange); margin-bottom: 4px; }
+.tl-text { font-size: 14px; color: var(--text-secondary); line-height: 1.7; }
+.tl-text strong { color: var(--text-primary); }
+.led-color-cards { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin: 20px 0; }
+@media (max-width: 700px) { .led-color-cards { grid-template-columns: repeat(3, 1fr); } }
+.lcc { border-radius: 12px; padding: 16px 10px; text-align: center; border: 1px solid; transition: transform 0.2s; }
+.lcc:hover { transform: translateY(-4px); }
+.lcc .lcc-dot { width: 24px; height: 24px; border-radius: 50%; margin: 0 auto 8px; }
+.lcc .lcc-name { font-size: 13px; font-weight: 700; margin-bottom: 4px; }
+.lcc .lcc-nm { font-family: 'Orbitron', sans-serif; font-size: 12px; margin-bottom: 2px; }
+.lcc .lcc-v { font-family: 'Orbitron', sans-serif; font-size: 14px; font-weight: 700; }
+.lcc .lcc-ev { font-size: 10px; margin-top: 2px; }
+.sim-layout { display: grid; grid-template-columns: 320px 1fr; gap: 24px; }
+@media (max-width: 900px) { .sim-layout { grid-template-columns: 1fr; } }
+.control-panel { background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px; padding: 24px; height: fit-content; position: sticky; top: 20px; }
+.control-panel h3 { font-family: 'Orbitron', sans-serif; font-size: 14px; color: var(--accent-cyan); margin-bottom: 20px; letter-spacing: 1px; }
+.led-selector { display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap; }
+.led-btn { flex: 1; min-width: 50px; padding: 10px 6px; border-radius: 10px; border: 2px solid transparent; cursor: pointer; text-align: center; font-size: 11px; font-weight: 600; font-family: 'Noto Sans KR', sans-serif; transition: all 0.3s; display: flex; flex-direction: column; align-items: center; gap: 4px; }
+.led-btn .led-dot { width: 16px; height: 16px; border-radius: 50%; }
+.led-btn.active { border-color: var(--accent-cyan); box-shadow: var(--glow-cyan); }
+.led-btn-red { background: rgba(255,0,0,0.08); color: #ff4444; }
+.led-btn-red .led-dot { background: #ff0000; box-shadow: 0 0 8px #ff0000; }
+.led-btn-yellow { background: rgba(255,200,0,0.08); color: #ffcc00; }
+.led-btn-yellow .led-dot { background: #ffcc00; box-shadow: 0 0 8px #ffcc00; }
+.led-btn-green { background: rgba(0,255,0,0.08); color: #00dd00; }
+.led-btn-green .led-dot { background: #00ff00; box-shadow: 0 0 8px #00ff00; }
+.led-btn-blue { background: rgba(0,80,255,0.08); color: #4488ff; }
+.led-btn-blue .led-dot { background: #0055ff; box-shadow: 0 0 8px #0055ff; }
+.led-btn-violet { background: rgba(160,0,255,0.08); color: #bb66ff; }
+.led-btn-violet .led-dot { background: #9900ff; box-shadow: 0 0 8px #9900ff; }
+.slider-group { margin-bottom: 20px; }
+.slider-label { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+.slider-label span { font-size: 13px; color: var(--text-secondary); font-weight: 500; }
+.slider-label .val { font-family: 'Orbitron', sans-serif; font-size: 16px; font-weight: 700; color: var(--accent-yellow); }
+input[type="range"] { -webkit-appearance: none; width: 100%; height: 6px; border-radius: 3px; outline: none; cursor: pointer; }
+input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 22px; height: 22px; border-radius: 50%; cursor: pointer; border: 2px solid; }
+.slider-voltage { background: linear-gradient(90deg, #1a1a00, var(--accent-yellow)); }
+.slider-voltage::-webkit-slider-thumb { background: var(--accent-yellow); border-color: var(--accent-yellow); box-shadow: 0 0 10px rgba(255,214,0,0.5); }
+.status-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 16px; }
+.status-item { background: #050a14; border: 1px solid var(--border); border-radius: 10px; padding: 10px 8px; text-align: center; }
+.status-item .s-label { font-size: 9px; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 4px; }
+.status-item .s-value { font-family: 'Orbitron', sans-serif; font-size: 16px; font-weight: 700; }
+.status-item .s-unit { font-size: 10px; margin-top: 2px; }
+.vis-area { background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px; padding: 24px; display: flex; flex-direction: column; align-items: center; position: relative; overflow: hidden; min-height: 600px; }
+.led-visual { position: relative; width: 120px; height: 180px; margin: 20px 0; }
+.led-body { position: absolute; bottom: 0; width: 60px; height: 80px; left: 30px; border-radius: 30px 30px 8px 8px; transition: all 0.3s; }
+.led-glow-effect { position: absolute; bottom: 40px; width: 120px; height: 120px; left: 0; border-radius: 50%; filter: blur(30px); opacity: 0; transition: opacity 0.5s; }
+.led-leg-l, .led-leg-r { position: absolute; bottom: -30px; width: 3px; height: 35px; background: #888; }
+.led-leg-l { left: 42px; }
+.led-leg-r { left: 72px; height: 28px; }
+.led-leg-labels { position: absolute; bottom: -50px; width: 100%; display: flex; justify-content: space-around; font-size: 10px; color: var(--text-dim); }
+.chart-container { width: 100%; max-width: 600px; background: var(--bg-panel); border: 1px solid var(--border); border-radius: 12px; padding: 16px; margin-top: 16px; }
+.led-display { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; width: 100%; max-width: 600px; margin-top: 20px; }
+.led-item { background: #050a14; border: 1px solid var(--border); border-radius: 10px; padding: 12px 8px; text-align: center; position: relative; overflow: hidden; }
+.led-item::after { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(255,255,255,0.02), transparent); pointer-events: none; }
+.led-item .led-label { font-size: 10px; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 4px; }
+.led-item .led-value { font-family: 'Orbitron', sans-serif; font-size: 18px; font-weight: 700; }
+.led-item .led-unit { font-size: 11px; margin-top: 2px; }
+.data-collect { width: 100%; max-width: 600px; margin-top: 16px; background: var(--bg-panel); border: 1px solid var(--border); border-radius: 12px; padding: 16px; }
+.data-collect h4 { font-family: 'Orbitron', sans-serif; font-size: 13px; color: var(--accent-purple); margin-bottom: 10px; }
+.data-table-mini { overflow-x: auto; margin: 12px 0; }
+.data-table-mini table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.data-table-mini th, .data-table-mini td { padding: 8px 12px; border: 1px solid var(--border); text-align: center; }
+.data-table-mini th { background: rgba(0,229,255,0.06); color: var(--accent-cyan); font-family: 'Orbitron', sans-serif; font-size: 11px; }
+.data-table-mini td { color: var(--text-secondary); background: var(--bg-panel); }
+.process-info { width: 100%; max-width: 600px; margin-top: 16px; background: var(--bg-panel); border: 1px solid var(--border); border-radius: 12px; padding: 16px; }
+.process-info h4 { font-family: 'Orbitron', sans-serif; font-size: 13px; color: var(--accent-purple); margin-bottom: 8px; }
+.process-info p { font-size: 13px; color: var(--text-secondary); line-height: 1.6; }
+.planck-result { width: 100%; max-width: 600px; margin-top: 16px; padding: 16px; background: rgba(179,136,255,0.06); border: 1px solid rgba(179,136,255,0.2); border-radius: 12px; text-align: center; }
+.planck-result .planck-h { font-family: 'Orbitron', sans-serif; font-size: 28px; font-weight: 900; color: var(--accent-purple); text-shadow: 0 0 20px rgba(179,136,255,0.4); margin: 8px 0; }
+.planck-result .planck-err { font-size: 14px; color: var(--text-secondary); }
+.wavelength-bar { width: 100%; max-width: 600px; height: 30px; border-radius: 8px; margin-top: 12px; background: linear-gradient(90deg, #8b00ff 0%, #4400ff 12%, #0000ff 20%, #00ff00 35%, #ffff00 48%, #ff8800 58%, #ff0000 70%, #8b0000 100%); position: relative; border: 1px solid var(--border); }
+.wavelength-marker { position: absolute; top: -6px; width: 3px; height: 42px; background: white; box-shadow: 0 0 8px white; transition: left 0.3s; }
+.wavelength-labels { display: flex; justify-content: space-between; font-size: 10px; color: var(--text-dim); margin-top: 4px; }
+.prep-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px; margin: 16px 0; }
+.prep-item { display: flex; gap: 12px; align-items: flex-start; background: var(--bg-panel); border: 1px solid var(--border); border-radius: 10px; padding: 14px; }
+.prep-icon { font-size: 28px; flex-shrink: 0; }
+.prep-detail { display: flex; flex-direction: column; gap: 2px; }
+.prep-detail strong { font-size: 14px; color: var(--text-primary); }
+.prep-detail span { font-size: 12px; color: var(--text-secondary); line-height: 1.5; }
+.caution-list { display: flex; flex-direction: column; gap: 10px; }
+.caution-item { padding: 14px; border-radius: 10px; display: flex; gap: 12px; align-items: flex-start; }
+.caution-item p { font-size: 13px; color: var(--text-secondary); line-height: 1.7; margin: 0; }
+.caution-badge { font-family: 'Orbitron', sans-serif; font-size: 9px; letter-spacing: 1px; padding: 3px 10px; border-radius: 6px; white-space: nowrap; flex-shrink: 0; margin-top: 2px; }
+.caution-danger { background: rgba(255,23,68,0.06); border: 1px solid rgba(255,23,68,0.2); }
+.caution-danger .caution-badge { background: rgba(255,23,68,0.15); color: var(--accent-red); border: 1px solid rgba(255,23,68,0.3); }
+.caution-warn { background: rgba(255,214,0,0.04); border: 1px solid rgba(255,214,0,0.15); }
+.caution-warn .caution-badge { background: rgba(255,214,0,0.12); color: var(--accent-yellow); border: 1px solid rgba(255,214,0,0.3); }
+.caution-info { background: rgba(0,229,255,0.04); border: 1px solid rgba(0,229,255,0.12); }
+.caution-info .caution-badge { background: rgba(0,229,255,0.1); color: var(--accent-cyan); border: 1px solid rgba(0,229,255,0.2); }
+.step-number { font-family: 'Orbitron', sans-serif; font-size: 48px; font-weight: 900; color: rgba(0,229,255,0.08); position: absolute; top: 20px; right: 24px; line-height: 1; }
+.btn-prove { margin-top: 10px; padding: 8px 16px; background: rgba(0,229,255,0.1); border: 1px solid var(--accent-cyan); border-radius: 8px; color: var(--accent-cyan); font-family: 'Noto Sans KR', sans-serif; font-size: 12px; font-weight: 600; cursor: pointer; transition: all 0.3s; }
+.btn-prove:hover { background: rgba(0,229,255,0.2); box-shadow: var(--glow-cyan); }
+.input-row { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 10px; margin: 10px 0; }
+.input-group { display: flex; flex-direction: column; gap: 4px; }
+.input-group label { font-size: 11px; color: var(--text-secondary); font-weight: 500; }
+.report-input { background: var(--bg-panel); border: 1px solid var(--border); border-radius: 8px; padding: 10px 12px; color: var(--accent-cyan); font-family: 'Orbitron', sans-serif; font-size: 14px; outline: none; width: 100%; }
+.report-input::placeholder { color: var(--text-dim); font-size: 11px; font-family: 'Noto Sans KR', sans-serif; }
+.report-input:focus { border-color: var(--accent-cyan); box-shadow: 0 0 8px rgba(0,229,255,0.15); }
+.calc-input { color: var(--accent-purple); }
+.calc-input.correct { border-color: var(--accent-green) !important; background: rgba(57,255,20,0.06) !important; color: var(--accent-green) !important; }
+.calc-input.close { border-color: var(--accent-yellow) !important; background: rgba(255,214,0,0.06) !important; color: var(--accent-yellow) !important; }
+.calc-input.wrong { border-color: var(--accent-red) !important; background: rgba(255,23,68,0.06) !important; color: var(--accent-red) !important; }
+.report-calc { font-family: 'Space Mono', monospace; font-size: 13px; color: var(--accent-green); background: rgba(57,255,20,0.04); border: 1px solid rgba(57,255,20,0.15); border-radius: 10px; padding: 14px 18px; margin: 12px 0; line-height: 2; }
+.report-calc p { color: var(--accent-green); margin-bottom: 0; font-size: 13px; line-height: 2; }
+.reflect-group { margin-top: 20px; }
+.reflect-label { display: block; font-size: 15px; font-weight: 700; color: var(--text-primary); margin-bottom: 4px; }
+.reflect-hint { font-size: 12px; color: var(--text-dim); margin-bottom: 8px; line-height: 1.5; }
+.reflect-textarea { width: 100%; background: var(--bg-panel); border: 1px solid var(--border); border-radius: 10px; padding: 14px; color: var(--text-primary); font-family: 'Noto Sans KR', sans-serif; font-size: 14px; line-height: 1.7; resize: vertical; outline: none; }
+.reflect-textarea::placeholder { color: var(--text-dim); }
+.reflect-textarea:focus { border-color: var(--accent-purple); box-shadow: 0 0 8px rgba(179,136,255,0.15); }
+.error-list { display: flex; flex-direction: column; gap: 10px; margin-top: 10px; }
+.error-item { background: var(--bg-panel); border: 1px solid var(--border); border-radius: 10px; padding: 14px; }
+.error-item strong { font-size: 14px; color: var(--accent-orange); display: block; margin-bottom: 4px; }
+.error-item p { font-size: 13px; margin: 0; }
+.quiz-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px; padding: 24px 28px; margin-bottom: 16px; position: relative; overflow: hidden; }
+.quiz-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, var(--accent-purple), var(--accent-cyan)); }
+.quiz-num { font-family: 'Orbitron', sans-serif; font-size: 12px; color: var(--accent-purple); letter-spacing: 1px; margin-bottom: 10px; }
+.quiz-q { font-size: 15px; color: var(--text-primary); line-height: 1.7; margin-bottom: 16px; }
+.quiz-options { display: flex; flex-direction: column; gap: 8px; }
+.quiz-opt { padding: 12px 16px; background: var(--bg-panel); border: 1px solid var(--border); border-radius: 10px; color: var(--text-secondary); font-size: 14px; cursor: pointer; transition: all 0.2s; }
+.quiz-opt:hover { border-color: var(--accent-cyan); color: var(--text-primary); }
+.quiz-opt.selected { border-color: var(--accent-cyan); background: rgba(0,229,255,0.08); color: var(--accent-cyan); }
+.quiz-opt.correct { border-color: var(--accent-green) !important; background: rgba(57,255,20,0.1) !important; color: var(--accent-green) !important; }
+.quiz-opt.wrong { border-color: var(--accent-red) !important; background: rgba(255,23,68,0.08) !important; color: var(--accent-red) !important; }
+.quiz-explain { margin-top: 12px; padding: 12px; background: rgba(179,136,255,0.06); border: 1px solid rgba(179,136,255,0.15); border-radius: 10px; font-size: 13px; color: var(--text-secondary); line-height: 1.7; display: none; }
+.quiz-explain.show { display: block; }
+.submit-all-btn { display: block; width: 100%; max-width: 500px; margin: 30px auto; padding: 18px 40px; background: linear-gradient(135deg, rgba(0,229,255,0.2), rgba(179,136,255,0.2)); border: 2px solid var(--accent-cyan); border-radius: 14px; color: var(--accent-cyan); font-family: 'Orbitron', sans-serif; font-size: 16px; font-weight: 700; cursor: pointer; transition: all 0.3s; letter-spacing: 1px; }
+.submit-all-btn:hover { box-shadow: var(--glow-cyan), 0 0 40px rgba(179,136,255,0.2); transform: translateY(-2px); }
+.submit-all-btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; box-shadow: none; }
+.student-info-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin: 16px 0; }
+@media (max-width: 600px) { .student-info-row { grid-template-columns: 1fr; } }
+.score-panel { background: var(--bg-card); border: 2px solid var(--accent-cyan); border-radius: 16px; padding: 30px; text-align: center; margin: 24px 0; }
+.score-panel .score-big { font-family: 'Orbitron', sans-serif; font-size: 60px; font-weight: 900; color: var(--accent-cyan); text-shadow: 0 0 30px rgba(0,229,255,0.4); }
+.score-panel .score-label { font-size: 14px; color: var(--text-secondary); margin-top: 4px; }
+.score-breakdown { display: flex; justify-content: center; gap: 30px; margin-top: 16px; flex-wrap: wrap; }
+.score-breakdown .sb-item { text-align: center; }
+.sb-item .sb-val { font-family: 'Orbitron', sans-serif; font-size: 20px; font-weight: 700; }
+.sb-item .sb-name { font-size: 11px; color: var(--text-secondary); }
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--bg-primary); }
+::-webkit-scrollbar-thumb { background: var(--text-dim); border-radius: 3px; }
+</style>
+</head>
+<body>
+<!-- EduAtlas Navigation Bar -->
+<div class="eduatlas-topbar">
+  <a href="../index.html" class="logo"><span>🌐</span>EduAtlas</a>
+  <div class="breadcrumb-nav">
+    <a href="../index.html">Home</a><span class="sep">›</span>
+    <a href="../interactive.html">Interactive</a><span class="sep">›</span>
+    <span class="current">플랑크 상수 측정</span>
+  </div>
+  <div class="tags">
+    <span class="tag-badge tag-phys">물리</span>
+    <span class="tag-badge tag-quantum">양자역학</span>
+  </div>
+</div>
+<!-- Original Simulator -->
+<div class="bg-grid"></div>
+<div class="bg-glow bg-glow-1"></div>
+<div class="bg-glow bg-glow-2"></div>
+<div class="app">
+  <div class="hero">
+    <h1>PLANCK'S CONSTANT</h1>
+    <div class="subtitle">나만의 USB 전원장치를 만들고, LED로 플랑크 상수를 측정하다</div>
+    <div class="equation">E = hf = eV<sub>th</sub></div>
+  </div>
+  <div class="nav-tabs">
+    <button class="nav-tab active" data-tab="theory"><span class="tab-icon">📖</span> 개념학습</button>
+    <button class="nav-tab" data-tab="simulator"><span class="tab-icon">🔬</span> 가상실험</button>
+    <button class="nav-tab" data-tab="prep"><span class="tab-icon">🧪</span> 실제실험</button>
+    <button class="nav-tab" data-tab="eval"><span class="tab-icon">📝</span> 평가</button>
+  </div>
+<!-- THEORY -->
+<div class="section active" id="sec-theory">
+<div class="story-section">
+<div class="story-card">
+  <h2>CHAPTER 01 — 빛이란 대체 뭐야?</h2>
+  <p>우리는 매일 빛을 본다. 하지만 <span class="hl">"빛은 무엇으로 되어 있을까?"</span>라는 질문에 답하려고 인류는 <span class="hl-o">300년</span>을 싸웠습니다.</p>
+  <div class="svg-wrap" id="svg-wave-particle"></div>
+  <h3>🌊 파동이다! — 호이겐스, 영 (17~19세기)</h3>
+  <p>물결이 퍼져나가듯, 빛도 <span class="hl">파동</span>입니다. 이중 슬릿 실험에서 빛이 간섭 무늬를 만들었죠. "파동이 아니면 이걸 설명할 수 없다!"</p>
+  <h3>⚾ 알갱이다! — 뉴턴, 아인슈타인 (17세기, 20세기)</h3>
+  <p>하지만 <span class="hl-o">광전효과</span>는 파동으로 설명이 안 되었습니다. 아인슈타인이 해결했죠: <span class="hl">"빛은 에너지 알갱이(광자, Photon)이기도 하다!"</span></p>
+  <div class="analogy-box"><span class="analogy-icon">🏀</span><p><strong>비유:</strong> 빛은 "파도를 타는 공" 같습니다. 멀리서 보면 파도(파동)인데, 에너지를 주고받을 때는 공(입자) 하나하나로 거래합니다. 이것이 <strong>파동-입자 이중성</strong>입니다.</p></div>
+</div>
+<div class="story-card">
+  <h2>CHAPTER 02 — 에너지의 최소 단위: 양자(Quantum)</h2>
+  <p>1900년 12월 14일, 독일 물리학자 <span class="hl-p">막스 플랑크</span>가 세상을 바꿉니다.</p>
+  <div class="timeline">
+    <div class="tl-item"><div class="tl-dot">🔥</div><div class="tl-year">문제: 흑체복사</div><div class="tl-text">뜨거운 물체가 내는 빛의 색 분포를 기존 물리학으로 설명하면, <strong>자외선 파국(Ultraviolet Catastrophe)</strong>이 일어남 — "이론상 에너지가 무한대?!" 말이 안 됨!</div></div>
+    <div class="tl-item"><div class="tl-dot">💡</div><div class="tl-year">1900년 — 플랑크의 해결</div><div class="tl-text"><strong>"에너지는 연속이 아니라, 작은 덩어리(양자)로만 주고받을 수 있다!"</strong> 이 가정 하나로 모든 관측 데이터가 완벽하게 설명됨.</div></div>
+    <div class="tl-item"><div class="tl-dot">📐</div><div class="tl-year">E = hf 탄생</div><div class="tl-text">에너지 한 덩어리 = <strong>hf</strong>. 여기서 h가 바로 <strong>플랑크 상수</strong>. 자연이 허용하는 에너지의 "최소 동전".</div></div>
+    <div class="tl-item"><div class="tl-dot">🏆</div><div class="tl-year">1918년 — 노벨 물리학상</div><div class="tl-text">플랑크, 양자 이론으로 노벨상 수상. 이후 양자역학이라는 거대한 혁명의 시작점이 됨.</div></div>
+  </div>
+  <div class="formula-box">E = hf</div>
+  <div class="key-num-row">
+    <div class="key-num"><div class="kn-val" style="color:var(--accent-purple);">h</div><div class="kn-label">플랑크 상수</div></div>
+    <div class="key-num"><div class="kn-val" style="color:var(--accent-orange);">6.626 × 10⁻³⁴</div><div class="kn-label">J·s (줄·초)</div></div>
+    <div class="key-num"><div class="kn-val" style="color:var(--accent-cyan);">f</div><div class="kn-label">빛의 진동수 (Hz)</div></div>
+  </div>
+  <div class="analogy-box"><span class="analogy-icon">🪙</span><p><strong>비유:</strong> 물을 부을 때 연속으로 흐르는 것처럼 보이지만, 실제로는 물분자 하나하나가 있죠. 에너지도 마찬가지 — 연속으로 보이지만 실제로는 <strong>hf 크기의 "동전"</strong>으로만 거래됩니다. h가 너무 작아서(10⁻³⁴!) 일상에서는 연속처럼 느껴지는 것뿐.</p></div>
+</div>
+<div class="story-card">
+  <h2>CHAPTER 03 — 파장·진동수·에너지의 관계</h2>
+  <p>빛의 세 가지 성질은 서로 밀접하게 연결되어 있습니다:</p>
+  <div class="svg-wrap" id="svg-wave-compare"></div>
+  <div class="formula-box" style="font-size:18px;">c = fλ &nbsp;→&nbsp; f = c/λ &nbsp;→&nbsp; E = hf = hc/λ</div>
+  <p><span class="hl-r">빨간 빛</span>: 파장 길다(~625nm) → 진동수 낮다 → <span class="hl-r">에너지 낮다</span></p>
+  <p><span class="hl-p">보라 빛</span>: 파장 짧다(~405nm) → 진동수 높다 → <span class="hl-p">에너지 높다</span></p>
+  <div class="think-box"><p>🤔 <strong>생각해보기:</strong> 왜 자외선(UV)이 피부에 화상을 입히고, 적외선(IR) 리모콘은 무해할까? → 자외선의 광자 하나가 더 큰 에너지를 가지고 있어서 세포의 DNA를 직접 파괴할 수 있기 때문!</p></div>
+  <div class="key-num-row">
+    <div class="key-num"><div class="kn-val" style="color:var(--accent-cyan);">c</div><div class="kn-label">빛의 속도 = 3×10⁸ m/s</div></div>
+    <div class="key-num"><div class="kn-val" style="color:var(--accent-green);">λ</div><div class="kn-label">파장 (nm)</div></div>
+    <div class="key-num"><div class="kn-val" style="color:var(--accent-orange);">f</div><div class="kn-label">진동수 (Hz)</div></div>
+  </div>
+</div>
+<div class="story-card">
+  <h2>CHAPTER 04 — LED는 어떻게 빛을 낼까?</h2>
+  <div class="svg-wrap" id="svg-bandgap-big"></div>
+  <p>LED(발광 다이오드)는 <span class="hl">반도체</span>로 만들어집니다. 반도체에는 두 개의 에너지 "층"이 있습니다:</p>
+  <p>🔼 <span class="hl">전도대(Conduction Band)</span> — 전자가 자유롭게 돌아다니는 "2층"</p>
+  <p>🔽 <span class="hl-o">가전자대(Valence Band)</span> — 전자가 원자에 묶여있는 "1층"</p>
+  <p>이 두 층 사이의 에너지 차이를 <span class="hl-p">밴드갭(Band Gap, Eg)</span>이라 합니다.</p>
+  <div class="analogy-box"><span class="analogy-icon">🏢</span><p><strong>비유:</strong> 건물의 1층(가전자대)에서 2층(전도대)으로 올라가려면 계단(에너지)이 필요합니다. 반대로 2층에서 1층으로 뛰어내리면? 높이 차이만큼의 에너지가 <strong>빛(광자)</strong>으로 튀어나옵니다! 이것이 LED의 원리입니다.</p></div>
+  <h3>💡 핵심: 밴드갭 = 광자 에너지</h3>
+  <div class="formula-box" style="font-size:18px;">E<sub>g</sub> = hf = hc/λ</div>
+  <p>밴드갭이 큰 반도체 → 에너지 높은 광자 → <span class="hl-p">파장 짧은 빛 (보라)</span></p>
+  <p>밴드갭이 작은 반도체 → 에너지 낮은 광자 → <span class="hl-r">파장 긴 빛 (빨강)</span></p>
+</div>
+<div class="story-card">
+  <h2>CHAPTER 05 — 문턱 전압: LED가 켜지는 순간</h2>
+  <div class="svg-wrap" id="svg-vth-explain"></div>
+  <p>LED에 전압을 서서히 올리면, 처음에는 아무 일도 안 일어납니다.</p>
+  <p>그러다 특정 전압에 도달하는 순간 — <span class="hl">빛이 켜집니다!</span></p>
+  <p>이 순간의 전압이 <span class="hl-o">문턱 전압(V<sub>th</sub>, Threshold Voltage)</span>입니다.</p>
+  <h3>왜 문턱 전압 = 밴드갭일까?</h3>
+  <p>전자 하나에게 <span class="hl">eV<sub>th</sub></span>만큼의 에너지를 줘야 밴드갭을 넘을 수 있습니다:</p>
+  <div class="formula-box">eV<sub>th</sub> = E<sub>g</sub> = hf = hc/λ</div>
+  <p>여기서 <span class="hl">e = 1.602 × 10⁻¹⁹ C</span> (전자의 전하량)</p>
+  <div class="analogy-box"><span class="analogy-icon">🎢</span><p><strong>비유:</strong> 롤러코스터를 타려면 최소 높이(에너지) 이상으로 올라가야 합니다. 그 최소 높이가 문턱 전압! 높이에서 내려올 때 비명(빛)이 나옵니다. 빨간 LED는 낮은 언덕(1.8V), 보라 LED는 높은 언덕(3.0V).</p></div>
+</div>
+<div class="story-card">
+  <h2>CHAPTER 06 — 5색 LED, 5개의 단서</h2>
+  <p>서로 다른 색의 LED는 서로 다른 반도체로 만들어집니다. 각각의 문턱 전압이 다릅니다:</p>
+  <div class="led-color-cards">
+    <div class="lcc" style="background:rgba(255,0,0,0.06); border-color:rgba(255,0,0,0.3);"><div class="lcc-dot" style="background:#ff0000; box-shadow:0 0 10px #ff0000;"></div><div class="lcc-name" style="color:#ff4444;">빨강</div><div class="lcc-nm" style="color:#ff6666;">625 nm</div><div class="lcc-v" style="color:#ff4444;">~1.8 V</div><div class="lcc-ev" style="color:var(--text-dim);">1.98 eV</div></div>
+    <div class="lcc" style="background:rgba(255,200,0,0.06); border-color:rgba(255,200,0,0.3);"><div class="lcc-dot" style="background:#ffcc00; box-shadow:0 0 10px #ffcc00;"></div><div class="lcc-name" style="color:#ffcc00;">노랑</div><div class="lcc-nm" style="color:#ffdd44;">590 nm</div><div class="lcc-v" style="color:#ffcc00;">~2.0 V</div><div class="lcc-ev" style="color:var(--text-dim);">2.10 eV</div></div>
+    <div class="lcc" style="background:rgba(0,255,0,0.06); border-color:rgba(0,255,0,0.3);"><div class="lcc-dot" style="background:#00ff00; box-shadow:0 0 10px #00ff00;"></div><div class="lcc-name" style="color:#00dd00;">초록</div><div class="lcc-nm" style="color:#44ff44;">525 nm</div><div class="lcc-v" style="color:#00dd00;">~2.2 V</div><div class="lcc-ev" style="color:var(--text-dim);">2.36 eV</div></div>
+    <div class="lcc" style="background:rgba(0,80,255,0.06); border-color:rgba(0,80,255,0.3);"><div class="lcc-dot" style="background:#0055ff; box-shadow:0 0 10px #0055ff;"></div><div class="lcc-name" style="color:#4488ff;">파랑</div><div class="lcc-nm" style="color:#6699ff;">470 nm</div><div class="lcc-v" style="color:#4488ff;">~2.7 V</div><div class="lcc-ev" style="color:var(--text-dim);">2.64 eV</div></div>
+    <div class="lcc" style="background:rgba(160,0,255,0.06); border-color:rgba(160,0,255,0.3);"><div class="lcc-dot" style="background:#9900ff; box-shadow:0 0 10px #9900ff;"></div><div class="lcc-name" style="color:#bb66ff;">보라</div><div class="lcc-nm" style="color:#cc88ff;">405 nm</div><div class="lcc-v" style="color:#bb66ff;">~3.0 V</div><div class="lcc-ev" style="color:var(--text-dim);">3.06 eV</div></div>
+  </div>
+  <div class="think-box"><p>🔍 <strong>패턴이 보이나요?</strong> 파장이 짧아질수록 → 문턱 전압이 올라갑니다! 이것이 바로 <strong>eV<sub>th</sub> = hc/λ</strong>의 증거. 이제 이 관계를 이용해 h를 측정할 것입니다.</p></div>
+</div>
+<div class="story-card">
+  <h2>CHAPTER 07 — 그래프 하나로 h를 구한다</h2>
+  <p><span class="hl">eV<sub>th</sub> = hc/λ</span>를 정리하면:</p>
+  <div class="formula-box" style="font-size:18px;">V<sub>th</sub> = (hc/e) × (1/λ)</div>
+  <p>이것은 <span class="hl">y = mx</span> 꼴의 <span class="hl">직선 방정식</span>입니다!</p>
+  <div class="svg-wrap" id="svg-graph-explain"></div>
+  <div class="key-num-row">
+    <div class="key-num"><div class="kn-val" style="color:var(--accent-green);">y축</div><div class="kn-label">V<sub>th</sub> (문턱 전압, V)</div></div>
+    <div class="key-num"><div class="kn-val" style="color:var(--accent-orange);">x축</div><div class="kn-label">1/λ (파장 역수, m⁻¹)</div></div>
+    <div class="key-num"><div class="kn-val" style="color:var(--accent-purple);">기울기</div><div class="kn-label">m = hc/e</div></div>
+  </div>
+  <h3>기울기에서 h 추출하기</h3>
+  <div class="formula-box" style="font-size:20px;">h = m × e / c</div>
+  <p><span class="hl">e</span> = 1.602 × 10⁻¹⁹ C, <span class="hl">c</span> = 3 × 10⁸ m/s — 이미 알려진 값!</p>
+  <p>기울기(m)만 구하면 <span class="hl-p">플랑크 상수</span>를 직접 계산할 수 있습니다.</p>
+</div>
+<div class="story-card">
+  <h2>CHAPTER 08 — 이 실험의 거대한 의미</h2>
+  <p>여러분이 LED 5개와 멀티미터로 구하는 이 숫자는, <span class="hl-p">양자역학의 근본 상수</span>입니다.</p>
+  <h3>🌍 h가 세상을 지배하는 곳들</h3>
+  <div class="svg-wrap" id="svg-h-applications"></div>
+  <p>📱 <span class="hl">스마트폰 CPU</span> — 트랜지스터 크기가 수 nm인데, 이 스케일에서는 양자 터널링(h에 의해 결정)이 일어남</p>
+  <p>☀️ <span class="hl-o">태양전지</span> — 광자의 에너지 hf가 밴드갭보다 큰 빛만 전기로 변환. LED의 역과정!</p>
+  <p>🔬 <span class="hl-g">레이저</span> — 유도 방출(Stimulated Emission). 모든 광자가 같은 hf를 가짐</p>
+  <p>🧬 <span class="hl-p">MRI</span> — 핵자기공명. 양성자의 에너지 준위 차이가 hf로 결정됨</p>
+  <div class="think-box"><p>💫 여러분은 지금 LED와 멀티미터로 <strong>우주의 근본 상수</strong>를 측정하려는 것입니다. 이것이 과학 실험의 힘입니다 — 탁상 위의 장치로 우주의 비밀에 접근하는 것!</p></div>
+  <div style="text-align:center; margin-top:20px;"><button class="btn-prove" onclick="switchTab('simulator')" style="font-size:15px; padding:14px 32px;">🔬 가상실험으로 직접 확인하기 →</button></div>
+</div>
+</div>
+</div>
+<!-- SIMULATOR -->
+<div class="section" id="sec-simulator">
+<div class="sim-layout">
+  <div class="control-panel">
+    <h3>⚙ CONTROL PANEL</h3>
+    <div style="margin-bottom:16px;">
+      <div class="slider-label"><span>LED 선택</span></div>
+      <div class="led-selector">
+        <div class="led-btn led-btn-red active" data-led="red" onclick="selectLED('red')"><div class="led-dot"></div><span>빨강</span></div>
+        <div class="led-btn led-btn-yellow" data-led="yellow" onclick="selectLED('yellow')"><div class="led-dot"></div><span>노랑</span></div>
+        <div class="led-btn led-btn-green" data-led="green" onclick="selectLED('green')"><div class="led-dot"></div><span>초록</span></div>
+        <div class="led-btn led-btn-blue" data-led="blue" onclick="selectLED('blue')"><div class="led-dot"></div><span>파랑</span></div>
+        <div class="led-btn led-btn-violet" data-led="violet" onclick="selectLED('violet')"><div class="led-dot"></div><span>보라</span></div>
+      </div>
+    </div>
+    <div class="slider-group">
+      <div class="slider-label"><span>인가 전압</span><span class="val" id="voltage-display">0.00 V</span></div>
+      <input type="range" class="slider-voltage" id="slider-voltage" min="0" max="5" step="0.01" value="0">
+    </div>
+    <div class="status-grid">
+      <div class="status-item"><div class="s-label" style="color:var(--accent-orange);">LED 전압</div><div class="s-value" style="color:var(--accent-orange);" id="s-vled">0.00</div><div class="s-unit" style="color:var(--accent-orange);">V</div></div>
+      <div class="status-item"><div class="s-label" style="color:var(--accent-green);">전류</div><div class="s-value" style="color:var(--accent-green);" id="s-current">0.00</div><div class="s-unit" style="color:var(--accent-green);">mA</div></div>
+      <div class="status-item"><div class="s-label" style="color:var(--accent-purple);">파장</div><div class="s-value" style="color:var(--accent-purple);" id="s-wavelength">625</div><div class="s-unit" style="color:var(--accent-purple);">nm</div></div>
+      <div class="status-item"><div class="s-label" style="color:var(--accent-cyan);">문턱 전압</div><div class="s-value" style="color:var(--accent-cyan);" id="s-vth">1.80</div><div class="s-unit" style="color:var(--accent-cyan);">V</div></div>
+    </div>
+    <div style="margin-top:8px;">
+      <button class="btn-prove" onclick="recordData()" style="width:100%; padding:12px; font-size:13px;">📊 현재 V<sub>th</sub> 기록</button>
+      <button class="btn-prove" onclick="calcPlanck()" style="width:100%; padding:12px; font-size:13px; margin-top:6px; background:rgba(179,136,255,0.1); border-color:var(--accent-purple); color:var(--accent-purple);">🧮 h 계산</button>
+      <button class="btn-prove" onclick="resetData()" style="width:100%; padding:10px; font-size:11px; margin-top:6px; background:rgba(255,23,68,0.05); border-color:rgba(255,23,68,0.3); color:var(--accent-red);">🗑 초기화</button>
+    </div>
+  </div>
+  <div class="vis-area">
+    <div class="circuit-container" id="circuit-svg"></div>
+    <div class="led-visual" id="led-visual">
+      <div class="led-glow-effect" id="led-glow"></div>
+      <div class="led-body" id="led-body"></div>
+      <div class="led-leg-l"></div><div class="led-leg-r"></div>
+      <div class="led-leg-labels"><span>+</span><span>−</span></div>
+    </div>
+    <div class="wavelength-bar"><div class="wavelength-marker" id="wl-marker" style="left:70%;"></div></div>
+    <div class="wavelength-labels"><span>400nm</span><span>500nm</span><span>600nm</span><span>700nm</span></div>
+    <div class="led-display">
+      <div class="led-item"><div class="led-label" style="color:var(--accent-orange);">ENERGY</div><div class="led-value" style="color:var(--accent-orange);" id="disp-energy">0.00</div><div class="led-unit" style="color:var(--accent-orange);">eV</div></div>
+      <div class="led-item"><div class="led-label" style="color:var(--accent-purple);">FREQUENCY</div><div class="led-value" style="color:var(--accent-purple);" id="disp-freq">0.00</div><div class="led-unit" style="color:var(--accent-purple);">×10¹⁴ Hz</div></div>
+      <div class="led-item"><div class="led-label" style="color:var(--accent-cyan);">STATUS</div><div class="led-value" style="color:var(--accent-cyan);" id="disp-bright">OFF</div><div class="led-unit" style="color:var(--accent-cyan);">—</div></div>
+    </div>
+    <div class="chart-container"><canvas id="iv-chart" height="250"></canvas></div>
+    <div class="data-collect" id="data-collect">
+      <h4>📊 측정 데이터</h4>
+      <div class="data-table-mini"><table id="data-table"><tr><th>LED</th><th>색상</th><th>λ (nm)</th><th>V<sub>th</sub> (V)</th><th>1/λ (×10⁶ m⁻¹)</th><th>f (×10¹⁴ Hz)</th></tr></table></div>
+    </div>
+    <div class="planck-result" id="planck-result" style="display:none;">
+      <div style="font-size:12px; color:var(--text-secondary); letter-spacing:2px;">MEASURED PLANCK'S CONSTANT</div>
+      <div class="planck-h" id="planck-h-val">—</div>
+      <div class="planck-err" id="planck-err">—</div>
+      <div style="margin-top:8px; font-size:12px; color:var(--text-dim);">이론값: 6.626 × 10⁻³⁴ J·s</div>
+    </div>
+    <div class="process-info">
+      <h4>💡 실험 가이드</h4>
+      <p>① LED 선택 → ② 전압을 천천히 올림 → ③ LED가 막 켜지는 순간 "기록" 클릭 → ④ 5개 모두 반복 → ⑤ "h 계산"</p>
+    </div>
+  </div>
+</div>
+</div>
+<!-- PREP -->
+<div class="section" id="sec-prep">
+<div class="story-section">
+  <div class="story-card"><h2>🧪 실제실험: USB 가변전원 + 멀티미터</h2><p><span class="hl">아두이노 없음, 코딩 없음.</span> USB 5V + 포텐시오미터 + 멀티미터만으로 플랑크 상수를 측정합니다!</p></div>
+  <div class="story-card"><h2>📦 준비물</h2><div class="prep-grid">
+    <div class="prep-item"><div class="prep-icon">🔌</div><div class="prep-detail"><strong>USB 케이블 (잘라서 사용)</strong><span>5V 전원. 빨간선(+5V), 검은선(GND)</span></div></div>
+    <div class="prep-item"><div class="prep-icon">🎛️</div><div class="prep-detail"><strong>10kΩ 포텐시오미터</strong><span>3핀 회전형. 0~5V 전압 조절 핵심</span></div></div>
+    <div class="prep-item"><div class="prep-icon">🛡️</div><div class="prep-detail"><strong>330Ω 고정저항</strong><span>LED 보호용 전류 제한</span></div></div>
+    <div class="prep-item"><div class="prep-icon">🔗</div><div class="prep-detail"><strong>악어클립 전선 (또는 전선 + 테이프)</strong><span>부품 4개를 직접 연결. 브레드보드 불필요!</span></div></div>
+    <div class="prep-item"><div class="prep-icon">💡</div><div class="prep-detail"><strong>LED 5종 (빨·노·초·파·보라)</strong><span>각 색상별 1개씩</span></div></div>
+    <div class="prep-item"><div class="prep-icon">📏</div><div class="prep-detail"><strong>디지털 멀티미터</strong><span>DC 전압 모드. 유일한 측정장비!</span></div></div>
+  </div></div>
+  <div class="story-card"><h2>📋 실험 절차 (총 40분)</h2>
+    <h3>STEP 1 — 회로 구성 (10분)</h3>
+    <div class="svg-wrap" id="svg-circuit-method"></div>
+    <div class="data-table-mini"><table>
+      <tr><th>연결</th><th>시작</th><th>끝</th></tr>
+      <tr><td>①</td><td>USB +5V (빨간선)</td><td>포텐시오미터 1번 핀</td></tr>
+      <tr><td>②</td><td>USB GND (검은선)</td><td>포텐시오미터 3번 핀</td></tr>
+      <tr><td>③</td><td>포텐시오미터 2번 핀(중앙)</td><td>330Ω 저항</td></tr>
+      <tr><td>④</td><td>330Ω 저항</td><td>LED Anode (+, 긴 다리)</td></tr>
+      <tr><td>⑤</td><td>LED Cathode (−, 짧은 다리)</td><td>GND</td></tr>
+    </table></div>
+    <h3>STEP 2 — 멀티미터 연결</h3>
+    <p>DC 전압 모드 → 빨간 프로브를 LED Anode(+), 검은 프로브를 LED Cathode(−)에 접촉</p>
+    <h3>STEP 3 — 문턱 전압 측정 (25분, LED당 5분)</h3>
+    <p>① 포텐시오미터를 최소(0V)에서 시작<br>② 아주 천천히 돌림<br>③ LED가 <span class="hl">처음 희미하게 켜지는 순간</span>의 멀티미터 읽음값 기록 → 3회 반복<br>④ 5색 모두 반복</p>
+    <div class="data-table-mini" style="margin-top:16px;"><table>
+      <tr><th>LED</th><th>λ (nm)</th><th>1회</th><th>2회</th><th>3회</th><th>평균 V<sub>th</sub></th></tr>
+      <tr><td>🔴 빨강</td><td>625</td><td>___</td><td>___</td><td>___</td><td>___</td></tr>
+      <tr><td>🟡 노랑</td><td>590</td><td>___</td><td>___</td><td>___</td><td>___</td></tr>
+      <tr><td>🟢 초록</td><td>525</td><td>___</td><td>___</td><td>___</td><td>___</td></tr>
+      <tr><td>🔵 파랑</td><td>470</td><td>___</td><td>___</td><td>___</td><td>___</td></tr>
+      <tr><td>🟣 보라</td><td>405</td><td>___</td><td>___</td><td>___</td><td>___</td></tr>
+    </table></div>
+  </div>
+  <div class="story-card"><h2>⚠️ 유의사항</h2><div class="caution-list">
+    <div class="caution-item caution-danger"><span class="caution-badge">위험</span><p><strong>LED에 5V 직접 인가 금지!</strong> 반드시 330Ω 보호저항 직렬 연결. 포텐시오미터를 0V에서 시작.</p></div>
+    <div class="caution-item caution-danger"><span class="caution-badge">위험</span><p><strong>USB +/− 단락 금지!</strong> 빨간선과 검은선을 직접 연결하면 기기 손상.</p></div>
+    <div class="caution-item caution-warn"><span class="caution-badge">주의</span><p><strong>문턱 전압 ≠ 밝게 빛날 때 전압.</strong> "처음 희미하게 켜지는 순간"에 측정. 어두운 환경 추천.</p></div>
+    <div class="caution-item caution-info"><span class="caution-badge">팁</span><p><strong>LED 극성:</strong> 긴 다리 = Anode(+), 짧은 다리 = Cathode(−)</p></div>
+  </div></div>
+</div>
+</div>
+<!-- EVAL -->
+<div class="section" id="sec-eval">
+<div class="story-section">
+  <div class="story-card">
+    <h2>📝 평가 — 결과보고 + 퀴즈</h2>
+    <p>아래 모든 항목을 작성한 후, 맨 아래 <span class="hl">"선생님께 제출"</span> 버튼을 눌러주세요. <span class="hl-r">제출은 1회만 가능합니다!</span></p>
+    <h3 style="margin-top:16px;">👤 학생 정보</h3>
+    <div class="student-info-row">
+      <div class="input-group"><label>학번</label><input type="text" id="stu-id" class="report-input" placeholder="예: 20301"></div>
+      <div class="input-group"><label>이름</label><input type="text" id="stu-name" class="report-input" placeholder="홍길동"></div>
+      <div class="input-group"><label>반</label><input type="text" id="stu-class" class="report-input" placeholder="예: 3반"></div>
+    </div>
+  </div>
+  <div class="story-card">
+    <h2>PART A — 실험 데이터 및 계산</h2>
+    <h3>A1. 측정 데이터 입력</h3>
+    <p>각 LED의 평균 문턱 전압을 입력하세요.</p>
+    <div class="input-row" style="grid-template-columns: 80px 1fr 1fr 1fr;">
+      <div class="input-group"><label>LED</label><div style="padding:10px;color:var(--text-dim);text-align:center;">🔴</div></div>
+      <div class="input-group"><label>V<sub>th</sub> (V)</label><input type="number" id="r-v1" class="report-input" placeholder="~1.8" step="0.01"></div>
+      <div class="input-group"><label>λ (nm)</label><input type="number" id="r-l1" class="report-input" value="625" step="1"></div>
+      <div class="input-group"><label>내 1/λ (×10⁶ m⁻¹)</label><input type="number" id="r-inv1" class="report-input calc-input" placeholder="직접 계산" step="0.001"></div>
+    </div>
+    <div class="input-row" style="grid-template-columns: 80px 1fr 1fr 1fr;">
+      <div class="input-group"><label>&nbsp;</label><div style="padding:10px;color:var(--text-dim);text-align:center;">🟡</div></div>
+      <div class="input-group"><label>V<sub>th</sub> (V)</label><input type="number" id="r-v2" class="report-input" placeholder="~2.0" step="0.01"></div>
+      <div class="input-group"><label>λ (nm)</label><input type="number" id="r-l2" class="report-input" value="590" step="1"></div>
+      <div class="input-group"><label>내 1/λ (×10⁶ m⁻¹)</label><input type="number" id="r-inv2" class="report-input calc-input" placeholder="직접 계산" step="0.001"></div>
+    </div>
+    <div class="input-row" style="grid-template-columns: 80px 1fr 1fr 1fr;">
+      <div class="input-group"><label>&nbsp;</label><div style="padding:10px;color:var(--text-dim);text-align:center;">🟢</div></div>
+      <div class="input-group"><label>V<sub>th</sub> (V)</label><input type="number" id="r-v3" class="report-input" placeholder="~2.2" step="0.01"></div>
+      <div class="input-group"><label>λ (nm)</label><input type="number" id="r-l3" class="report-input" value="525" step="1"></div>
+      <div class="input-group"><label>내 1/λ (×10⁶ m⁻¹)</label><input type="number" id="r-inv3" class="report-input calc-input" placeholder="직접 계산" step="0.001"></div>
+    </div>
+    <div class="input-row" style="grid-template-columns: 80px 1fr 1fr 1fr;">
+      <div class="input-group"><label>&nbsp;</label><div style="padding:10px;color:var(--text-dim);text-align:center;">🔵</div></div>
+      <div class="input-group"><label>V<sub>th</sub> (V)</label><input type="number" id="r-v4" class="report-input" placeholder="~2.7" step="0.01"></div>
+      <div class="input-group"><label>λ (nm)</label><input type="number" id="r-l4" class="report-input" value="470" step="1"></div>
+      <div class="input-group"><label>내 1/λ (×10⁶ m⁻¹)</label><input type="number" id="r-inv4" class="report-input calc-input" placeholder="직접 계산" step="0.001"></div>
+    </div>
+    <div class="input-row" style="grid-template-columns: 80px 1fr 1fr 1fr;">
+      <div class="input-group"><label>&nbsp;</label><div style="padding:10px;color:var(--text-dim);text-align:center;">🟣</div></div>
+      <div class="input-group"><label>V<sub>th</sub> (V)</label><input type="number" id="r-v5" class="report-input" placeholder="~3.0" step="0.01"></div>
+      <div class="input-group"><label>λ (nm)</label><input type="number" id="r-l5" class="report-input" value="405" step="1"></div>
+      <div class="input-group"><label>내 1/λ (×10⁶ m⁻¹)</label><input type="number" id="r-inv5" class="report-input calc-input" placeholder="직접 계산" step="0.001"></div>
+    </div>
+    <h3>A2. 플랑크 상수 계산</h3>
+    <div class="input-row" style="grid-template-columns: 1fr 1fr;">
+      <div class="input-group"><label>기울기 m (×10⁻⁶ V·m)</label><input type="number" id="r-slope" class="report-input calc-input" placeholder="직접 계산" step="any"></div>
+      <div class="input-group"><label>내가 구한 h (×10⁻³⁴ J·s)</label><input type="number" id="r-planck" class="report-input calc-input" placeholder="직접 계산" step="0.01"></div>
+    </div>
+    <h3>A3. 오차 원인 분석 (서술)</h3>
+    <textarea class="reflect-textarea" id="eval-error" placeholder="측정 오차의 주요 원인을 2가지 이상 분석하세요..." rows="4"></textarea>
+    <h3>A4. 실험 성찰</h3>
+    <div class="reflect-group" style="margin-top:8px;"><textarea class="reflect-textarea" id="eval-reflect" placeholder="이 실험을 통해 배운 점, 아쉬운 점, 개선 아이디어를 자유롭게 적어주세요." rows="5"></textarea></div>
+    <h3>A5. 결론</h3>
+    <textarea class="reflect-textarea" id="eval-conclusion" placeholder="본 실험에서..." rows="5"></textarea>
+  </div>
+  <div class="story-card"><h2>PART B — 이해도 확인 퀴즈</h2><p>아래 문제를 모두 풀어주세요.</p></div>
+  <div id="quiz-container"></div>
+  <div id="submit-area">
+    <button class="submit-all-btn" id="btn-submit" onclick="submitAll()">📤 선생님께 제출하기</button>
+    <p style="text-align:center; font-size:12px; color:var(--accent-red); margin-top:8px;">⚠ 제출은 1회만 가능합니다. 모든 항목을 확인한 후 제출하세요.</p>
+  </div>
+  <div id="eval-result" style="display:none;">
+    <div class="score-panel">
+      <div style="font-size:13px; color:var(--text-secondary); letter-spacing:2px; margin-bottom:8px;">총점</div>
+      <div class="score-big" id="total-score">0</div>
+      <div class="score-label">/ 100점</div>
+      <div class="score-breakdown">
+        <div class="sb-item"><div class="sb-val" style="color:var(--accent-orange);" id="sb-data">0</div><div class="sb-name">데이터 (30점)</div></div>
+        <div class="sb-item"><div class="sb-val" style="color:var(--accent-purple);" id="sb-calc">0</div><div class="sb-name">계산 (20점)</div></div>
+        <div class="sb-item"><div class="sb-val" style="color:var(--accent-green);" id="sb-essay">0</div><div class="sb-name">서술 (20점)</div></div>
+        <div class="sb-item"><div class="sb-val" style="color:var(--accent-cyan);" id="sb-quiz">0</div><div class="sb-name">퀴즈 (30점)</div></div>
+      </div>
+    </div>
+    <div class="story-card" id="eval-detail-section"><h2>채점 상세</h2><div id="eval-detail"></div></div>
+  </div>
+</div>
+</div>
+</div><!-- /app -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script>
+const LED_DATA = {
+  red:    { name:'빨강', color:'#ff0000', glow:'rgba(255,0,0,', lambda:625, vth:1.80, n:1.8 },
+  yellow: { name:'노랑', color:'#ffcc00', glow:'rgba(255,200,0,', lambda:590, vth:2.00, n:1.5 },
+  green:  { name:'초록', color:'#00ff00', glow:'rgba(0,255,0,', lambda:525, vth:2.20, n:1.6 },
+  blue:   { name:'파랑', color:'#0055ff', glow:'rgba(0,80,255,', lambda:470, vth:2.70, n:1.8 },
+  violet: { name:'보라', color:'#9900ff', glow:'rgba(160,0,255,', lambda:405, vth:3.00, n:2.0 }
+};
+const e_charge=1.602e-19, c_speed=3e8, h_actual=6.626e-34;
+let currentLED='red', voltage=0, collectedData={}, ivChart=null, submitted=false;
+
+function renderTheorySVGs() {
+  document.getElementById('svg-wave-particle').innerHTML = `<svg viewBox="0 0 560 220" xmlns="http://www.w3.org/2000/svg" style="max-width:560px;"><rect x="10" y="10" width="260" height="180" rx="12" fill="rgba(0,229,255,0.04)" stroke="rgba(0,229,255,0.2)" stroke-width="1"/><text x="140" y="35" text-anchor="middle" fill="#00e5ff" font-family="Orbitron" font-size="12" font-weight="700">파동 (Wave)</text><path d="M30,110 Q60,50 90,110 Q120,170 150,110 Q180,50 210,110 Q240,170 260,110" stroke="#00e5ff" stroke-width="3" fill="none"/><text x="140" y="185" text-anchor="middle" fill="#546e7a" font-size="10">간섭, 회절 → 무늬가 생김</text><rect x="290" y="10" width="260" height="180" rx="12" fill="rgba(255,107,53,0.04)" stroke="rgba(255,107,53,0.2)" stroke-width="1"/><text x="420" y="35" text-anchor="middle" fill="#ff6b35" font-family="Orbitron" font-size="12" font-weight="700">입자 (Particle)</text><circle cx="350" cy="100" r="14" fill="#ff6b35" opacity="0.8"><animate attributeName="cx" values="320;490;320" dur="2s" repeatCount="indefinite"/></circle><circle cx="420" cy="120" r="10" fill="#ffcc00" opacity="0.6"><animate attributeName="cx" values="490;320;490" dur="2.5s" repeatCount="indefinite"/></circle><circle cx="460" cy="90" r="12" fill="#ff4444" opacity="0.7"><animate attributeName="cx" values="350;500;350" dur="1.8s" repeatCount="indefinite"/></circle><text x="420" y="185" text-anchor="middle" fill="#546e7a" font-size="10">에너지 = 알갱이(광자)로 전달</text><text x="280" y="105" text-anchor="middle" fill="#ffd600" font-size="24" font-weight="900">+</text><text x="280" y="210" text-anchor="middle" fill="#b388ff" font-family="Orbitron" font-size="11">빛 = 파동 + 입자 (이중성!)</text></svg>`;
+  document.getElementById('svg-wave-compare').innerHTML = `<svg viewBox="0 0 560 220" xmlns="http://www.w3.org/2000/svg" style="max-width:560px;"><text x="30" y="25" fill="#bb66ff" font-size="12" font-weight="700">보라 — 짧은 파장, 높은 에너지</text><path d="M30,70 Q45,30 60,70 Q75,110 90,70 Q105,30 120,70 Q135,110 150,70 Q165,30 180,70 Q195,110 210,70 Q225,30 240,70 Q255,110 270,70 Q285,30 300,70" stroke="#9900ff" stroke-width="3" fill="none"/><text x="330" y="70" fill="#9900ff" font-family="Orbitron" font-size="11">λ = 405nm</text><text x="330" y="88" fill="#ffd600" font-family="Orbitron" font-size="10">E = 3.06 eV</text><text x="30" y="130" fill="#ff4444" font-size="12" font-weight="700">빨강 — 긴 파장, 낮은 에너지</text><path d="M30,170 Q70,120 110,170 Q150,220 190,170 Q230,120 270,170 Q310,220 350,170" stroke="#ff0000" stroke-width="3" fill="none"/><text x="380" y="170" fill="#ff0000" font-family="Orbitron" font-size="11">λ = 625nm</text><text x="380" y="188" fill="#ffd600" font-family="Orbitron" font-size="10">E = 1.98 eV</text></svg>`;
+  document.getElementById('svg-bandgap-big').innerHTML = `<svg viewBox="0 0 560 300" xmlns="http://www.w3.org/2000/svg" style="max-width:560px;"><rect x="60" y="30" width="440" height="70" rx="8" fill="rgba(0,229,255,0.06)" stroke="#00e5ff" stroke-width="2"/><text x="280" y="58" text-anchor="middle" fill="#00e5ff" font-family="Orbitron" font-size="14" font-weight="700">전도대 (Conduction Band)</text><text x="280" y="80" text-anchor="middle" fill="#546e7a" font-size="11">전자가 자유롭게 움직이는 "2층"</text><rect x="220" y="105" width="120" height="80" rx="8" fill="rgba(179,136,255,0.08)" stroke="#b388ff" stroke-width="1.5" stroke-dasharray="6,4"/><text x="280" y="138" text-anchor="middle" fill="#b388ff" font-family="Orbitron" font-size="13" font-weight="700">밴드갭</text><text x="280" y="158" text-anchor="middle" fill="#b388ff" font-family="Orbitron" font-size="11">Eg = hf</text><rect x="60" y="190" width="440" height="70" rx="8" fill="rgba(255,107,53,0.06)" stroke="#ff6b35" stroke-width="2"/><text x="280" y="218" text-anchor="middle" fill="#ff6b35" font-family="Orbitron" font-size="14" font-weight="700">가전자대 (Valence Band)</text><text x="280" y="240" text-anchor="middle" fill="#546e7a" font-size="11">전자가 원자에 속박된 "1층"</text><circle cx="140" cy="55" r="10" fill="#00e5ff" opacity="0.9"><animate attributeName="cy" values="55;55;220" dur="3s" repeatCount="indefinite" keyTimes="0;0.3;1"/></circle><text x="155" y="55" fill="#00e5ff" font-size="10" font-weight="700">e⁻</text><text x="100" y="150" fill="#39ff14" font-size="28">💡</text><text x="80" y="175" fill="#39ff14" font-size="10">광자 방출!</text></svg>`;
+  document.getElementById('svg-vth-explain').innerHTML = `<svg viewBox="0 0 560 240" xmlns="http://www.w3.org/2000/svg" style="max-width:560px;"><line x1="80" y1="200" x2="80" y2="30" stroke="#546e7a" stroke-width="1.5"/><text x="30" y="120" fill="#546e7a" font-size="10" text-anchor="middle" transform="rotate(-90,30,120)">전류 (mA)</text><line x1="80" y1="200" x2="500" y2="200" stroke="#546e7a" stroke-width="1.5"/><text x="300" y="230" fill="#546e7a" font-size="10" text-anchor="middle">전압 (V)</text><path d="M80,200 L200,199 Q240,198 260,195 Q280,185 300,160 Q320,120 340,60" stroke="#ff0000" stroke-width="3" fill="none"/><line x1="230" y1="200" x2="230" y2="40" stroke="#ffd600" stroke-width="1.5" stroke-dasharray="6,4"/><text x="230" y="225" text-anchor="middle" fill="#ffd600" font-family="Orbitron" font-size="11" font-weight="700">Vth</text><rect x="100" y="170" width="110" height="24" rx="6" fill="rgba(90,90,90,0.3)"/><text x="155" y="186" text-anchor="middle" fill="#90a4ae" font-size="10">LED 꺼짐</text><rect x="310" y="45" width="140" height="24" rx="6" fill="rgba(57,255,20,0.1)"/><text x="380" y="61" text-anchor="middle" fill="#39ff14" font-size="10" font-weight="600">💡 LED 켜짐!</text><circle cx="235" cy="195" r="4" fill="#ffd600"/></svg>`;
+  document.getElementById('svg-graph-explain').innerHTML = `<svg viewBox="0 0 560 280" xmlns="http://www.w3.org/2000/svg" style="max-width:560px;"><line x1="80" y1="240" x2="80" y2="20" stroke="#546e7a" stroke-width="1.5"/><line x1="80" y1="240" x2="520" y2="240" stroke="#546e7a" stroke-width="1.5"/><text x="25" y="130" fill="#39ff14" font-size="11" text-anchor="middle" transform="rotate(-90,25,130)" font-family="Orbitron">Vth (V)</text><text x="300" y="272" fill="#ff6b35" font-size="11" text-anchor="middle" font-family="Orbitron">1/λ (×10⁶ m⁻¹)</text><circle cx="150" cy="195" r="8" fill="#ff0000" opacity="0.8"/><text x="150" y="215" text-anchor="middle" fill="#ff4444" font-size="9">빨강</text><circle cx="210" cy="175" r="8" fill="#ffcc00" opacity="0.8"/><text x="210" y="168" text-anchor="middle" fill="#ffcc00" font-size="9">노랑</text><circle cx="280" cy="145" r="8" fill="#00ff00" opacity="0.8"/><text x="280" y="138" text-anchor="middle" fill="#00ff00" font-size="9">초록</text><circle cx="360" cy="100" r="8" fill="#0055ff" opacity="0.8"/><text x="360" y="93" text-anchor="middle" fill="#4488ff" font-size="9">파랑</text><circle cx="440" cy="60" r="8" fill="#9900ff" opacity="0.8"/><text x="440" y="53" text-anchor="middle" fill="#bb66ff" font-size="9">보라</text><line x1="120" y1="210" x2="470" y2="40" stroke="#ffd600" stroke-width="2.5" stroke-dasharray="8,4"/><rect x="330" y="145" width="180" height="55" rx="8" fill="rgba(179,136,255,0.1)" stroke="rgba(179,136,255,0.3)" stroke-width="1"/><text x="420" y="165" text-anchor="middle" fill="#b388ff" font-family="Orbitron" font-size="11" font-weight="700">기울기 = hc/e</text><text x="420" y="185" text-anchor="middle" fill="#b388ff" font-size="10">→ h = 기울기 × e / c</text></svg>`;
+  document.getElementById('svg-h-applications').innerHTML = `<svg viewBox="0 0 560 160" xmlns="http://www.w3.org/2000/svg" style="max-width:560px;"><circle cx="280" cy="80" r="50" fill="rgba(179,136,255,0.1)" stroke="#b388ff" stroke-width="2"/><text x="280" y="75" text-anchor="middle" fill="#b388ff" font-family="Orbitron" font-size="20" font-weight="900">h</text><text x="280" y="95" text-anchor="middle" fill="#546e7a" font-size="9">플랑크 상수</text>${[{x:80,y:40,icon:'📱',label:'반도체/CPU'},{x:80,y:120,icon:'☀️',label:'태양전지'},{x:480,y:40,icon:'🔬',label:'레이저'},{x:480,y:120,icon:'🧬',label:'MRI'},{x:280,y:150,icon:'💡',label:'LED'}].map(d=>`<line x1="${d.x}" y1="${d.y}" x2="${280+(d.x-280)*0.55}" y2="${80+(d.y-80)*0.45}" stroke="rgba(179,136,255,0.3)" stroke-width="1"/><text x="${d.x}" y="${d.y-2}" text-anchor="middle" font-size="20">${d.icon}</text><text x="${d.x}" y="${d.y+16}" text-anchor="middle" fill="#90a4ae" font-size="9">${d.label}</text>`).join('')}</svg>`;
+}
+function renderCircuitSVGs() {
+  const el = document.getElementById('svg-circuit-method');
+  if(!el) return;
+  el.innerHTML = `<svg viewBox="0 0 560 200" xmlns="http://www.w3.org/2000/svg" style="max-width:560px;"><rect x="20" y="35" width="70" height="70" rx="6" fill="rgba(255,23,68,0.08)" stroke="#ff1744" stroke-width="1.5"/><text x="55" y="65" text-anchor="middle" fill="#ff1744" font-family="Orbitron" font-size="11">USB</text><text x="55" y="82" text-anchor="middle" fill="#ff1744" font-family="Orbitron" font-size="10">5V</text><line x1="90" y1="55" x2="140" y2="55" stroke="#ff4444" stroke-width="2"/><rect x="140" y="35" width="80" height="70" rx="6" fill="rgba(255,214,0,0.08)" stroke="#ffd600" stroke-width="1.5"/><text x="180" y="63" text-anchor="middle" fill="#ffd600" font-family="Orbitron" font-size="10">POT</text><text x="180" y="80" text-anchor="middle" fill="#90a4ae" font-size="9">10kΩ</text><line x1="220" y1="55" x2="280" y2="55" stroke="#ffd600" stroke-width="2"/><rect x="280" y="42" width="60" height="26" rx="4" fill="rgba(0,229,255,0.06)" stroke="#00e5ff" stroke-width="1.5"/><text x="310" y="60" text-anchor="middle" fill="#00e5ff" font-family="Orbitron" font-size="10">330Ω</text><line x1="340" y1="55" x2="390" y2="55" stroke="#00e5ff" stroke-width="2"/><polygon points="390,35 440,55 390,75" fill="rgba(255,0,0,0.15)" stroke="#ff0000" stroke-width="1.5"/><line x1="440" y1="35" x2="440" y2="75" stroke="#ff0000" stroke-width="1.5"/><text x="415" y="95" text-anchor="middle" fill="#ff4444" font-size="10">LED</text><line x1="440" y1="55" x2="500" y2="55" stroke="#888" stroke-width="2"/><line x1="500" y1="55" x2="500" y2="145" stroke="#888" stroke-width="2"/><line x1="55" y1="105" x2="55" y2="145" stroke="#888" stroke-width="2"/><line x1="55" y1="145" x2="500" y2="145" stroke="#888" stroke-width="2"/><text x="280" y="165" text-anchor="middle" fill="#888" font-size="10">GND</text><rect x="370" y="110" width="70" height="35" rx="4" fill="rgba(57,255,20,0.06)" stroke="#39ff14" stroke-width="1" stroke-dasharray="4,3"/><text x="405" y="130" text-anchor="middle" fill="#39ff14" font-family="Orbitron" font-size="9">멀티미터</text></svg>`;
+}
+function selectLED(id) {
+  currentLED = id;
+  document.querySelectorAll('.led-btn').forEach(b=>b.classList.toggle('active',b.dataset.led===id));
+  const led=LED_DATA[id];
+  document.getElementById('s-wavelength').textContent=led.lambda;
+  document.getElementById('s-vth').textContent=led.vth.toFixed(2);
+  document.getElementById('wl-marker').style.left=((led.lambda-400)/(700-400)*100)+'%';
+  updateSimulator(); drawIVCurve();
+}
+function diodeCurrent(v,led){const Is=1e-12,Vt=0.026;if(v<0)return 0;return Math.min(Is*(Math.exp(v/(led.n*Vt))-1)*1000,50);}
+function updateSimulator(){
+  const led=LED_DATA[currentLED], R=330;
+  let vLed=0;
+  for(let v=0;v<voltage;v+=0.005){if(v+diodeCurrent(v,led)*R/1000>voltage)break;vLed=v;}
+  const current=diodeCurrent(vLed,led);
+  const freq=c_speed/(led.lambda*1e-9);
+  document.getElementById('s-vled').textContent=vLed.toFixed(2);
+  document.getElementById('s-current').textContent=current.toFixed(2);
+  document.getElementById('disp-energy').textContent=(vLed>led.vth*0.9?vLed:0).toFixed(2);
+  document.getElementById('disp-freq').textContent=(freq/1e14).toFixed(2);
+  const br=Math.min(current/10,1);
+  const lb=document.getElementById('led-body'),lg=document.getElementById('led-glow');
+  if(br>0.01){lb.style.background=led.color;lb.style.boxShadow=`0 0 ${20+br*30}px ${led.glow}${br})`;lg.style.background=led.color;lg.style.opacity=br*0.6;document.getElementById('disp-bright').textContent=br>0.5?'BRIGHT':br>0.05?'DIM':'FAINT';document.getElementById('disp-bright').style.color=led.color;}
+  else{lb.style.background='#333';lb.style.boxShadow='none';lg.style.opacity=0;document.getElementById('disp-bright').textContent='OFF';document.getElementById('disp-bright').style.color='#546e7a';}
+  updateCircuitSVG(vLed,current);
+}
+function updateCircuitSVG(vLed,current){
+  const led=LED_DATA[currentLED];
+  document.getElementById('circuit-svg').innerHTML=`<svg viewBox="0 0 600 260" xmlns="http://www.w3.org/2000/svg" style="width:100%;"><rect x="30" y="70" width="80" height="90" rx="8" fill="rgba(255,23,68,0.08)" stroke="#ff1744" stroke-width="1.5"/><text x="70" y="105" text-anchor="middle" fill="#ff1744" font-family="Orbitron" font-size="11">USB 5V</text><line x1="110" y1="95" x2="170" y2="95" stroke="#ff4444" stroke-width="2"/><rect x="170" y="70" width="90" height="90" rx="8" fill="rgba(255,214,0,0.08)" stroke="#ffd600" stroke-width="1.5"/><text x="215" y="105" text-anchor="middle" fill="#ffd600" font-family="Orbitron" font-size="10">POT</text><text x="215" y="125" text-anchor="middle" fill="#ffd600" font-family="Orbitron" font-size="12">${voltage.toFixed(2)}V</text><line x1="260" y1="95" x2="320" y2="95" stroke="#ffd600" stroke-width="2"/><rect x="320" y="78" width="60" height="34" rx="6" fill="rgba(0,229,255,0.06)" stroke="#00e5ff" stroke-width="1.5"/><text x="350" y="100" text-anchor="middle" fill="#00e5ff" font-family="Orbitron" font-size="10">330Ω</text><line x1="380" y1="95" x2="420" y2="95" stroke="#00e5ff" stroke-width="2"/><polygon points="420,72 475,95 420,118" fill="${current>0.1?led.glow+'0.3)':'rgba(50,50,50,0.3)'}" stroke="${current>0.1?led.color:'#444'}" stroke-width="2"/><line x1="475" y1="72" x2="475" y2="118" stroke="${current>0.1?led.color:'#444'}" stroke-width="2"/>${current>0.1?`<line x1="483" y1="78" x2="495" y2="68" stroke="${led.color}" stroke-width="1.5" opacity="0.7"/><line x1="483" y1="88" x2="495" y2="78" stroke="${led.color}" stroke-width="1.5" opacity="0.7"/>`:''}<text x="448" y="140" text-anchor="middle" fill="${led.color}" font-size="11" font-weight="700">${led.name} LED</text><line x1="475" y1="95" x2="530" y2="95" stroke="#888" stroke-width="2"/><line x1="530" y1="95" x2="530" y2="190" stroke="#888" stroke-width="2"/><line x1="70" y1="160" x2="70" y2="190" stroke="#888" stroke-width="2"/><line x1="70" y1="190" x2="530" y2="190" stroke="#888" stroke-width="2"/><rect x="400" y="185" width="80" height="50" rx="6" fill="rgba(57,255,20,0.06)" stroke="#39ff14" stroke-width="1.5" stroke-dasharray="4,3"/><text x="440" y="207" text-anchor="middle" fill="#39ff14" font-family="Orbitron" font-size="14" font-weight="700">${vLed.toFixed(2)} V</text><text x="440" y="225" text-anchor="middle" fill="#39ff14" font-size="9">멀티미터 ${current.toFixed(1)}mA</text></svg>`;
+}
+function drawIVCurve(){
+  const led=LED_DATA[currentLED],ctx=document.getElementById('iv-chart').getContext('2d');
+  if(ivChart)ivChart.destroy();
+  const dp=[];for(let v=0;v<=4;v+=0.02){const I=diodeCurrent(v,led);if(I>30)break;dp.push({x:v,y:I});}
+  const R=330;let opV=0,opI=0;
+  for(let v=0;v<voltage;v+=0.005){const I=diodeCurrent(v,led);if(v+I*R/1000>voltage)break;opV=v;opI=I;}
+  ivChart=new Chart(ctx,{type:'scatter',data:{datasets:[
+    {label:`${led.name} I-V`,data:dp,borderColor:led.color,backgroundColor:led.glow+'0.1)',borderWidth:2,pointRadius:0,showLine:true,tension:0.4},
+    {label:'동작점',data:[{x:opV,y:opI}],borderColor:'#ffd600',backgroundColor:'#ffd600',pointRadius:opI>0.01?8:0,pointStyle:'crossRot',borderWidth:3},
+    {label:`Vth=${led.vth}V`,data:[{x:led.vth,y:0},{x:led.vth,y:20}],borderColor:'rgba(255,255,255,0.3)',borderWidth:1,borderDash:[5,5],pointRadius:0,showLine:true}
+  ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{color:'#90a4ae',font:{size:11}}}},scales:{x:{title:{display:true,text:'LED 전압 (V)',color:'#90a4ae'},ticks:{color:'#546e7a'},grid:{color:'rgba(0,229,255,0.08)'},min:0,max:4},y:{title:{display:true,text:'전류 (mA)',color:'#90a4ae'},ticks:{color:'#546e7a'},grid:{color:'rgba(0,229,255,0.08)'},min:0,max:25}}}});
+}
+document.getElementById('slider-voltage').addEventListener('input',function(){
+  voltage=parseFloat(this.value);document.getElementById('voltage-display').textContent=voltage.toFixed(2)+' V';updateSimulator();
+  if(ivChart){const led=LED_DATA[currentLED],R=330;let opV=0,opI=0;for(let v=0;v<voltage;v+=0.005){const I=diodeCurrent(v,led);if(v+I*R/1000>voltage)break;opV=v;opI=I;}ivChart.data.datasets[1].data=[{x:opV,y:opI}];ivChart.data.datasets[1].pointRadius=opI>0.01?8:0;ivChart.update('none');}
+});
+function recordData(){
+  const led=LED_DATA[currentLED];const vLed=parseFloat(document.getElementById('s-vled').textContent);const current=parseFloat(document.getElementById('s-current').textContent);
+  if(current<0.05){alert('LED가 아직 꺼져 있습니다! 전압을 올려 막 켜지는 순간에 기록하세요.');return;}
+  collectedData[currentLED]={name:led.name,color:led.color,lambda:led.lambda,vth:vLed,invLambda:1/(led.lambda*1e-9)/1e6,freq:c_speed/(led.lambda*1e-9)/1e14};
+  renderDataTable();
+}
+function renderDataTable(){
+  const t=document.getElementById('data-table');let h='<tr><th>LED</th><th>색상</th><th>λ (nm)</th><th>V<sub>th</sub> (V)</th><th>1/λ (×10⁶ m⁻¹)</th><th>f (×10¹⁴ Hz)</th></tr>';
+  for(const[k,d]of Object.entries(collectedData)){h+=`<tr><td style="color:${d.color}">●</td><td>${d.name}</td><td>${d.lambda}</td><td style="color:var(--accent-yellow)">${d.vth.toFixed(2)}</td><td>${d.invLambda.toFixed(3)}</td><td>${d.freq.toFixed(2)}</td></tr>`;}
+  t.innerHTML=h;
+}
+function calcPlanck(){
+  const keys=Object.keys(collectedData);if(keys.length<2){alert('최소 2개 LED 데이터가 필요합니다!');return;}
+  const pts=keys.map(k=>({x:1/(LED_DATA[k].lambda*1e-9),y:collectedData[k].vth}));
+  const n=pts.length,sX=pts.reduce((s,p)=>s+p.x,0),sY=pts.reduce((s,p)=>s+p.y,0),sXY=pts.reduce((s,p)=>s+p.x*p.y,0),sX2=pts.reduce((s,p)=>s+p.x*p.x,0);
+  const slope=(n*sXY-sX*sY)/(n*sX2-sX*sX);const hm=slope*e_charge/c_speed;const err=Math.abs(hm-h_actual)/h_actual*100;
+  document.getElementById('planck-result').style.display='block';
+  document.getElementById('planck-h-val').textContent=(hm*1e34).toFixed(3)+' × 10⁻³⁴ J·s';
+  document.getElementById('planck-err').innerHTML=`오차: ${err.toFixed(1)}% | 기울기: ${(slope*1e6).toFixed(4)} ×10⁻⁶ V·m | 데이터: ${n}개`;
+  document.getElementById('planck-result').scrollIntoView({behavior:'smooth',block:'center'});
+}
+function resetData(){collectedData={};renderDataTable();document.getElementById('planck-result').style.display='none';}
+const quizData=[
+  {q:"플랑크 상수(h)의 물리적 의미는?",opts:["빛의 속도를 결정하는 상수","에너지의 최소 단위(양자)를 결정하는 근본 상수","전자의 질량을 나타내는 상수","원자핵의 크기를 결정하는 상수"],ans:1,ex:"h는 E=hf에서 에너지와 진동수의 비례 상수로, 자연에서 에너지가 불연속적인 양자 단위로 존재함을 나타냅니다."},
+  {q:"빨간색 LED와 파란색 LED 중 문턱 전압이 더 높은 것은?",opts:["빨간색 — 파장이 길어서","파란색 — 밴드갭이 더 커서","같다","저항에 따라 다르다"],ans:1,ex:"파란색 LED는 밴드갭이 커서 더 높은 에너지의 광자를 방출하므로 문턱 전압이 높습니다."},
+  {q:"E=hf에서 진동수(f)가 2배면 광자 에너지는?",opts:["변함없음","2배","4배","√2배"],ans:1,ex:"E=hf는 선형 관계. f가 2배면 E도 정확히 2배입니다."},
+  {q:"V_th vs 1/λ 그래프의 기울기 물리적 의미는?",opts:["h 그 자체","hc/e","전자의 운동 에너지","LED 저항값"],ans:1,ex:"V_th = (hc/e) × (1/λ)이므로 기울기 = hc/e. 여기서 h를 추출합니다."},
+  {q:"330Ω 저항을 직렬 연결하는 이유는?",opts:["전압 측정용","LED 과전류 방지","h 계산에 필요","밝기 최대화"],ans:1,ex:"문턱 전압을 넘으면 전류가 급증합니다. 저항이 전류를 제한하여 LED 파손을 막습니다."},
+  {q:"문턱 전압을 정확히 측정하려면?",opts:["밝은 형광등 아래","어두운 환경","고온 환경","환경 무관"],ans:1,ex:"문턱 전압은 LED가 '처음 희미하게 빛나는 순간'의 전압입니다. 어두운 환경에서 미약한 빛을 포착하기 쉽습니다."},
+  {q:"LED 색을 결정하는 것은?",opts:["인가 전압 크기","직렬 저항 값","반도체 재료의 밴드갭","LED의 물리적 크기"],ans:2,ex:"LED 색은 반도체 재료(밴드갭)에 의해 결정됩니다. 전압을 올린다고 색이 바뀌지 않습니다."},
+  {q:"측정한 h값이 이론값보다 15% 높은 원인으로 가장 가능성 높은 것은?",opts:["LED를 너무 밝게 켜서 측정","포텐시오미터 고장","멀티미터 배터리 약함","USB 전원이 5V가 아님"],ans:0,ex:"밝게 빛날 때 전압은 문턱 전압보다 높습니다. V_th를 과대 측정하면 기울기가 커져 h가 과대평가됩니다."},
+  {q:"태양전지와 LED의 관계는?",opts:["둘 다 빛을 방출","LED는 전기→빛, 태양전지는 빛→전기, 밴드갭 원리 공유","태양전지는 h와 무관","서로 다른 물리학 기반"],ans:1,ex:"LED와 태양전지는 같은 밴드갭 물리의 역과정입니다."},
+  {q:"h = 6.626×10⁻³⁴ J·s의 의미는?",opts:["1Hz 빛의 광자 에너지가 6.626×10⁻³⁴ J","전자 하나의 에너지","LED 소비전력","1초 총 에너지"],ans:0,ex:"E=hf에서 f=1Hz이면 E=h입니다. 가시광선(~10¹⁴ Hz)에서는 광자 에너지가 ~10⁻¹⁹ J 수준이 됩니다."}
+];
+let quizAnswers={};
+function renderQuiz(){
+  document.getElementById('quiz-container').innerHTML=quizData.map((q,i)=>`<div class="quiz-card" id="qcard-${i}"><div class="quiz-num">Q${String(i+1).padStart(2,'0')}</div><div class="quiz-q">${q.q}</div><div class="quiz-options">${q.opts.map((o,j)=>`<div class="quiz-opt" data-qi="${i}" data-oi="${j}" onclick="selQ(${i},${j})">${o}</div>`).join('')}</div><div class="quiz-explain" id="qexp-${i}">💡 ${q.ex}</div></div>`).join('');
+}
+function selQ(qi,oi){if(submitted)return;quizAnswers[qi]=oi;document.querySelectorAll(`.quiz-opt[data-qi="${qi}"]`).forEach(el=>el.classList.toggle('selected',parseInt(el.dataset.oi)===oi));}
+function submitAll(){
+  if(submitted){alert('이미 제출되었습니다!');return;}
+  const stuId=document.getElementById('stu-id').value.trim();const stuName=document.getElementById('stu-name').value.trim();
+  if(!stuId||!stuName){alert('학번과 이름을 입력해주세요.');return;}
+  if(!confirm('제출하면 수정할 수 없습니다. 정말 제출하시겠습니까?'))return;
+  submitted=true;document.getElementById('btn-submit').disabled=true;document.getElementById('btn-submit').textContent='✅ 제출 완료';
+  let dataScore=0, calcScore=0, essayScore=0, quizScore=0, detailHTML='';
+  const lambdas=[625,590,525,470,405]; let points=[], validCount=0;
+  detailHTML+='<h3 style="color:var(--accent-orange); margin-top:12px;">📊 PART A — 데이터 & 계산</h3>';
+  for(let i=0;i<5;i++){
+    const v=parseFloat(document.getElementById(`r-v${i+1}`).value);const l=parseFloat(document.getElementById(`r-l${i+1}`).value);const stuInv=parseFloat(document.getElementById(`r-inv${i+1}`).value);
+    if(!isNaN(v)&&!isNaN(l)){validCount++;dataScore+=4;points.push({x:1/(l*1e-9),y:v});
+      const correctInv=1/(l*1e-9)/1e6;const invEl=document.getElementById(`r-inv${i+1}`);invEl.classList.remove('correct','close','wrong');
+      if(!isNaN(stuInv)){const diff=Math.abs(stuInv-correctInv)/correctInv*100;if(diff<=1){invEl.classList.add('correct');dataScore+=2;}else if(diff<=5){invEl.classList.add('close');dataScore+=1;}else{invEl.classList.add('wrong');}}
+    }
+  }
+  dataScore=Math.min(dataScore,30);
+  if(points.length>=2){
+    const n=points.length,sX=points.reduce((s,p)=>s+p.x,0),sY=points.reduce((s,p)=>s+p.y,0),sXY=points.reduce((s,p)=>s+p.x*p.y,0),sX2=points.reduce((s,p)=>s+p.x*p.x,0);
+    const slope=(n*sXY-sX*sY)/(n*sX2-sX*sX);const hCalc=slope*e_charge/c_speed;const err=Math.abs(hCalc-h_actual)/h_actual*100;
+    const stuSlope=parseFloat(document.getElementById('r-slope').value);const stuH=parseFloat(document.getElementById('r-planck').value);
+    const sEl=document.getElementById('r-slope'),hEl=document.getElementById('r-planck');sEl.classList.remove('correct','close','wrong');hEl.classList.remove('correct','close','wrong');
+    if(!isNaN(stuSlope)){const sd=Math.abs(stuSlope-slope*1e6)/(slope*1e6)*100;if(sd<=5){sEl.classList.add('correct');calcScore+=10;}else if(sd<=15){sEl.classList.add('close');calcScore+=5;}else{sEl.classList.add('wrong');}}
+    if(!isNaN(stuH)){const hd=Math.abs(stuH-hCalc*1e34)/(hCalc*1e34)*100;if(hd<=5){hEl.classList.add('correct');calcScore+=10;}else if(hd<=15){hEl.classList.add('close');calcScore+=5;}else{hEl.classList.add('wrong');}}
+    detailHTML+=`<p style="color:var(--text-secondary);margin:8px 0;">정답 기울기: ${(slope*1e6).toFixed(4)}×10⁻⁶ V·m | 정답 h: ${(hCalc*1e34).toFixed(3)}×10⁻³⁴ J·s (오차 ${err.toFixed(1)}%)</p>`;
+  }
+  calcScore=Math.min(calcScore,20);
+  const errText=document.getElementById('eval-error').value.trim();const refText=document.getElementById('eval-reflect').value.trim();const conText=document.getElementById('eval-conclusion').value.trim();
+  if(errText.length>20)essayScore+=7;if(refText.length>20)essayScore+=7;if(conText.length>30)essayScore+=6;essayScore=Math.min(essayScore,20);
+  detailHTML+=`<p style="color:var(--text-secondary);">데이터 입력: ${validCount}/5개 | 서술 항목: ${[errText,refText,conText].filter(t=>t.length>20).length}/3개</p>`;
+  detailHTML+='<h3 style="color:var(--accent-cyan); margin-top:20px;">🎯 PART B — 퀴즈</h3>';
+  let qCorrect=0;
+  quizData.forEach((q,i)=>{const ua=quizAnswers[i];document.querySelectorAll(`.quiz-opt[data-qi="${i}"]`).forEach(el=>{const oi=parseInt(el.dataset.oi);el.style.cursor='default';if(oi===q.ans)el.classList.add('correct');if(oi===ua&&ua!==q.ans)el.classList.add('wrong');});if(ua===q.ans)qCorrect++;document.getElementById(`qexp-${i}`).classList.add('show');});
+  quizScore=Math.round(qCorrect/quizData.length*30);
+  detailHTML+=`<p style="color:var(--text-secondary);">정답: ${qCorrect}/${quizData.length}문항 (${quizScore}/30점)</p>`;
+  const total=dataScore+calcScore+essayScore+quizScore;
+  document.getElementById('total-score').textContent=total;document.getElementById('sb-data').textContent=dataScore;document.getElementById('sb-calc').textContent=calcScore;document.getElementById('sb-essay').textContent=essayScore;document.getElementById('sb-quiz').textContent=quizScore;
+  document.getElementById('eval-detail').innerHTML=detailHTML;document.getElementById('eval-result').style.display='block';document.getElementById('eval-result').scrollIntoView({behavior:'smooth',block:'center'});
+  document.querySelectorAll('#sec-eval input, #sec-eval textarea').forEach(el=>el.disabled=true);document.querySelectorAll('#sec-eval .quiz-opt').forEach(el=>el.style.pointerEvents='none');
+}
+function switchTab(tab){document.querySelectorAll('.nav-tab').forEach(t=>t.classList.toggle('active',t.dataset.tab===tab));document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));document.getElementById('sec-'+tab).classList.add('active');if(tab==='simulator')selectLED(currentLED);}
+document.querySelectorAll('.nav-tab').forEach(tab=>{tab.addEventListener('click',()=>switchTab(tab.dataset.tab));});
+renderTheorySVGs();renderCircuitSVGs();renderQuiz();selectLED('red');updateSimulator();
+</script>
+</body>
+</html>
