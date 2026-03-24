@@ -3,15 +3,15 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Tags - EduAtlas</title>
-  <meta name="description" content="EduAtlas 전체 태그 목록. 교육, 연구, 기술, 실험 관련 키워드별 문서를 탐색하세요.">
+  <title>태그 - 과학 교육 키워드 - EduAtlas</title>
+  <meta name="description" content="과학 교육 태그 목록. 물리, 화학, 실험, 시뮬레이션 등 키워드별 문서를 탐색하세요.">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://geoproject-8fc76.web.app/tag.html">
 
   <!-- Open Graph -->
   <meta property="og:type" content="website">
-  <meta property="og:title" content="Tags - EduAtlas">
-  <meta property="og:description" content="EduAtlas 전체 태그 목록. 키워드별 문서를 탐색하세요.">
+  <meta property="og:title" content="태그 - 과학 교육 키워드 - EduAtlas">
+  <meta property="og:description" content="과학 교육 태그 목록. 키워드별 문서를 탐색하세요.">
   <meta property="og:url" content="https://geoproject-8fc76.web.app/tag.html">
   <meta property="og:site_name" content="EduAtlas">
 
@@ -22,9 +22,9 @@
 
   <div class="container page-content">
     <div class="breadcrumb" id="breadcrumb">
-      <a href="index.html">Explore</a>
+      <a href="index.html">홈</a>
       <span class="sep">›</span>
-      <span>Tags</span>
+      <span>태그</span>
     </div>
 
     <div id="pageContent"></div>
@@ -53,7 +53,7 @@
     const tags = getAllTags();
     const maxCount = tags.length > 0 ? tags[0][1] : 1;
 
-    document.title = 'Tags - EduAtlas';
+    document.title = '태그 - EduAtlas';
 
     const tagCards = tags.map(([tag, count]) => {
       const size = Math.max(14, Math.min(28, 14 + (count / maxCount) * 14));
@@ -80,7 +80,7 @@
     }).join('');
 
     document.getElementById('pageContent').innerHTML = `
-      <h1 class="section-title">Tags</h1>
+      <h1 class="section-title">태그</h1>
       <p class="section-subtitle">키워드별 문서를 탐색하세요 · ${tags.length}개 태그</p>
 
       <!-- 태그 클라우드 -->
@@ -104,12 +104,12 @@
   function renderTagDetail(tag) {
     const docs = getDocumentsByTag(tag);
 
-    document.title = tag + ' - Tags - EduAtlas';
+    document.title = tag + ' - 태그 - EduAtlas';
 
     // breadcrumb
     document.getElementById('breadcrumb').innerHTML = `
-      <a href="index.html">Explore</a><span class="sep">›</span>
-      <a href="tag.html">Tags</a><span class="sep">›</span>
+      <a href="index.html">홈</a><span class="sep">›</span>
+      <a href="tag.html">태그</a><span class="sep">›</span>
       <span>${tag}</span>`;
 
     // 관련 태그: 같은 문서에 함께 나오는 다른 태그
