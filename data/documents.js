@@ -362,7 +362,7 @@ const SAMPLE_DOCUMENTS = [
       importance: '화학 분석, 의료 검사, 환경 모니터링 등 광범위하게 활용되는 핵심 원리입니다.',
       audience: '고등학교 2~3학년 학생 및 과학 교사'
     },
-    relatedDocs: ['doc-002', 'doc-004', 'doc-interactive-002'],
+    relatedDocs: ['doc-002', 'doc-004', 'doc-008', 'doc-interactive-002'],
     relatedServices: []
   },
   {
@@ -408,7 +408,7 @@ const SAMPLE_DOCUMENTS = [
       importance: '반도체, 태양전지, 레이저, MRI 등 현대 기술의 근간을 이루는 상수입니다.',
       audience: '고등학교 2~3학년 학생 및 물리 교사'
     },
-    relatedDocs: ['doc-interactive-001', 'doc-interactive-003'],
+    relatedDocs: ['doc-009', 'doc-interactive-001', 'doc-interactive-003'],
     relatedServices: []
   },
   {
