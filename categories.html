@@ -3,15 +3,15 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Categories - EduAtlas</title>
-  <meta name="description" content="교육, 연구, 공학, 학원, 학습 분야별 구조화된 지식 허브">
+  <title>카테고리 - 과학 교육 지식 분류 - EduAtlas</title>
+  <meta name="description" content="이론·원리, 실험방법, 실험장치, 시뮬레이션 — 과학 교육 지식을 분야별로 탐색하세요">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://geoproject-8fc76.web.app/categories.html">
 
   <!-- Open Graph -->
   <meta property="og:type" content="website">
-  <meta property="og:title" content="Categories - EduAtlas">
-  <meta property="og:description" content="교육, 연구, 공학, 학원, 학습 분야별 구조화된 지식 허브">
+  <meta property="og:title" content="카테고리 - 과학 교육 지식 분류 - EduAtlas">
+  <meta property="og:description" content="이론·원리, 실험방법, 실험장치, 시뮬레이션 — 과학 교육 지식을 분야별로 탐색하세요">
   <meta property="og:url" content="https://geoproject-8fc76.web.app/categories.html">
   <meta property="og:site_name" content="EduAtlas">
 
@@ -22,9 +22,9 @@
 
   <div class="container page-content">
     <div class="breadcrumb" id="breadcrumb">
-      <a href="index.html">Home</a>
+      <a href="index.html">홈</a>
       <span class="sep">›</span>
-      <span>Categories</span>
+      <span>카테고리</span>
     </div>
 
     <div id="pageContent"></div>
@@ -52,8 +52,8 @@
   function renderCategoryList() {
     const content = document.getElementById('pageContent');
     content.innerHTML = `
-      <h1 class="section-title">Categories</h1>
-      <p class="section-subtitle">분야별 지식 허브를 탐색하세요</p>
+      <h1 class="section-title">카테고리</h1>
+      <p class="section-subtitle">과학 교육 지식을 분야별로 탐색하세요</p>
       <div id="catCards"></div>`;
 
     const cards = CATEGORIES.map(cat => {
@@ -114,8 +114,8 @@
 
     // breadcrumb
     document.getElementById('breadcrumb').innerHTML = `
-      <a href="index.html">Explore</a><span class="sep">›</span>
-      <a href="categories.html">Categories</a><span class="sep">›</span>
+      <a href="index.html">홈</a><span class="sep">›</span>
+      <a href="categories.html">카테고리</a><span class="sep">›</span>
       <span>${cat.nameKo}</span>`;
 
     const docs = getDocumentsByCategory(cat.id).sort((a,b) => b.updatedAt.localeCompare(a.updatedAt));
@@ -128,7 +128,7 @@
     const topTags = Object.entries(tags).sort((a,b) => b[1]-a[1]).slice(0,12);
 
     // 문서 유형 분포
-    const typeLabels = { article: '정보 문서', topic: '주제', guide: '가이드', company: '기관', academy: '학원', concept: '개념' };
+    const typeLabels = { article: '이론/원리', topic: '탐구 주제', guide: '실험 가이드', interactive: '시뮬레이션', concept: '개념' };
     const typeStats = Object.entries(typeDist).map(([type, count]) =>
       `<span style="font-size:13px; padding:6px 14px; background:var(--gray-100); border-radius:20px; color:var(--gray-600);">${typeLabels[type] || type} (${count})</span>`
     ).join('');

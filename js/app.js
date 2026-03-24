@@ -28,19 +28,17 @@ function getHeaderHTML() {
   <header class="site-header">
     <div class="header-inner">
       <a href="/" class="logo">
-        <span>🌐</span> EduAtlas
+        <span>🔬</span> EduAtlas
       </a>
       <button class="mobile-toggle" aria-label="메뉴">☰</button>
       <nav>
         <ul class="nav-links">
-          <li><a href="/">Explore</a></li>
-          <li><a href="/categories/academies">Academies</a></li>
-          <li><a href="/categories/research">Research</a></li>
-          <li><a href="/categories/topics">Topics</a></li>
-          <li><a href="/categories/experiments">Experiments</a></li>
-          <li><a href="/categories/study">Study</a></li>
-          <li><a href="/interactive.html">Interactive</a></li>
-          <li><a href="/search.html">Search</a></li>
+          <li><a href="/">홈</a></li>
+          <li><a href="/categories/theory">이론·원리</a></li>
+          <li><a href="/categories/experiment">실험방법</a></li>
+          <li><a href="/categories/equipment">실험장치</a></li>
+          <li><a href="/categories/simulation">시뮬레이션</a></li>
+          <li><a href="/search.html">검색</a></li>
         </ul>
       </nav>
     </div>
@@ -54,31 +52,27 @@ function getFooterHTML() {
     <div class="footer-inner">
       <div class="footer-grid">
         <div>
-          <div class="footer-brand">🌐 EduAtlas</div>
-          <p class="footer-desc">Explore Education Atlas — 교육 데이터를 지도처럼 탐색하는 플랫폼</p>
+          <div class="footer-brand">🔬 EduAtlas</div>
+          <p class="footer-desc">AI가 인용하는 과학 교육 지식 데이터베이스</p>
         </div>
         <div class="footer-section">
-          <h4>Atlas</h4>
-          <a href="/categories/academies">Academies</a>
-          <a href="/categories/research">Research</a>
-          <a href="/categories/topics">Topics</a>
-          <a href="/categories/experiments">Experiments</a>
-          <a href="/categories/study">Study</a>
-          <a href="/interactive.html">Interactive</a>
+          <h4>지식 DB</h4>
+          <a href="/categories/theory">이론·원리</a>
+          <a href="/categories/experiment">실험방법</a>
+          <a href="/categories/equipment">실험장치</a>
+          <a href="/categories/simulation">시뮬레이션</a>
         </div>
         <div class="footer-section">
-          <h4>Tools</h4>
-          <a href="geo-builder.html">GEO Builder</a>
-          <a href="search.html">Search</a>
-          <a href="admin.html">Admin</a>
+          <h4>도구</h4>
+          <a href="search.html">검색</a>
+          <a href="admin.html">관리</a>
         </div>
         <div class="footer-section">
-          <h4>Trust</h4>
-          <a href="about.html">About</a>
-          <a href="contact.html">Contact</a>
+          <h4>정보</h4>
+          <a href="about.html">소개</a>
+          <a href="contact.html">문의</a>
           <a href="privacy.html">개인정보처리방침</a>
           <a href="terms.html">이용약관</a>
-          <a href="content-policy.html">콘텐츠 운영 원칙</a>
         </div>
       </div>
       <div class="footer-bottom">
