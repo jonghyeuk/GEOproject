@@ -33,15 +33,15 @@
     "rewrites": [
       {
         "source": "/documents/**",
-        "function": "ssrDocument"
+        "destination": "/document.html"
       },
       {
         "source": "/categories",
-        "function": "ssrCategory"
+        "destination": "/categories.html"
       },
       {
         "source": "/categories/**",
-        "function": "ssrCategory"
+        "destination": "/categories.html"
       },
       {
         "source": "/sitemap-dynamic.xml",

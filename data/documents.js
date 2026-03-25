@@ -478,15 +478,19 @@ async function loadDocumentsFromFirestore() {
   try {
     const snapshot = await db.collection('documents').get();
     if (snapshot.empty) {
-      // Firestore가 비어있으면 샘플 데이터 사용
       console.log('[EduAtlas] Firestore empty, using sample data');
       _cachedDocs = [...SAMPLE_DOCUMENTS];
     } else {
-      _cachedDocs = [];
-      snapshot.forEach(doc => {
-        _cachedDocs.push(doc.data());
+      // SAMPLE_DOCUMENTS를 기본 베이스로, Firestore 데이터로 병합/덮어쓰기
+      var byId = {};
+      SAMPLE_DOCUMENTS.forEach(function(d) { byId[d.id] = d; });
+      snapshot.forEach(function(doc) {
+        var data = doc.data();
+        var docId = data.id || doc.id;
+        byId[docId] = data;
       });
-      console.log('[EduAtlas] Loaded ' + _cachedDocs.length + ' docs from Firestore');
+      _cachedDocs = Object.values(byId);
+      console.log('[EduAtlas] Merged ' + _cachedDocs.length + ' docs (Firestore + sample)');
     }
   } catch (err) {
     console.warn('[EduAtlas] Firestore load failed, using fallback:', err.message);
