@@ -16,9 +16,10 @@ jobs:
       - name: Deploy Cloud Functions
         uses: w9jds/firebase-action@master
         with:
-          args: deploy --only functions --project geoproject-8fc76
+          args: deploy --only functions --force --project geoproject-8fc76
         env:
           GCP_SA_KEY: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+        continue-on-error: true
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: ${{ secrets.GITHUB_TOKEN }}
