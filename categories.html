@@ -40,7 +40,14 @@
   <script src="js/app.js"></script>
   <script>
   function pageInit() {
-    const catId = getParam('id');
+    // Support both clean URLs (/categories/theory) and query params (?id=theory)
+    let catId = getParam('id');
+    if (!catId) {
+      const pathParts = location.pathname.split('/').filter(Boolean);
+      if (pathParts.length >= 2 && pathParts[0] === 'categories') {
+        catId = pathParts[1];
+      }
+    }
 
     if (catId) {
       renderCategoryDetail(catId);

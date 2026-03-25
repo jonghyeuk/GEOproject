@@ -43,7 +43,14 @@
   <script src="js/app.js"></script>
   <script>
   function pageInit() {
-    const slug = getParam('slug');
+    // Support both clean URLs (/documents/slug) and query params (?slug=xxx)
+    let slug = getParam('slug');
+    if (!slug) {
+      const pathParts = location.pathname.split('/').filter(Boolean);
+      if (pathParts.length >= 2 && pathParts[0] === 'documents') {
+        slug = pathParts[1];
+      }
+    }
     if (!slug) { location.href = 'knowledge.html'; return; }
 
     const doc = getDocumentBySlug(slug);
