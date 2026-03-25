@@ -476,7 +476,13 @@ async function loadDocumentsFromFirestore() {
   }
 
   try {
-    const snapshot = await db.collection('documents').get();
+    // 5초 타임아웃: Firestore가 응답 없으면 폴백
+    var firestorePromise = db.collection('documents').get();
+    var timeoutPromise = new Promise(function(_, reject) {
+      setTimeout(function() { reject(new Error('Firestore timeout (5s)')); }, 5000);
+    });
+    var snapshot = await Promise.race([firestorePromise, timeoutPromise]);
+
     if (snapshot.empty) {
       console.log('[EduAtlas] Firestore empty, using sample data');
       _cachedDocs = [...SAMPLE_DOCUMENTS];
