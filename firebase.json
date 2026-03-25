@@ -46,6 +46,10 @@
       {
         "source": "/sitemap-dynamic.xml",
         "function": "dynamicSitemap"
+      },
+      {
+        "source": "/api/seed",
+        "function": "seedFirestore"
       }
     ]
   }

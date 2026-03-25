@@ -20,12 +20,10 @@ const BASE_URL = "https://geoproject-8fc76.web.app";
 // ============================================================
 
 const CATEGORIES = [
-  { id: "academies", name: "Atlas Academies", nameKo: "교육기관", icon: "\u{1F3EB}" },
-  { id: "research", name: "Atlas Research", nameKo: "연구", icon: "\u{1F52C}" },
-  { id: "topics", name: "Atlas Topics", nameKo: "탐구주제", icon: "\u{1F4A1}" },
-  { id: "experiments", name: "Atlas Experiments", nameKo: "실험설계", icon: "\u{1F9EA}" },
-  { id: "study", name: "Atlas Study", nameKo: "학습법", icon: "\u{1F4DD}" },
-  { id: "interactive", name: "Atlas Interactive", nameKo: "인터렉티브 실험실", icon: "\u{1F3AE}" },
+  { id: "theory", name: "이론·원리", nameKo: "이론·원리", icon: "📐", description: "과학 법칙, 공식, 핵심 개념을 구조화하여 정리한 지식 문서" },
+  { id: "experiment", name: "실험방법", nameKo: "실험방법", icon: "🧪", description: "실험 설계, 변인 통제, 측정 방법, 데이터 수집 절차 가이드" },
+  { id: "equipment", name: "실험장치", nameKo: "실험장치", icon: "🔧", description: "간이 실험장치 제작법, 센서 활용, 아두이노 연동 가이드" },
+  { id: "simulation", name: "시뮬레이션", nameKo: "시뮬레이션", icon: "🎮", description: "과학 원리를 직접 체험하는 인터랙티브 시뮬레이션" },
 ];
 
 function getCategoryById(id) {
@@ -354,17 +352,16 @@ function buildDocumentHTML(doc) {
   <div id="site-header">
     <header class="site-header">
       <div class="header-inner">
-        <a href="/" class="logo"><span aria-hidden="true">🌐</span> EduAtlas</a>
+        <a href="/" class="logo"><span aria-hidden="true">🔬</span> EduAtlas</a>
         <button class="mobile-toggle" aria-label="메뉴">☰</button>
         <nav>
           <ul class="nav-links">
-            <li><a href="/">Explore</a></li>
-            <li><a href="/categories/academies">Academies</a></li>
-            <li><a href="/categories/research">Research</a></li>
-            <li><a href="/categories/topics">Topics</a></li>
-            <li><a href="/categories/experiments">Experiments</a></li>
-            <li><a href="/categories/study">Study</a></li>
-            <li><a href="/search.html">Search</a></li>
+            <li><a href="/">홈</a></li>
+            <li><a href="/categories/theory">이론·원리</a></li>
+            <li><a href="/categories/experiment">실험방법</a></li>
+            <li><a href="/categories/equipment">실험장치</a></li>
+            <li><a href="/categories/simulation">시뮬레이션</a></li>
+            <li><a href="/search.html">검색</a></li>
           </ul>
         </nav>
       </div>
@@ -396,29 +393,27 @@ function buildDocumentHTML(doc) {
     <div class="footer-inner">
       <div class="footer-grid">
         <div>
-          <div class="footer-brand">🌐 EduAtlas</div>
-          <p class="footer-desc">Explore Education Atlas — 교육 데이터를 지도처럼 탐색하는 플랫폼</p>
+          <div class="footer-brand">🔬 EduAtlas</div>
+          <p class="footer-desc">AI가 인용하는 과학 교육 지식 데이터베이스</p>
         </div>
         <div class="footer-section">
-          <h4>Atlas</h4>
-          <a href="/categories/academies">Academies</a>
-          <a href="/categories/research">Research</a>
-          <a href="/categories/topics">Topics</a>
-          <a href="/categories/experiments">Experiments</a>
-          <a href="/categories/study">Study</a>
+          <h4>지식 DB</h4>
+          <a href="/categories/theory">이론·원리</a>
+          <a href="/categories/experiment">실험방법</a>
+          <a href="/categories/equipment">실험장치</a>
+          <a href="/categories/simulation">시뮬레이션</a>
         </div>
         <div class="footer-section">
-          <h4>Tools</h4>
-          <a href="/geo-builder.html">GEO Builder</a>
-          <a href="/search.html">Search</a>
+          <h4>도구</h4>
+          <a href="/search.html">검색</a>
+          <a href="/admin.html">관리</a>
         </div>
         <div class="footer-section">
-          <h4>Trust</h4>
-          <a href="/about.html">About</a>
-          <a href="/contact.html">Contact</a>
+          <h4>정보</h4>
+          <a href="/about.html">소개</a>
+          <a href="/contact.html">문의</a>
           <a href="/privacy.html">개인정보처리방침</a>
           <a href="/terms.html">이용약관</a>
-          <a href="/content-policy.html">콘텐츠 운영 원칙</a>
         </div>
       </div>
       <div class="footer-bottom">&copy; 2026 EduAtlas. All rights reserved.</div>
@@ -509,6 +504,101 @@ function build404HTML() {
 }
 
 // ============================================================
+// SAMPLE_DOCUMENTS 폴백 (Firestore 비어있을 때 사용)
+// ============================================================
+
+const SAMPLE_DOCUMENTS = require("./sample-documents.json");
+
+/**
+ * Firestore에서 문서를 검색하고, 없으면 SAMPLE_DOCUMENTS에서 폴백
+ */
+async function findDocBySlug(slug) {
+  try {
+    const snapshot = await db
+      .collection("documents")
+      .where("slug", "==", slug)
+      .where("status", "==", "published")
+      .limit(1)
+      .get();
+
+    if (!snapshot.empty) {
+      return snapshot.docs[0].data();
+    }
+  } catch (err) {
+    console.warn("Firestore query failed, using fallback:", err.message);
+  }
+
+  // Firestore에 없으면 SAMPLE_DOCUMENTS에서 찾기
+  return SAMPLE_DOCUMENTS.find(
+    (d) => d.slug === slug && d.status === "published"
+  );
+}
+
+async function findDocsByCategory(categoryId) {
+  try {
+    const snapshot = await db
+      .collection("documents")
+      .where("categoryId", "==", categoryId)
+      .where("status", "==", "published")
+      .get();
+
+    if (!snapshot.empty) {
+      const docs = [];
+      snapshot.forEach((d) => docs.push(d.data()));
+      return docs;
+    }
+  } catch (err) {
+    console.warn("Firestore query failed, using fallback:", err.message);
+  }
+
+  // Firestore에 없으면 SAMPLE_DOCUMENTS에서 필터
+  return SAMPLE_DOCUMENTS.filter(
+    (d) => d.categoryId === categoryId && d.status === "published"
+  );
+}
+
+async function findAllPublishedDocs() {
+  try {
+    const snapshot = await db
+      .collection("documents")
+      .where("status", "==", "published")
+      .get();
+
+    if (!snapshot.empty) {
+      const docs = [];
+      snapshot.forEach((d) => docs.push(d.data()));
+      return docs;
+    }
+  } catch (err) {
+    console.warn("Firestore query failed, using fallback:", err.message);
+  }
+
+  return SAMPLE_DOCUMENTS.filter((d) => d.status === "published");
+}
+
+// ============================================================
+// Cloud Function: Firestore에 SAMPLE_DOCUMENTS 시드 (1회성)
+// ============================================================
+
+exports.seedFirestore = functions.https.onRequest(async (req, res) => {
+  try {
+    const batch = db.batch();
+    for (const doc of SAMPLE_DOCUMENTS) {
+      batch.set(db.collection("documents").doc(doc.id), doc);
+    }
+    await batch.commit();
+    res.status(200).json({
+      success: true,
+      count: SAMPLE_DOCUMENTS.length,
+      message: `${SAMPLE_DOCUMENTS.length}개 문서를 Firestore에 시드했습니다.`,
+    });
+  } catch (err) {
+    console.error("Seed Error:", err);
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// ============================================================
 // Cloud Function: SSR 문서 페이지
 // ============================================================
 
@@ -523,20 +613,13 @@ exports.ssrDocument = functions.https.onRequest(async (req, res) => {
   }
 
   try {
-    // Firestore에서 slug로 문서 검색
-    const snapshot = await db
-      .collection("documents")
-      .where("slug", "==", slug)
-      .where("status", "==", "published")
-      .limit(1)
-      .get();
+    const doc = await findDocBySlug(slug);
 
-    if (snapshot.empty) {
+    if (!doc) {
       res.status(404).send(build404HTML());
       return;
     }
 
-    const doc = snapshot.docs[0].data();
     const html = buildDocumentHTML(doc);
 
     // 1시간 캐싱 (CDN + 브라우저)
@@ -574,21 +657,21 @@ exports.ssrCategory = functions.https.onRequest(async (req, res) => {
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Categories - EduAtlas</title>
-  <meta name="description" content="교육, 연구, 공학, 학원, 학습 분야별 구조화된 지식 허브">
+  <title>지식 카테고리 - EduAtlas</title>
+  <meta name="description" content="과학 교육 지식 DB: 이론·원리, 실험방법, 실험장치, 시뮬레이션">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="${BASE_URL}/categories">
-  <meta property="og:title" content="Categories - EduAtlas">
-  <meta property="og:description" content="교육, 연구, 공학, 학원, 학습 분야별 구조화된 지식 허브">
+  <meta property="og:title" content="지식 카테고리 - EduAtlas">
+  <meta property="og:description" content="과학 교육 지식 DB: 이론·원리, 실험방법, 실험장치, 시뮬레이션">
   <meta property="og:url" content="${BASE_URL}/categories">
   <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
   <div id="site-header"></div>
   <main class="container page-content">
-    <div class="breadcrumb"><a href="/">Home</a><span class="sep">&rsaquo;</span><span>Categories</span></div>
-    <h1 class="section-title">Categories</h1>
-    <p class="section-subtitle">분야별 지식 허브를 탐색하세요</p>
+    <div class="breadcrumb"><a href="/">홈</a><span class="sep">&rsaquo;</span><span>카테고리</span></div>
+    <h1 class="section-title">지식 카테고리</h1>
+    <p class="section-subtitle">과학 교육 콘텐츠를 탐색하세요</p>
     ${categoriesListHTML}
   </main>
   <div id="site-footer"></div>
@@ -606,16 +689,9 @@ exports.ssrCategory = functions.https.onRequest(async (req, res) => {
     return;
   }
 
-  // 카테고리 상세 — Firestore에서 해당 카테고리 문서 로드
+  // 카테고리 상세 — Firestore + SAMPLE_DOCUMENTS 폴백
   try {
-    const snapshot = await db
-      .collection("documents")
-      .where("categoryId", "==", catId)
-      .where("status", "==", "published")
-      .get();
-
-    const docs = [];
-    snapshot.forEach((d) => docs.push(d.data()));
+    const docs = await findDocsByCategory(catId);
     docs.sort((a, b) => (b.updatedAt || "").localeCompare(a.updatedAt || ""));
 
     const docListHTML = docs.length
@@ -698,13 +774,7 @@ exports.ssrCategory = functions.https.onRequest(async (req, res) => {
 
 exports.dynamicSitemap = functions.https.onRequest(async (req, res) => {
   try {
-    const snapshot = await db
-      .collection("documents")
-      .where("status", "==", "published")
-      .get();
-
-    const docs = [];
-    snapshot.forEach((d) => docs.push(d.data()));
+    const docs = await findAllPublishedDocs();
 
     const today = new Date().toISOString().slice(0, 10);
 
