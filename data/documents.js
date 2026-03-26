@@ -15,6 +15,24 @@
 
 const CATEGORIES = [
   {
+    id: 'academy',
+    slug: 'academy',
+    name: '학원찾기',
+    nameKo: '학원찾기',
+    icon: '🏫',
+    description: '지역별·과목별 학원 정보를 한눈에 비교하고 찾아보세요',
+    subcategories: ['수학', '영어', '과학', '코딩', '예체능', '입시', '초등', '중등', '고등']
+  },
+  {
+    id: 'edu-guide',
+    slug: 'edu-guide',
+    name: '교육가이드',
+    nameKo: '교육가이드',
+    icon: '📖',
+    description: '학원 선택 가이드, 학습법, 입시 정보 등 교육 관련 실용 정보',
+    subcategories: ['학원 선택법', '학습법', '입시 정보', '교육 트렌드']
+  },
+  {
     id: 'theory',
     slug: 'theory',
     name: '이론·원리',
@@ -50,6 +68,44 @@ const CATEGORIES = [
     description: '과학 원리를 직접 체험하는 인터랙티브 시뮬레이션',
     subcategories: ['물리', '화학', '생물', '지구과학']
   }
+];
+
+// ============================================================
+// 지역 데이터 (학원 등록/검색용)
+// ============================================================
+const REGIONS = [
+  { id: 'seoul', name: '서울', districts: ['강남구', '서초구', '송파구', '강동구', '마포구', '용산구', '성동구', '광진구', '동대문구', '중랑구', '성북구', '강북구', '도봉구', '노원구', '은평구', '서대문구', '종로구', '중구', '영등포구', '동작구', '관악구', '금천구', '구로구', '양천구', '강서구'] },
+  { id: 'gyeonggi', name: '경기', districts: ['성남시', '수원시', '용인시', '고양시', '부천시', '안양시', '화성시', '남양주시', '의정부시', '시흥시', '파주시', '김포시', '광주시', '광명시', '군포시', '하남시', '오산시', '이천시', '안산시', '평택시'] },
+  { id: 'incheon', name: '인천', districts: ['남동구', '부평구', '서구', '연수구', '미추홀구', '계양구'] },
+  { id: 'busan', name: '부산', districts: ['해운대구', '수영구', '남구', '동래구', '연제구', '부산진구', '사하구'] },
+  { id: 'daegu', name: '대구', districts: ['수성구', '달서구', '중구', '북구', '동구'] },
+  { id: 'daejeon', name: '대전', districts: ['유성구', '서구', '중구', '동구', '대덕구'] },
+  { id: 'gwangju', name: '광주', districts: ['북구', '서구', '남구', '광산구', '동구'] },
+  { id: 'sejong', name: '세종', districts: ['세종시'] },
+  { id: 'chungnam', name: '충남', districts: ['천안시', '아산시', '서산시', '당진시'] },
+  { id: 'chungbuk', name: '충북', districts: ['청주시', '충주시', '제천시'] },
+  { id: 'jeonnam', name: '전남', districts: ['여수시', '순천시', '목포시'] },
+  { id: 'jeonbuk', name: '전북', districts: ['전주시', '익산시', '군산시'] },
+  { id: 'gyeongnam', name: '경남', districts: ['창원시', '김해시', '양산시', '진주시'] },
+  { id: 'gyeongbuk', name: '경북', districts: ['포항시', '경주시', '구미시'] },
+  { id: 'gangwon', name: '강원', districts: ['춘천시', '원주시', '강릉시'] },
+  { id: 'jeju', name: '제주', districts: ['제주시', '서귀포시'] }
+];
+
+// 과목 분류
+const SUBJECTS = [
+  { id: 'math', name: '수학', icon: '📐' },
+  { id: 'english', name: '영어', icon: '🔤' },
+  { id: 'science', name: '과학', icon: '🔬' },
+  { id: 'korean', name: '국어', icon: '📝' },
+  { id: 'coding', name: '코딩/SW', icon: '💻' },
+  { id: 'art', name: '미술', icon: '🎨' },
+  { id: 'music', name: '음악', icon: '🎵' },
+  { id: 'sports', name: '체육', icon: '⚽' },
+  { id: 'exam-prep', name: '입시/논술', icon: '🎓' },
+  { id: 'language', name: '외국어', icon: '🌐' },
+  { id: 'social', name: '사회/역사', icon: '🌍' },
+  { id: 'all-subjects', name: '종합반', icon: '📚' }
 ];
 
 const SAMPLE_DOCUMENTS = [
@@ -438,6 +494,424 @@ const SAMPLE_DOCUMENTS = [
     },
     relatedDocs: ['doc-interactive-001', 'doc-interactive-002'],
     relatedServices: []
+  },
+  // ============================================================
+  // 씨앗 데이터: 학원 샘플 문서
+  // ============================================================
+  {
+    id: 'doc-academy-001',
+    slug: 'academy-청담수학학원-강남구',
+    title: '청담수학학원 - 강남구 수학 학원',
+    summary: '서울 강남구에 위치한 수학 전문 학원 청담수학학원의 프로그램, 수강료, 특징, 위치 정보를 안내합니다.',
+    docType: 'academy',
+    categoryId: 'academy',
+    tags: ['청담수학학원', '수학학원', '강남구 수학학원', '강남구 학원', '서울 강남구 학원', '중등 학원', '고등 학원', '수학', '학원 추천', '강남구 학원 추천', '강남 수학', '대치동 학원'],
+    status: 'published',
+    createdAt: '2026-03-26',
+    updatedAt: '2026-03-26',
+    directAnswer: [
+      '청담수학학원은 서울 강남구에 위치한 수학 전문 학원입니다. 소수정예 8~12명 수업을 운영합니다.',
+      '청담수학학원의 특징: 수준별 반 편성, 주 2회 개별 클리닉, 내신+수능 병행 커리큘럼.',
+      '월 수강료는 40만~60만원 수준이며, 중등, 고등 학생을 대상으로 합니다.'
+    ],
+    targetAudience: ['중등 학생 및 학부모', '고등 학생 및 학부모'],
+    entities: ['청담수학학원', '수학학원', '강남구 학원'],
+    cluster: {
+      pillarTopic: '강남구 학원 정보',
+      subTopic: '수학 학원',
+      intentType: 'local-business',
+      relatedClusterSlugs: ['academy-스마트영어-서초구', 'academy-코드랩아카데미-송파구']
+    },
+    contentBlocks: [
+      { type: 'heading', level: 2, text: '학원 소개' },
+      { type: 'paragraph', text: '청담수학학원은 서울 강남구 대치동에서 15년간 중·고등 수학 교육을 전문으로 운영해온 학원입니다. 수능과 내신을 균형 있게 대비하며, 학생 개개인의 수준에 맞춘 맞춤형 수업을 제공합니다.' },
+      { type: 'heading', level: 2, text: '교육 과목' },
+      { type: 'list', ordered: false, items: ['📐 수학 (중등·고등 전 과정)'] },
+      { type: 'heading', level: 2, text: '프로그램 안내' },
+      { type: 'list', ordered: false, items: [
+        '중등 수학 심화반 — 내신 대비 + 선행 학습',
+        '고등 수학 정규반 — 교과서 + 수능 기출 연계',
+        '수능 집중반 — 고3/N수 대상 수능 실전 대비',
+        '주말 클리닉 — 개별 약점 보완 1:3 수업'
+      ]},
+      { type: 'heading', level: 2, text: '학원 특징' },
+      { type: 'list', ordered: false, items: [
+        '수준별 반 편성 (레벨 테스트 후 배정)',
+        '주 2회 개별 클리닉 운영',
+        '내신+수능 병행 커리큘럼',
+        '매주 학부모 피드백 문자 발송',
+        '자습실 상시 개방'
+      ]},
+      { type: 'heading', level: 2, text: '수업 정보' },
+      { type: 'table', headers: ['항목', '내용'], rows: [
+        ['대상', '중등, 고등'],
+        ['반 인원', '8~12명'],
+        ['수강료', '40만~60만원/월'],
+        ['운영시간', '평일 14:00~22:00, 토 10:00~18:00']
+      ]},
+      { type: 'heading', level: 2, text: '위치 및 연락처' },
+      { type: 'table', headers: ['항목', '내용'], rows: [
+        ['주소', '서울 강남구 대치동 123-45'],
+        ['전화', '02-555-1234']
+      ]}
+    ],
+    faqItems: [
+      { question: '청담수학학원은 어디에 있나요?', answer: '서울 강남구 대치동 123-45에 위치해 있습니다.' },
+      { question: '청담수학학원에서 어떤 과목을 가르치나요?', answer: '수학 과목을 전문으로 가르칩니다. 중등부터 고등까지 전 과정을 다룹니다.' },
+      { question: '청담수학학원의 수강료는 얼마인가요?', answer: '월 수강료는 40만~60만원 수준입니다. 반과 수업 횟수에 따라 달라지며 정확한 금액은 학원에 문의해주세요.' },
+      { question: '청담수학학원은 몇 명씩 수업하나요?', answer: '8~12명 규모로 수업합니다.' },
+      { question: '청담수학학원의 운영시간은 어떻게 되나요?', answer: '평일 14:00~22:00, 토요일 10:00~18:00입니다.' }
+    ],
+    authorInfo: { name: '청담수학학원', role: '교육기관', expertise: '수학 교육' },
+    seoTitle: '청담수학학원 | 강남구 대치동 수학 학원 - 프로그램, 수강료, 위치',
+    seoDescription: '서울 강남구 대치동 수학 전문 학원 청담수학학원. 수준별 반 편성, 주 2회 개별 클리닉, 내신+수능 병행. 프로그램, 수강료, 위치 정보를 확인하세요.',
+    schemaTypes: ['LocalBusiness', 'EducationalOrganization', 'FAQPage'],
+    technicalMeta: { canonicalPath: '/documents/academy-청담수학학원-강남구', indexable: true },
+    keyInfo: {
+      name: '청담수학학원',
+      location: '서울 강남구',
+      subjects: '수학',
+      ageGroups: '중등, 고등',
+      classSize: '8~12명',
+      monthlyFee: '40만~60만원'
+    },
+    relatedDocs: ['doc-academy-002', 'doc-academy-003'],
+    relatedServices: [],
+    academyInfo: {
+      regionId: 'seoul',
+      district: '강남구',
+      address: '대치동 123-45',
+      phone: '02-555-1234',
+      website: '',
+      subjects: ['math'],
+      ageGroups: ['중등', '고등'],
+      programs: ['중등 수학 심화반', '고등 수학 정규반', '수능 집중반', '주말 클리닉'],
+      features: ['수준별 반 편성', '주 2회 개별 클리닉', '내신+수능 병행 커리큘럼', '매주 학부모 피드백'],
+      monthlyFee: '40만~60만원',
+      classSize: '8~12명',
+      operatingHours: '평일 14:00~22:00, 토 10:00~18:00',
+      establishedYear: '2011'
+    }
+  },
+  {
+    id: 'doc-academy-002',
+    slug: 'academy-스마트영어-서초구',
+    title: '스마트영어 - 서초구 영어 학원',
+    summary: '서울 서초구에 위치한 영어 전문 학원 스마트영어의 프로그램, 수강료, 특징, 위치 정보를 안내합니다.',
+    docType: 'academy',
+    categoryId: 'academy',
+    tags: ['스마트영어', '영어학원', '서초구 영어학원', '서초구 학원', '서울 서초구 학원', '초등 학원', '중등 학원', '영어', '학원 추천', '서초구 학원 추천', '영어회화', '토플'],
+    status: 'published',
+    createdAt: '2026-03-26',
+    updatedAt: '2026-03-26',
+    directAnswer: [
+      '스마트영어는 서울 서초구에 위치한 영어 전문 학원입니다. 소수정예 6~10명 수업을 운영합니다.',
+      '스마트영어의 특징: 원어민+한국인 팀티칭, 레벨별 리딩 프로그램, 영어 토론 수업.',
+      '월 수강료는 35만~50만원 수준이며, 초등, 중등 학생을 대상으로 합니다.'
+    ],
+    targetAudience: ['초등 학생 및 학부모', '중등 학생 및 학부모'],
+    entities: ['스마트영어', '영어학원', '서초구 학원'],
+    cluster: {
+      pillarTopic: '서초구 학원 정보',
+      subTopic: '영어 학원',
+      intentType: 'local-business',
+      relatedClusterSlugs: ['academy-청담수학학원-강남구']
+    },
+    contentBlocks: [
+      { type: 'heading', level: 2, text: '학원 소개' },
+      { type: 'paragraph', text: '스마트영어는 서울 서초구 방배동에서 초등·중등 영어 교육을 전문으로 하는 학원입니다. 원어민과 한국인 강사의 팀티칭으로 회화와 내신을 동시에 준비합니다.' },
+      { type: 'heading', level: 2, text: '교육 과목' },
+      { type: 'list', ordered: false, items: ['🔤 영어 (초등·중등)'] },
+      { type: 'heading', level: 2, text: '프로그램 안내' },
+      { type: 'list', ordered: false, items: [
+        '초등 파닉스+리딩 기초반',
+        '초등 영어 독서 프로그램 (AR/Lexile 기반)',
+        '중등 내신 영어 완성반',
+        '영어 토론 & 에세이 클래스',
+        '방학 집중 캠프 (여름/겨울)'
+      ]},
+      { type: 'heading', level: 2, text: '학원 특징' },
+      { type: 'list', ordered: false, items: [
+        '원어민+한국인 팀티칭',
+        'AR/Lexile 기반 레벨별 리딩 프로그램',
+        '영어 토론 수업 (주 1회)',
+        '분기별 레벨 테스트 및 학부모 상담',
+        '온라인 숙제 관리 시스템'
+      ]},
+      { type: 'heading', level: 2, text: '수업 정보' },
+      { type: 'table', headers: ['항목', '내용'], rows: [
+        ['대상', '초등, 중등'],
+        ['반 인원', '6~10명'],
+        ['수강료', '35만~50만원/월'],
+        ['운영시간', '평일 14:00~21:00, 토 10:00~17:00']
+      ]},
+      { type: 'heading', level: 2, text: '위치 및 연락처' },
+      { type: 'table', headers: ['항목', '내용'], rows: [
+        ['주소', '서울 서초구 방배동 456-78'],
+        ['전화', '02-533-5678']
+      ]}
+    ],
+    faqItems: [
+      { question: '스마트영어는 어디에 있나요?', answer: '서울 서초구 방배동 456-78에 위치해 있습니다.' },
+      { question: '스마트영어에서 어떤 과목을 가르치나요?', answer: '영어를 전문으로 가르칩니다. 초등 파닉스부터 중등 내신까지 다룹니다.' },
+      { question: '스마트영어의 수강료는 얼마인가요?', answer: '월 수강료는 35만~50만원 수준입니다.' },
+      { question: '원어민 수업이 있나요?', answer: '네, 원어민과 한국인 강사가 함께 가르치는 팀티칭 방식으로 수업합니다.' }
+    ],
+    authorInfo: { name: '스마트영어', role: '교육기관', expertise: '영어 교육' },
+    seoTitle: '스마트영어 | 서초구 방배동 영어 학원 - 원어민 팀티칭, 리딩 프로그램',
+    seoDescription: '서울 서초구 방배동 영어 전문 학원 스마트영어. 원어민+한국인 팀티칭, AR 리딩 프로그램. 프로그램, 수강료, 위치 정보.',
+    schemaTypes: ['LocalBusiness', 'EducationalOrganization', 'FAQPage'],
+    technicalMeta: { canonicalPath: '/documents/academy-스마트영어-서초구', indexable: true },
+    keyInfo: { name: '스마트영어', location: '서울 서초구', subjects: '영어', ageGroups: '초등, 중등', classSize: '6~10명', monthlyFee: '35만~50만원' },
+    relatedDocs: ['doc-academy-001', 'doc-academy-003'],
+    relatedServices: [],
+    academyInfo: {
+      regionId: 'seoul', district: '서초구', address: '방배동 456-78', phone: '02-533-5678', website: '',
+      subjects: ['english'], ageGroups: ['초등', '중등'],
+      programs: ['초등 파닉스+리딩 기초반', '영어 독서 프로그램', '중등 내신 영어 완성반', '영어 토론 & 에세이', '방학 집중 캠프'],
+      features: ['원어민+한국인 팀티칭', 'AR/Lexile 리딩 프로그램', '영어 토론 수업', '온라인 숙제 관리'],
+      monthlyFee: '35만~50만원', classSize: '6~10명', operatingHours: '평일 14:00~21:00, 토 10:00~17:00', establishedYear: '2015'
+    }
+  },
+  {
+    id: 'doc-academy-003',
+    slug: 'academy-코드랩아카데미-송파구',
+    title: '코드랩 아카데미 - 송파구 코딩 학원',
+    summary: '서울 송파구에 위치한 코딩/SW 전문 학원 코드랩 아카데미의 프로그램, 수강료, 특징, 위치 정보를 안내합니다.',
+    docType: 'academy',
+    categoryId: 'academy',
+    tags: ['코드랩아카데미', '코딩학원', '송파구 코딩학원', '송파구 학원', '서울 송파구 학원', '초등 학원', '중등 학원', '코딩', 'SW교육', '파이썬', '학원 추천', '송파구 학원 추천', '잠실 코딩'],
+    status: 'published',
+    createdAt: '2026-03-26',
+    updatedAt: '2026-03-26',
+    directAnswer: [
+      '코드랩 아카데미는 서울 송파구에 위치한 코딩/SW 전문 학원입니다. 소수정예 4~8명 수업을 운영합니다.',
+      '코드랩 아카데미의 특징: 프로젝트 기반 학습, 스크래치→파이썬→앱개발 단계별 커리큘럼, 정보올림피아드 대비반.',
+      '월 수강료는 25만~40만원 수준이며, 초등, 중등 학생을 대상으로 합니다.'
+    ],
+    targetAudience: ['초등 학생 및 학부모', '중등 학생 및 학부모'],
+    entities: ['코드랩 아카데미', '코딩학원', '송파구 학원'],
+    cluster: {
+      pillarTopic: '송파구 학원 정보',
+      subTopic: '코딩 학원',
+      intentType: 'local-business',
+      relatedClusterSlugs: ['academy-청담수학학원-강남구']
+    },
+    contentBlocks: [
+      { type: 'heading', level: 2, text: '학원 소개' },
+      { type: 'paragraph', text: '코드랩 아카데미는 서울 송파구 잠실에서 초등·중등 코딩/SW 교육을 전문으로 하는 학원입니다. 프로젝트 기반 학습으로 단순 코드 작성이 아닌 문제 해결 능력을 키웁니다.' },
+      { type: 'heading', level: 2, text: '교육 과목' },
+      { type: 'list', ordered: false, items: ['💻 코딩/SW (스크래치, 파이썬, 앱개발)'] },
+      { type: 'heading', level: 2, text: '프로그램 안내' },
+      { type: 'list', ordered: false, items: [
+        '초등 스크래치 기초 — 블록코딩으로 논리적 사고력 키우기',
+        '초등 파이썬 입문 — 텍스트 코딩 첫걸음',
+        '중등 파이썬 심화 — 알고리즘 + 데이터 구조',
+        '앱 개발 프로젝트반 — 실제 앱을 기획부터 배포까지',
+        '정보올림피아드 대비반'
+      ]},
+      { type: 'heading', level: 2, text: '학원 특징' },
+      { type: 'list', ordered: false, items: [
+        '프로젝트 기반 학습 (PBL)',
+        '스크래치→파이썬→앱개발 단계별 커리큘럼',
+        '정보올림피아드 대비반 운영',
+        '분기별 해커톤 이벤트',
+        '학생별 포트폴리오 관리'
+      ]},
+      { type: 'heading', level: 2, text: '수업 정보' },
+      { type: 'table', headers: ['항목', '내용'], rows: [
+        ['대상', '초등, 중등'],
+        ['반 인원', '4~8명'],
+        ['수강료', '25만~40만원/월'],
+        ['운영시간', '평일 15:00~21:00, 토 10:00~18:00']
+      ]},
+      { type: 'heading', level: 2, text: '위치 및 연락처' },
+      { type: 'table', headers: ['항목', '내용'], rows: [
+        ['주소', '서울 송파구 잠실동 789-12'],
+        ['전화', '02-421-7890']
+      ]}
+    ],
+    faqItems: [
+      { question: '코드랩 아카데미는 어디에 있나요?', answer: '서울 송파구 잠실동 789-12에 위치해 있습니다.' },
+      { question: '코딩을 처음 배우는 아이도 괜찮나요?', answer: '네, 스크래치 블록코딩부터 시작하므로 코딩 경험이 없어도 수강 가능합니다.' },
+      { question: '어떤 프로그래밍 언어를 가르치나요?', answer: '스크래치(블록코딩), 파이썬, 앱 인벤터를 단계별로 가르칩니다.' },
+      { question: '정보올림피아드 준비도 가능한가요?', answer: '네, 정보올림피아드 대비반을 별도로 운영하고 있습니다.' }
+    ],
+    authorInfo: { name: '코드랩 아카데미', role: '교육기관', expertise: '코딩/SW 교육' },
+    seoTitle: '코드랩 아카데미 | 송파구 잠실 코딩 학원 - 스크래치, 파이썬, 앱개발',
+    seoDescription: '서울 송파구 잠실 코딩 전문 학원 코드랩 아카데미. 프로젝트 기반 학습, 스크래치→파이썬→앱개발 단계별 커리큘럼. 프로그램, 수강료, 위치 정보.',
+    schemaTypes: ['LocalBusiness', 'EducationalOrganization', 'FAQPage'],
+    technicalMeta: { canonicalPath: '/documents/academy-코드랩아카데미-송파구', indexable: true },
+    keyInfo: { name: '코드랩 아카데미', location: '서울 송파구', subjects: '코딩/SW', ageGroups: '초등, 중등', classSize: '4~8명', monthlyFee: '25만~40만원' },
+    relatedDocs: ['doc-academy-001', 'doc-academy-002', 'doc-academy-004'],
+    relatedServices: [],
+    academyInfo: {
+      regionId: 'seoul', district: '송파구', address: '잠실동 789-12', phone: '02-421-7890', website: '',
+      subjects: ['coding'], ageGroups: ['초등', '중등'],
+      programs: ['스크래치 기초', '파이썬 입문', '파이썬 심화', '앱 개발 프로젝트', '정보올림피아드 대비'],
+      features: ['프로젝트 기반 학습', '단계별 커리큘럼', '정보올림피아드 대비', '분기별 해커톤', '포트폴리오 관리'],
+      monthlyFee: '25만~40만원', classSize: '4~8명', operatingHours: '평일 15:00~21:00, 토 10:00~18:00', establishedYear: '2019'
+    }
+  },
+  {
+    id: 'doc-academy-004',
+    slug: 'academy-한빛과학학원-성남시',
+    title: '한빛과학학원 - 성남시 과학 학원',
+    summary: '경기 성남시에 위치한 과학 전문 학원 한빛과학학원의 프로그램, 수강료, 특징, 위치 정보를 안내합니다.',
+    docType: 'academy',
+    categoryId: 'academy',
+    tags: ['한빛과학학원', '과학학원', '성남시 과학학원', '성남시 학원', '경기 성남시 학원', '중등 학원', '고등 학원', '과학', '물리', '화학', '학원 추천', '분당 학원'],
+    status: 'published',
+    createdAt: '2026-03-26',
+    updatedAt: '2026-03-26',
+    directAnswer: [
+      '한빛과학학원은 경기 성남시 분당구에 위치한 과학(물리·화학) 전문 학원입니다. 소수정예 6~10명 수업을 운영합니다.',
+      '한빛과학학원의 특징: 실험 중심 수업, 과학탐구 대회 준비, 내신+수능 통합 커리큘럼.',
+      '월 수강료는 35만~55만원 수준이며, 중등, 고등 학생을 대상으로 합니다.'
+    ],
+    targetAudience: ['중등 학생 및 학부모', '고등 학생 및 학부모'],
+    entities: ['한빛과학학원', '과학학원', '성남시 학원'],
+    cluster: {
+      pillarTopic: '성남시 학원 정보',
+      subTopic: '과학 학원',
+      intentType: 'local-business',
+      relatedClusterSlugs: ['academy-코드랩아카데미-송파구']
+    },
+    contentBlocks: [
+      { type: 'heading', level: 2, text: '학원 소개' },
+      { type: 'paragraph', text: '한빛과학학원은 경기 성남시 분당구에서 중·고등 과학(물리, 화학) 교육을 전문으로 하는 학원입니다. 단순 이론 암기가 아닌 실험과 탐구 중심의 수업으로 과학적 사고력을 키웁니다.' },
+      { type: 'heading', level: 2, text: '교육 과목' },
+      { type: 'list', ordered: false, items: ['🔬 과학 (물리, 화학)'] },
+      { type: 'heading', level: 2, text: '프로그램 안내' },
+      { type: 'list', ordered: false, items: [
+        '중등 과학 개념+실험반',
+        '고등 물리학 정규반 (물리I·II)',
+        '고등 화학 정규반 (화학I·II)',
+        '과학탐구 대회 준비반',
+        '수능 과탐 파이널반'
+      ]},
+      { type: 'heading', level: 2, text: '학원 특징' },
+      { type: 'list', ordered: false, items: [
+        '자체 실험실 보유 — 매주 실험 수업',
+        '과학탐구 대회 준비 (다수 수상 실적)',
+        '내신+수능 통합 커리큘럼',
+        '월 1회 모의고사 + 성적 분석 리포트',
+        '대학생 멘토 질의응답 프로그램'
+      ]},
+      { type: 'heading', level: 2, text: '수업 정보' },
+      { type: 'table', headers: ['항목', '내용'], rows: [
+        ['대상', '중등, 고등'],
+        ['반 인원', '6~10명'],
+        ['수강료', '35만~55만원/월'],
+        ['운영시간', '평일 15:00~22:00, 토 10:00~18:00']
+      ]},
+      { type: 'heading', level: 2, text: '위치 및 연락처' },
+      { type: 'table', headers: ['항목', '내용'], rows: [
+        ['주소', '경기 성남시 분당구 서현동 234-56'],
+        ['전화', '031-712-3456']
+      ]}
+    ],
+    faqItems: [
+      { question: '한빛과학학원은 어디에 있나요?', answer: '경기 성남시 분당구 서현동 234-56에 위치해 있습니다.' },
+      { question: '어떤 과학 과목을 가르치나요?', answer: '물리와 화학을 전문으로 가르칩니다. 중등 통합과학부터 고등 물리I·II, 화학I·II까지 다룹니다.' },
+      { question: '실험 수업이 있나요?', answer: '네, 자체 실험실을 보유하고 있으며 매주 실험 수업을 진행합니다.' },
+      { question: '과학 대회 준비도 가능한가요?', answer: '네, 과학탐구 대회 준비반을 별도로 운영하며 다수의 수상 실적이 있습니다.' }
+    ],
+    authorInfo: { name: '한빛과학학원', role: '교육기관', expertise: '물리, 화학 교육' },
+    seoTitle: '한빛과학학원 | 분당 성남시 과학 학원 - 물리, 화학, 실험 수업',
+    seoDescription: '경기 성남시 분당구 과학 전문 학원 한빛과학학원. 실험 중심 수업, 과학탐구 대회 준비, 내신+수능 통합. 프로그램, 수강료, 위치 정보.',
+    schemaTypes: ['LocalBusiness', 'EducationalOrganization', 'FAQPage'],
+    technicalMeta: { canonicalPath: '/documents/academy-한빛과학학원-성남시', indexable: true },
+    keyInfo: { name: '한빛과학학원', location: '경기 성남시', subjects: '과학(물리, 화학)', ageGroups: '중등, 고등', classSize: '6~10명', monthlyFee: '35만~55만원' },
+    relatedDocs: ['doc-academy-001', 'doc-academy-003', 'doc-academy-005'],
+    relatedServices: [],
+    academyInfo: {
+      regionId: 'gyeonggi', district: '성남시', address: '분당구 서현동 234-56', phone: '031-712-3456', website: '',
+      subjects: ['science'], ageGroups: ['중등', '고등'],
+      programs: ['중등 과학 개념+실험', '물리학 정규반', '화학 정규반', '과학탐구 대회 준비', '수능 과탐 파이널'],
+      features: ['자체 실험실 보유', '과학탐구 대회 준비', '내신+수능 통합', '월 1회 모의고사', '멘토 질의응답'],
+      monthlyFee: '35만~55만원', classSize: '6~10명', operatingHours: '평일 15:00~22:00, 토 10:00~18:00', establishedYear: '2013'
+    }
+  },
+  {
+    id: 'doc-academy-005',
+    slug: 'academy-토탈종합학원-수원시',
+    title: '토탈종합학원 - 수원시 종합 학원',
+    summary: '경기 수원시에 위치한 수학, 영어, 과학 종합 학원 토탈종합학원의 프로그램, 수강료, 특징, 위치 정보를 안내합니다.',
+    docType: 'academy',
+    categoryId: 'academy',
+    tags: ['토탈종합학원', '종합학원', '수원시 학원', '경기 수원시 학원', '초등 학원', '중등 학원', '수학', '영어', '과학', '학원 추천', '수원 학원 추천', '영통 학원'],
+    status: 'published',
+    createdAt: '2026-03-26',
+    updatedAt: '2026-03-26',
+    directAnswer: [
+      '토탈종합학원은 경기 수원시 영통구에 위치한 수학, 영어, 과학 종합 학원입니다. 소수정예 8~15명 수업을 운영합니다.',
+      '토탈종합학원의 특징: 전 과목 통합 관리, 학생 개별 학습 플래너, 정기 학부모 상담.',
+      '월 수강료는 과목당 25만~35만원 수준이며, 초등, 중등 학생을 대상으로 합니다.'
+    ],
+    targetAudience: ['초등 학생 및 학부모', '중등 학생 및 학부모'],
+    entities: ['토탈종합학원', '종합학원', '수원시 학원'],
+    cluster: {
+      pillarTopic: '수원시 학원 정보',
+      subTopic: '종합 학원',
+      intentType: 'local-business',
+      relatedClusterSlugs: ['academy-한빛과학학원-성남시']
+    },
+    contentBlocks: [
+      { type: 'heading', level: 2, text: '학원 소개' },
+      { type: 'paragraph', text: '토탈종합학원은 경기 수원시 영통구에서 초등·중등 대상으로 수학, 영어, 과학을 통합적으로 가르치는 종합학원입니다. 한 곳에서 주요 과목을 모두 관리할 수 있어 학부모님들에게 편리합니다.' },
+      { type: 'heading', level: 2, text: '교육 과목' },
+      { type: 'list', ordered: false, items: ['📐 수학', '🔤 영어', '🔬 과학'] },
+      { type: 'heading', level: 2, text: '프로그램 안내' },
+      { type: 'list', ordered: false, items: [
+        '초등 전과목 통합반',
+        '중등 수학 내신 대비반',
+        '중등 영어 독해+문법반',
+        '중등 과학 개념+실험반',
+        '방학특강 (과목별 집중 보강)'
+      ]},
+      { type: 'heading', level: 2, text: '학원 특징' },
+      { type: 'list', ordered: false, items: [
+        '전 과목 통합 관리 시스템',
+        '학생별 개별 학습 플래너 제공',
+        '정기 학부모 상담 (월 1회)',
+        '자습실 운영 및 질의응답 지원',
+        '셔틀버스 운행'
+      ]},
+      { type: 'heading', level: 2, text: '수업 정보' },
+      { type: 'table', headers: ['항목', '내용'], rows: [
+        ['대상', '초등, 중등'],
+        ['반 인원', '8~15명'],
+        ['수강료', '과목당 25만~35만원/월'],
+        ['운영시간', '평일 14:00~22:00, 토 09:00~17:00']
+      ]},
+      { type: 'heading', level: 2, text: '위치 및 연락처' },
+      { type: 'table', headers: ['항목', '내용'], rows: [
+        ['주소', '경기 수원시 영통구 영통동 567-89'],
+        ['전화', '031-204-5678']
+      ]}
+    ],
+    faqItems: [
+      { question: '토탈종합학원은 어디에 있나요?', answer: '경기 수원시 영통구 영통동 567-89에 위치해 있습니다.' },
+      { question: '어떤 과목을 가르치나요?', answer: '수학, 영어, 과학을 가르칩니다. 초등 전과목 통합반도 운영합니다.' },
+      { question: '셔틀버스가 있나요?', answer: '네, 영통구 일대 셔틀버스를 운행합니다. 노선은 학원에 문의해주세요.' },
+      { question: '과목별로 따로 등록 가능한가요?', answer: '네, 과목별 개별 등록이 가능합니다. 복수 과목 등록 시 할인 혜택이 있습니다.' }
+    ],
+    authorInfo: { name: '토탈종합학원', role: '교육기관', expertise: '수학, 영어, 과학 교육' },
+    seoTitle: '토탈종합학원 | 수원 영통 종합 학원 - 수학, 영어, 과학 통합 관리',
+    seoDescription: '경기 수원시 영통구 종합 학원 토탈종합학원. 수학·영어·과학 통합 관리, 개별 학습 플래너, 셔틀버스 운행. 프로그램, 수강료, 위치 정보.',
+    schemaTypes: ['LocalBusiness', 'EducationalOrganization', 'FAQPage'],
+    technicalMeta: { canonicalPath: '/documents/academy-토탈종합학원-수원시', indexable: true },
+    keyInfo: { name: '토탈종합학원', location: '경기 수원시', subjects: '수학, 영어, 과학', ageGroups: '초등, 중등', classSize: '8~15명', monthlyFee: '과목당 25만~35만원' },
+    relatedDocs: ['doc-academy-001', 'doc-academy-002', 'doc-academy-004'],
+    relatedServices: [],
+    academyInfo: {
+      regionId: 'gyeonggi', district: '수원시', address: '영통구 영통동 567-89', phone: '031-204-5678', website: '',
+      subjects: ['math', 'english', 'science'], ageGroups: ['초등', '중등'],
+      programs: ['초등 전과목 통합반', '수학 내신 대비', '영어 독해+문법', '과학 개념+실험', '방학특강'],
+      features: ['전 과목 통합 관리', '개별 학습 플래너', '정기 학부모 상담', '자습실 운영', '셔틀버스'],
+      monthlyFee: '과목당 25만~35만원', classSize: '8~15명', operatingHours: '평일 14:00~22:00, 토 09:00~17:00', establishedYear: '2017'
+    }
   }
 ];
 
@@ -830,6 +1304,228 @@ function generateDraftTemplate(docType, params) {
     }
   };
   return templates[docType] || templates.article;
+}
+
+// ============================================================
+// 학원 문서 자동 생성 (폼 입력 → AI 친화 문서)
+// ============================================================
+
+/**
+ * 학원 등록 폼 데이터 → 구조화된 GEO 문서로 변환
+ * @param {Object} formData - 등록 폼에서 수집된 데이터
+ * @returns {Object} - documents.js 형식의 문서 객체
+ */
+function generateAcademyDocument(formData) {
+  const {
+    name,                // 학원명
+    regionId,            // 지역 ID (예: 'seoul')
+    district,            // 구/시 (예: '강남구')
+    address,             // 상세주소
+    phone,               // 전화번호
+    website,             // 웹사이트
+    subjects,            // 과목 ID 배열 (예: ['math', 'science'])
+    ageGroups,           // 대상 연령 (예: ['초등', '중등'])
+    programs,            // 프로그램 목록 (문자열 배열)
+    features,            // 학원 특징 (문자열 배열)
+    description,         // 학원 소개 (자유 텍스트)
+    monthlyFee,          // 월 수강료 범위 (예: '30만~50만원')
+    classSize,           // 반 인원 (예: '5~10명')
+    operatingHours,      // 운영시간 (예: '평일 14:00~22:00')
+    establishedYear      // 설립년도
+  } = formData;
+
+  const region = REGIONS.find(r => r.id === regionId);
+  const regionName = region ? region.name : '';
+  const subjectNames = subjects.map(sid => {
+    const s = SUBJECTS.find(x => x.id === sid);
+    return s ? s.name : sid;
+  });
+  const subjectIcons = subjects.map(sid => {
+    const s = SUBJECTS.find(x => x.id === sid);
+    return s ? s.icon : '';
+  }).filter(Boolean);
+
+  const slug = 'academy-' + name.replace(/[^가-힣a-zA-Z0-9]/g, '-').toLowerCase() + '-' + district.replace(/[^가-힣a-zA-Z0-9]/g, '-').toLowerCase();
+  const today = new Date().toISOString().slice(0, 10);
+  const docId = 'doc-academy-' + Date.now();
+
+  // 자동 생성 태그
+  const tags = [
+    name,
+    ...subjectNames.map(s => s + '학원'),
+    district + ' ' + subjectNames[0] + '학원',
+    district + ' 학원',
+    regionName + ' ' + district + ' 학원',
+    ...ageGroups.map(a => a + ' 학원'),
+    ...subjectNames,
+    '학원 추천',
+    district + ' 학원 추천'
+  ];
+
+  // directAnswer 자동 생성
+  const directAnswer = [
+    name + '은(는) ' + regionName + ' ' + district + '에 위치한 ' + subjectNames.join(', ') + ' 전문 학원입니다.' + (classSize ? ' 소수정예 ' + classSize + ' 수업을 운영합니다.' : ''),
+    (features && features.length > 0) ? name + '의 특징: ' + features.slice(0, 3).join(', ') + '.' : '',
+    (monthlyFee ? '월 수강료는 ' + monthlyFee + ' 수준이며, ' : '') + (ageGroups.join(', ') + ' 학생을 대상으로 합니다.')
+  ].filter(Boolean);
+
+  // contentBlocks 자동 생성
+  const contentBlocks = [
+    { type: 'heading', level: 2, text: '학원 소개' },
+    { type: 'paragraph', text: description || (name + '은(는) ' + regionName + ' ' + district + '에서 ' + subjectNames.join(', ') + ' 교육을 제공하는 학원입니다.') },
+    { type: 'heading', level: 2, text: '교육 과목' },
+    { type: 'list', ordered: false, items: subjectNames.map((s, i) => (subjectIcons[i] || '') + ' ' + s) },
+  ];
+
+  if (programs && programs.length > 0) {
+    contentBlocks.push(
+      { type: 'heading', level: 2, text: '프로그램 안내' },
+      { type: 'list', ordered: false, items: programs }
+    );
+  }
+
+  if (features && features.length > 0) {
+    contentBlocks.push(
+      { type: 'heading', level: 2, text: '학원 특징' },
+      { type: 'list', ordered: false, items: features }
+    );
+  }
+
+  contentBlocks.push(
+    { type: 'heading', level: 2, text: '수업 정보' },
+    { type: 'table', headers: ['항목', '내용'], rows: [
+      ['대상', ageGroups.join(', ')],
+      ['반 인원', classSize || '문의'],
+      ['수강료', monthlyFee || '문의'],
+      ['운영시간', operatingHours || '문의']
+    ]}
+  );
+
+  contentBlocks.push(
+    { type: 'heading', level: 2, text: '위치 및 연락처' },
+    { type: 'table', headers: ['항목', '내용'], rows: [
+      ['주소', regionName + ' ' + district + ' ' + (address || '')],
+      ['전화', phone || '-'],
+      ['웹사이트', website || '-']
+    ].filter(row => row[1] !== '-') }
+  );
+
+  // FAQ 자동 생성
+  const faqItems = [
+    { question: name + '은(는) 어디에 있나요?', answer: regionName + ' ' + district + (address ? ' ' + address : '') + '에 위치해 있습니다.' },
+    { question: name + '에서 어떤 과목을 가르치나요?', answer: subjectNames.join(', ') + ' 과목을 가르칩니다.' },
+    { question: name + '의 수강료는 얼마인가요?', answer: monthlyFee ? '월 수강료는 ' + monthlyFee + ' 수준입니다. 정확한 금액은 학원에 직접 문의해주세요.' : '수강료는 학원에 직접 문의해주세요.' },
+    { question: name + '은(는) 몇 명씩 수업하나요?', answer: classSize ? classSize + ' 규모로 수업합니다.' : '반 인원은 학원에 문의해주세요.' },
+    { question: name + '의 운영시간은 어떻게 되나요?', answer: operatingHours || '운영시간은 학원에 문의해주세요.' }
+  ];
+
+  // keyInfo
+  const keyInfo = {
+    name: name,
+    location: regionName + ' ' + district,
+    subjects: subjectNames.join(', '),
+    ageGroups: ageGroups.join(', '),
+    classSize: classSize || '문의',
+    monthlyFee: monthlyFee || '문의'
+  };
+
+  return {
+    id: docId,
+    slug: slug,
+    title: name + ' - ' + district + ' ' + subjectNames[0] + ' 학원',
+    summary: regionName + ' ' + district + '에 위치한 ' + subjectNames.join(', ') + ' 전문 학원 ' + name + '의 프로그램, 수강료, 특징, 위치 정보를 안내합니다.',
+    docType: 'academy',
+    categoryId: 'academy',
+    tags: [...new Set(tags)],
+    status: 'published',
+    createdAt: today,
+    updatedAt: today,
+    directAnswer: directAnswer,
+    targetAudience: ageGroups.map(a => a + ' 학생 및 학부모'),
+    entities: [name, ...subjectNames.map(s => s + '학원'), district + ' 학원'],
+    cluster: {
+      pillarTopic: district + ' 학원 정보',
+      subTopic: subjectNames[0] + ' 학원',
+      intentType: 'local-business',
+      relatedClusterSlugs: []
+    },
+    contentBlocks: contentBlocks,
+    faqItems: faqItems,
+    authorInfo: {
+      name: name,
+      role: '교육기관',
+      expertise: subjectNames.join(', ') + ' 교육'
+    },
+    seoTitle: name + ' | ' + district + ' ' + subjectNames.join('/') + ' 학원 - 프로그램, 수강료, 위치',
+    seoDescription: regionName + ' ' + district + ' ' + subjectNames.join(', ') + ' 학원 ' + name + '. ' + (features && features[0] ? features[0] + '. ' : '') + '프로그램, 수강료, 위치 정보를 확인하세요.',
+    schemaTypes: ['LocalBusiness', 'EducationalOrganization', 'FAQPage'],
+    technicalMeta: {
+      canonicalPath: '/documents/' + slug,
+      indexable: true
+    },
+    keyInfo: keyInfo,
+    relatedDocs: [],
+    relatedServices: [],
+    // 학원 전용 필드
+    academyInfo: {
+      regionId: regionId,
+      district: district,
+      address: address || '',
+      phone: phone || '',
+      website: website || '',
+      subjects: subjects,
+      ageGroups: ageGroups,
+      programs: programs || [],
+      features: features || [],
+      monthlyFee: monthlyFee || '',
+      classSize: classSize || '',
+      operatingHours: operatingHours || '',
+      establishedYear: establishedYear || ''
+    }
+  };
+}
+
+// ============================================================
+// 학원 전용 검색/필터 함수
+// ============================================================
+
+function getAcademyDocuments() {
+  return getAllDocuments().filter(d => d.docType === 'academy' && d.status === 'published');
+}
+
+function searchAcademies(filters) {
+  let results = getAcademyDocuments();
+
+  if (filters.regionId) {
+    results = results.filter(d => d.academyInfo && d.academyInfo.regionId === filters.regionId);
+  }
+  if (filters.district) {
+    results = results.filter(d => d.academyInfo && d.academyInfo.district === filters.district);
+  }
+  if (filters.subject) {
+    results = results.filter(d => d.academyInfo && d.academyInfo.subjects && d.academyInfo.subjects.includes(filters.subject));
+  }
+  if (filters.ageGroup) {
+    results = results.filter(d => d.academyInfo && d.academyInfo.ageGroups && d.academyInfo.ageGroups.includes(filters.ageGroup));
+  }
+  if (filters.query) {
+    const q = filters.query.toLowerCase();
+    results = results.filter(d =>
+      d.title.toLowerCase().includes(q) ||
+      d.summary.toLowerCase().includes(q) ||
+      (d.tags && d.tags.some(t => t.toLowerCase().includes(q)))
+    );
+  }
+
+  return results;
+}
+
+function getRegionById(id) {
+  return REGIONS.find(r => r.id === id);
+}
+
+function getSubjectById(id) {
+  return SUBJECTS.find(s => s.id === id);
 }
 
 // ============================================================
