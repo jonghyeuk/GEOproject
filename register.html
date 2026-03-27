@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>학원 등록 - EduAtlas</title>
+  <meta name="description" content="EduAtlas에 학원을 등록하세요. AI 검색에 최적화된 학원 정보 페이지가 자동으로 생성됩니다.">
+  <link rel="canonical" href="https://geoproject-8fc76.web.app/register.html">
+  <meta property="og:title" content="학원 등록 - EduAtlas">
+  <meta property="og:description" content="EduAtlas에 학원을 등록하면 AI가 읽기 쉬운 구조화된 학원 정보 페이지가 자동 생성됩니다.">
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    .register-hero {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+      color: #fff;
+      padding: 48px 0 36px;
+      text-align: center;
+    }
+    .register-hero h1 { font-size: 2rem; margin-bottom: 8px; }
+    .register-hero p { opacity: 0.9; font-size: 1.1rem; }
+
+    .register-form {
+      max-width: 720px;
+      margin: -24px auto 48px;
+      background: #fff;
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-lg);
+      padding: 36px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .form-section {
+      margin-bottom: 32px;
+      padding-bottom: 24px;
+      border-bottom: 1px solid var(--gray-200);
+    }
+    .form-section:last-of-type { border-bottom: none; margin-bottom: 16px; }
+    .form-section h2 {
+      font-size: 1.15rem;
+      color: var(--primary);
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .form-group {
+      margin-bottom: 16px;
+    }
+    .form-group label {
+      display: block;
+      font-weight: 600;
+      margin-bottom: 6px;
+      font-size: 0.95rem;
+      color: var(--gray-700);
+    }
+    .form-group label .required {
+      color: var(--danger);
+      margin-left: 2px;
+    }
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      width: 100%;
+      padding: 10px 14px;
+      border: 1px solid var(--gray-300);
+      border-radius: var(--radius-sm);
+      font-size: 0.95rem;
+      font-family: inherit;
+      transition: border-color 0.2s;
+    }
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+    }
+    .form-group textarea { resize: vertical; min-height: 80px; }
+    .form-group .hint {
+      font-size: 0.82rem;
+      color: var(--gray-400);
+      margin-top: 4px;
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+    @media (max-width: 600px) {
+      .form-row { grid-template-columns: 1fr; }
+    }
+
+    .checkbox-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+      gap: 8px;
+    }
+    .checkbox-grid label {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-weight: 400;
+      cursor: pointer;
+      padding: 6px 10px;
+      border: 1px solid var(--gray-200);
+      border-radius: var(--radius-sm);
+      transition: all 0.2s;
+      font-size: 0.9rem;
+    }
+    .checkbox-grid label:hover { border-color: var(--primary-light); background: rgba(79,70,229,0.03); }
+    .checkbox-grid input:checked + span { color: var(--primary); font-weight: 600; }
+    .checkbox-grid label:has(input:checked) { border-color: var(--primary); background: rgba(79,70,229,0.06); }
+
+    .tag-input-wrap {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      padding: 8px;
+      border: 1px solid var(--gray-300);
+      border-radius: var(--radius-sm);
+      min-height: 42px;
+      cursor: text;
+    }
+    .tag-input-wrap:focus-within { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(79,70,229,0.1); }
+    .tag-input-wrap .tag-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 3px 10px;
+      background: var(--primary);
+      color: #fff;
+      border-radius: 20px;
+      font-size: 0.85rem;
+    }
+    .tag-input-wrap .tag-item button {
+      background: none;
+      border: none;
+      color: rgba(255,255,255,0.7);
+      cursor: pointer;
+      font-size: 1rem;
+      padding: 0;
+      line-height: 1;
+    }
+    .tag-input-wrap .tag-item button:hover { color: #fff; }
+    .tag-input-wrap input {
+      border: none;
+      outline: none;
+      flex: 1;
+      min-width: 100px;
+      padding: 3px 4px;
+      font-size: 0.9rem;
+      font-family: inherit;
+    }
+
+    .btn-register {
+      display: block;
+      width: 100%;
+      padding: 14px;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+      color: #fff;
+      border: none;
+      border-radius: var(--radius);
+      font-size: 1.1rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: opacity 0.2s;
+    }
+    .btn-register:hover { opacity: 0.9; }
+    .btn-register:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    .preview-panel {
+      max-width: 720px;
+      margin: 0 auto 48px;
+      background: #fff;
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow);
+      padding: 36px;
+      display: none;
+    }
+    .preview-panel.show { display: block; }
+    .preview-panel h2 { margin-bottom: 16px; color: var(--primary); }
+
+    .benefits-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      max-width: 720px;
+      margin: 32px auto 48px;
+    }
+    @media (max-width: 600px) { .benefits-grid { grid-template-columns: 1fr; } }
+    .benefit-card {
+      background: #fff;
+      border-radius: var(--radius);
+      padding: 24px;
+      text-align: center;
+      box-shadow: var(--shadow);
+    }
+    .benefit-card .benefit-icon { font-size: 2rem; margin-bottom: 8px; }
+    .benefit-card h3 { font-size: 1rem; margin-bottom: 6px; color: var(--gray-800); }
+    .benefit-card p { font-size: 0.85rem; color: var(--gray-500); }
+
+    .success-message {
+      max-width: 720px;
+      margin: 0 auto 48px;
+      background: #ecfdf5;
+      border: 1px solid #a7f3d0;
+      border-radius: var(--radius-lg);
+      padding: 36px;
+      text-align: center;
+      display: none;
+    }
+    .success-message.show { display: block; }
+    .success-message h2 { color: #065f46; margin-bottom: 8px; }
+    .success-message p { color: #047857; }
+    .success-message a { display: inline-block; margin-top: 16px; padding: 10px 24px; background: var(--primary); color: #fff; border-radius: var(--radius-sm); }
+  </style>
+</head>
+<body>
+  <div id="site-header"></div>
+
+  <section class="register-hero">
+    <div class="container">
+      <h1>학원 등록</h1>
+      <p>학원 정보를 등록하면 AI 검색에 최적화된 페이지가 자동 생성됩니다</p>
+    </div>
+  </section>
+
+  <div class="container page-content">
+
+    <!-- 혜택 안내 -->
+    <div class="benefits-grid">
+      <div class="benefit-card">
+        <div class="benefit-icon">🤖</div>
+        <h3>AI 검색 노출</h3>
+        <p>ChatGPT, Copilot 등 AI가 학원 정보를 인용할 수 있도록 구조화됩니다</p>
+      </div>
+      <div class="benefit-card">
+        <div class="benefit-icon">📄</div>
+        <h3>자동 문서 생성</h3>
+        <p>입력한 정보로 SEO 최적화된 학원 소개 페이지가 자동 생성됩니다</p>
+      </div>
+      <div class="benefit-card">
+        <div class="benefit-icon">🔍</div>
+        <h3>검색 발견성 향상</h3>
+        <p>지역+과목 기반 태그로 학부모가 쉽게 찾을 수 있습니다</p>
+      </div>
+    </div>
+
+    <!-- 등록 폼 -->
+    <form class="register-form" id="registerForm">
+
+      <!-- 기본 정보 -->
+      <div class="form-section">
+        <h2>🏫 기본 정보</h2>
+        <div class="form-group">
+          <label>학원명 <span class="required">*</span></label>
+          <input type="text" id="academyName" required placeholder="예: 청담수학학원">
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>지역 (시/도) <span class="required">*</span></label>
+            <select id="regionSelect" required>
+              <option value="">선택하세요</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>구/시 <span class="required">*</span></label>
+            <select id="districtSelect" required>
+              <option value="">지역을 먼저 선택하세요</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>상세주소</label>
+          <input type="text" id="address" placeholder="예: 대치동 123-45 2층">
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>전화번호</label>
+            <input type="tel" id="phone" placeholder="예: 02-555-1234">
+          </div>
+          <div class="form-group">
+            <label>웹사이트</label>
+            <input type="url" id="website" placeholder="예: https://example.com">
+          </div>
+        </div>
+      </div>
+
+      <!-- 교육 정보 -->
+      <div class="form-section">
+        <h2>📚 교육 정보</h2>
+        <div class="form-group">
+          <label>교육 과목 <span class="required">*</span></label>
+          <div class="checkbox-grid" id="subjectsGrid"></div>
+        </div>
+        <div class="form-group">
+          <label>대상 연령 <span class="required">*</span></label>
+          <div class="checkbox-grid" id="ageGroupsGrid">
+            <label><input type="checkbox" name="ageGroup" value="유아"><span>유아</span></label>
+            <label><input type="checkbox" name="ageGroup" value="초등"><span>초등</span></label>
+            <label><input type="checkbox" name="ageGroup" value="중등"><span>중등</span></label>
+            <label><input type="checkbox" name="ageGroup" value="고등"><span>고등</span></label>
+            <label><input type="checkbox" name="ageGroup" value="성인"><span>성인</span></label>
+          </div>
+        </div>
+      </div>
+
+      <!-- 프로그램 & 특징 -->
+      <div class="form-section">
+        <h2>✨ 프로그램 & 특징</h2>
+        <div class="form-group">
+          <label>프로그램 목록</label>
+          <div class="tag-input-wrap" id="programsWrap">
+            <input type="text" id="programsInput" placeholder="프로그램명 입력 후 Enter">
+          </div>
+          <div class="hint">예: 수학 심화반, 영어 독서 프로그램, 코딩 기초반</div>
+        </div>
+        <div class="form-group">
+          <label>학원 특징</label>
+          <div class="tag-input-wrap" id="featuresWrap">
+            <input type="text" id="featuresInput" placeholder="특징 입력 후 Enter">
+          </div>
+          <div class="hint">예: 소수정예 수업, 셔틀버스 운행, 자습실 개방</div>
+        </div>
+        <div class="form-group">
+          <label>학원 소개 (자유 서술)</label>
+          <textarea id="description" rows="4" placeholder="학원의 교육 철학, 강점, 특징 등을 자유롭게 적어주세요"></textarea>
+        </div>
+      </div>
+
+      <!-- 수업 정보 -->
+      <div class="form-section">
+        <h2>📋 수업 정보</h2>
+        <div class="form-row">
+          <div class="form-group">
+            <label>월 수강료 범위</label>
+            <input type="text" id="monthlyFee" placeholder="예: 30만~50만원">
+          </div>
+          <div class="form-group">
+            <label>반 인원</label>
+            <input type="text" id="classSize" placeholder="예: 5~10명">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>운영시간</label>
+            <input type="text" id="operatingHours" placeholder="예: 평일 14:00~22:00">
+          </div>
+          <div class="form-group">
+            <label>설립년도</label>
+            <input type="number" id="establishedYear" placeholder="예: 2015" min="1950" max="2026">
+          </div>
+        </div>
+      </div>
+
+      <button type="submit" class="btn-register" id="submitBtn">학원 등록하기</button>
+    </form>
+
+    <!-- 미리보기 패널 -->
+    <div class="preview-panel" id="previewPanel">
+      <h2>생성된 문서 미리보기</h2>
+      <div id="previewContent"></div>
+    </div>
+
+    <!-- 성공 메시지 -->
+    <div class="success-message" id="successMessage">
+      <h2>학원 등록이 완료되었습니다!</h2>
+      <p>AI 검색에 최적화된 학원 정보 페이지가 생성되었습니다.</p>
+      <a href="#" id="viewDocLink">등록된 학원 정보 보기</a>
+    </div>
+
+  </div>
+
+  <div id="site-footer"></div>
+
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+  <script src="js/firebase-config.js"></script>
+  <script src="data/documents.js"></script>
+  <script src="data/hanam-academies.js"></script>
+  <script src="js/app.js"></script>
+  <script>
+  // --- 태그 입력 헬퍼 ---
+  function initTagInput(wrapId, inputId) {
+    const wrap = document.getElementById(wrapId);
+    const input = document.getElementById(inputId);
+    const tags = [];
+
+    input.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter' || e.key === ',') {
+        e.preventDefault();
+        const val = input.value.trim().replace(/,/g, '');
+        if (val && !tags.includes(val)) {
+          tags.push(val);
+          renderTags();
+        }
+        input.value = '';
+      }
+    });
+
+    wrap.addEventListener('click', () => input.focus());
+
+    function renderTags() {
+      const existing = wrap.querySelectorAll('.tag-item');
+      existing.forEach(el => el.remove());
+      tags.forEach((t, i) => {
+        const span = document.createElement('span');
+        span.className = 'tag-item';
+        span.innerHTML = t + '<button type="button" data-idx="' + i + '">&times;</button>';
+        wrap.insertBefore(span, input);
+      });
+    }
+
+    wrap.addEventListener('click', function(e) {
+      if (e.target.tagName === 'BUTTON' && e.target.dataset.idx !== undefined) {
+        tags.splice(parseInt(e.target.dataset.idx), 1);
+        renderTags();
+      }
+    });
+
+    return { getTags: () => [...tags] };
+  }
+
+  function pageInit() {
+    // 지역 셀렉트 채우기
+    const regionSel = document.getElementById('regionSelect');
+    const districtSel = document.getElementById('districtSelect');
+
+    REGIONS.forEach(r => {
+      const opt = document.createElement('option');
+      opt.value = r.id;
+      opt.textContent = r.name;
+      regionSel.appendChild(opt);
+    });
+
+    regionSel.addEventListener('change', function() {
+      districtSel.innerHTML = '<option value="">선택하세요</option>';
+      const region = REGIONS.find(r => r.id === this.value);
+      if (region) {
+        region.districts.forEach(d => {
+          const opt = document.createElement('option');
+          opt.value = d;
+          opt.textContent = d;
+          districtSel.appendChild(opt);
+        });
+      }
+    });
+
+    // 과목 체크박스
+    const subGrid = document.getElementById('subjectsGrid');
+    SUBJECTS.forEach(s => {
+      const label = document.createElement('label');
+      label.innerHTML = '<input type="checkbox" name="subject" value="' + s.id + '"><span>' + s.icon + ' ' + s.name + '</span>';
+      subGrid.appendChild(label);
+    });
+
+    // 태그 입력 초기화
+    const programsTags = initTagInput('programsWrap', 'programsInput');
+    const featuresTags = initTagInput('featuresWrap', 'featuresInput');
+
+    // 폼 제출
+    document.getElementById('registerForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+
+      const subjects = Array.from(document.querySelectorAll('input[name="subject"]:checked')).map(el => el.value);
+      const ageGroups = Array.from(document.querySelectorAll('input[name="ageGroup"]:checked')).map(el => el.value);
+
+      if (subjects.length === 0) {
+        alert('교육 과목을 1개 이상 선택해주세요.');
+        return;
+      }
+      if (ageGroups.length === 0) {
+        alert('대상 연령을 1개 이상 선택해주세요.');
+        return;
+      }
+
+      const formData = {
+        name: document.getElementById('academyName').value.trim(),
+        regionId: document.getElementById('regionSelect').value,
+        district: document.getElementById('districtSelect').value,
+        address: document.getElementById('address').value.trim(),
+        phone: document.getElementById('phone').value.trim(),
+        website: document.getElementById('website').value.trim(),
+        subjects: subjects,
+        ageGroups: ageGroups,
+        programs: programsTags.getTags(),
+        features: featuresTags.getTags(),
+        description: document.getElementById('description').value.trim(),
+        monthlyFee: document.getElementById('monthlyFee').value.trim(),
+        classSize: document.getElementById('classSize').value.trim(),
+        operatingHours: document.getElementById('operatingHours').value.trim(),
+        establishedYear: document.getElementById('establishedYear').value.trim()
+      };
+
+      // 문서 자동 생성
+      const doc = generateAcademyDocument(formData);
+
+      // 미리보기
+      showPreview(doc);
+
+      // 저장
+      const btn = document.getElementById('submitBtn');
+      btn.disabled = true;
+      btn.textContent = '등록 중...';
+
+      try {
+        await saveDocument(doc);
+        document.getElementById('registerForm').style.display = 'none';
+        const success = document.getElementById('successMessage');
+        success.classList.add('show');
+        document.getElementById('viewDocLink').href = '/documents/' + doc.slug;
+      } catch (err) {
+        alert('등록 중 오류가 발생했습니다. 다시 시도해주세요.');
+        btn.disabled = false;
+        btn.textContent = '학원 등록하기';
+      }
+    });
+  }
+
+  function showPreview(doc) {
+    const panel = document.getElementById('previewPanel');
+    const content = document.getElementById('previewContent');
+
+    let html = '<h3>' + doc.title + '</h3>';
+    html += '<p style="color:var(--gray-500); margin: 8px 0 16px;">' + doc.summary + '</p>';
+
+    html += '<div style="margin-bottom: 16px;"><strong>AI 직접 인용 답변:</strong>';
+    doc.directAnswer.forEach(a => {
+      html += '<div style="background: var(--gray-50); padding: 8px 12px; border-left: 3px solid var(--primary); margin: 6px 0; border-radius: 4px; font-size: 0.9rem;">' + a + '</div>';
+    });
+    html += '</div>';
+
+    html += '<div style="margin-bottom: 16px;"><strong>태그:</strong> ';
+    html += doc.tags.slice(0, 8).map(t => '<span class="tag">' + t + '</span>').join(' ');
+    html += '</div>';
+
+    html += '<div style="margin-bottom: 16px;"><strong>FAQ (' + doc.faqItems.length + '개):</strong>';
+    doc.faqItems.slice(0, 3).forEach(faq => {
+      html += '<details style="margin: 4px 0;"><summary style="cursor:pointer; font-size:0.9rem;">' + faq.question + '</summary>';
+      html += '<p style="padding: 6px 12px; font-size: 0.85rem; color: var(--gray-600);">' + faq.answer + '</p></details>';
+    });
+    html += '</div>';
+
+    html += '<div><strong>스키마 타입:</strong> ' + doc.schemaTypes.join(', ') + '</div>';
+
+    content.innerHTML = html;
+    panel.classList.add('show');
+  }
+  </script>
+</body>
+</html>

@@ -1122,3 +1122,29 @@ img { max-width: 100%; height: auto; }
   .footer-grid { grid-template-columns: 1fr; }
   .container { padding: 0 16px; }
 }
+
+/* ============================================
+   Academy / 학원 관련 스타일
+   ============================================ */
+
+.academy-card .card-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  font-size: 0.85rem;
+  color: var(--gray-500);
+}
+
+.nav-cta {
+  background: var(--primary);
+  color: #fff !important;
+  padding: 6px 16px;
+  border-radius: 20px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  transition: background 0.2s;
+}
+.nav-cta:hover {
+  background: var(--primary-dark);
+  color: #fff !important;
+}

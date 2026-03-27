@@ -3,23 +3,23 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>EduAtlas - 과학 교육 지식 데이터베이스</title>
-  <meta name="description" content="AI가 인용하는 과학 교육 지식 DB. 이론·원리, 실험방법, 실험장치, 인터랙티브 시뮬레이션을 구조화하여 제공합니다.">
+  <title>EduAtlas - 학원 찾기 & 교육 정보 플랫폼</title>
+  <meta name="description" content="지역별 학원 정보를 한눈에 비교하세요. AI가 인용하는 구조화된 교육 정보 데이터베이스. 학원 검색, 비교, 교육 가이드를 제공합니다.">
   <link rel="canonical" href="https://geoproject-8fc76.web.app/">
   <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large">
 
   <!-- Open Graph -->
   <meta property="og:type" content="website">
-  <meta property="og:title" content="EduAtlas - 과학 교육 지식 데이터베이스">
-  <meta property="og:description" content="AI가 인용하는 과학 교육 지식 DB. 이론·원리, 실험방법, 실험장치, 인터랙티브 시뮬레이션을 구조화하여 제공합니다.">
+  <meta property="og:title" content="EduAtlas - 학원 찾기 & 교육 정보 플랫폼">
+  <meta property="og:description" content="지역별 학원 정보를 한눈에 비교하세요. AI가 인용하는 구조화된 교육 정보 데이터베이스.">
   <meta property="og:url" content="https://geoproject-8fc76.web.app/">
   <meta property="og:site_name" content="EduAtlas">
   <meta property="og:locale" content="ko_KR">
 
   <!-- Twitter -->
   <meta name="twitter:card" content="summary">
-  <meta name="twitter:title" content="EduAtlas - 과학 교육 지식 데이터베이스">
-  <meta name="twitter:description" content="AI가 인용하는 과학 교육 지식 DB">
+  <meta name="twitter:title" content="EduAtlas - 학원 찾기 & 교육 정보 플랫폼">
+  <meta name="twitter:description" content="지역별 학원 정보를 한눈에. AI가 인용하는 교육 정보 DB">
 
   <link rel="stylesheet" href="css/style.css">
   <script type="application/ld+json">
@@ -28,7 +28,7 @@
     "@type": "WebSite",
     "name": "EduAtlas",
     "alternateName": "에듀아틀라스",
-    "description": "AI가 인용하는 과학 교육 지식 데이터베이스 — 이론, 실험, 시뮬레이션",
+    "description": "학원 찾기 & AI가 인용하는 교육 정보 데이터베이스",
     "url": "https://geoproject-8fc76.web.app/",
     "inLanguage": "ko",
     "potentialAction": {
@@ -41,12 +41,11 @@
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
-    "@type": "EducationalOrganization",
+    "@type": "Organization",
     "name": "EduAtlas",
-    "description": "한국어 과학 교육 지식 데이터베이스",
+    "description": "한국 교육 정보 플랫폼 — 학원 찾기, 교육 가이드, AI 인용 가능한 교육 DB",
     "url": "https://geoproject-8fc76.web.app/",
-    "areaServed": { "@type": "Country", "name": "KR" },
-    "teaches": ["물리", "화학", "생물", "지구과학", "과학실험"]
+    "areaServed": { "@type": "Country", "name": "KR" }
   }
   </script>
 </head>
@@ -56,24 +55,35 @@
   <!-- Hero -->
   <section class="hero">
     <div class="container">
-      <h1>과학 교육<br>지식 데이터베이스</h1>
-      <p>이론·원리 · 실험방법 · 실험장치 · 시뮬레이션<br>AI가 인용하는 구조화된 과학 교육 콘텐츠</p>
+      <h1>우리 동네 학원,<br>한눈에 찾기</h1>
+      <p>지역별 학원 정보 비교 · 프로그램 · 수강료 · 리뷰<br>AI가 인용하는 구조화된 교육 정보 플랫폼</p>
       <div class="search-bar">
         <span class="search-icon">🔍</span>
-        <input type="text" id="heroSearch" placeholder="검색... (예: 플랑크 상수, Beer-Lambert, 이상기체)" autocomplete="off">
+        <input type="text" id="heroSearch" placeholder="학원 검색... (예: 강남 수학학원, 코딩학원, 영어학원)" autocomplete="off">
       </div>
     </div>
   </section>
 
   <div class="container page-content">
     <!-- 카테고리 -->
-    <h2 class="section-title">지식 카테고리</h2>
-    <p class="section-subtitle">과학 교육 콘텐츠를 탐색하세요</p>
+    <h2 class="section-title">카테고리</h2>
+    <p class="section-subtitle">원하는 정보를 찾아보세요</p>
     <div class="cat-grid" id="catGrid"></div>
 
+    <!-- 학원 목록 -->
+    <h2 class="section-title" style="margin-top:48px">최근 등록된 학원</h2>
+    <p class="section-subtitle">새로 등록된 학원 정보를 확인하세요</p>
+    <div class="card-grid" id="academyList"></div>
+
+    <!-- 학원 등록 CTA -->
+    <div style="text-align:center; margin: 48px 0 24px;">
+      <p style="color:var(--gray-500); margin-bottom:12px;">학원을 운영하고 계신가요?</p>
+      <a href="register.html" class="btn btn-large" style="display:inline-block; padding:14px 36px; background:var(--primary); color:#fff; border-radius:var(--radius); font-weight:700; font-size:1.05rem;">무료로 학원 등록하기</a>
+    </div>
+
     <!-- 최근 문서 -->
-    <h2 class="section-title" style="margin-top:48px">최근 문서</h2>
-    <p class="section-subtitle">최근 업데이트된 콘텐츠</p>
+    <h2 class="section-title" style="margin-top:48px">교육 콘텐츠</h2>
+    <p class="section-subtitle">최근 업데이트된 교육 자료</p>
     <div class="card-grid" id="latestDocs"></div>
   </div>
 
@@ -84,14 +94,26 @@
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
   <script src="js/firebase-config.js"></script>
   <script src="data/documents.js"></script>
+  <script src="data/hanam-academies.js"></script>
   <script src="js/app.js"></script>
   <script>
   function pageInit() {
     // Categories
     document.getElementById('catGrid').innerHTML = CATEGORIES.map(c => renderCatCard(c)).join('');
 
-    // Latest docs
-    const docs = getAllDocuments().filter(d => d.status === 'published')
+    // Academy list
+    const academies = getAcademyDocuments()
+      .sort((a, b) => b.updatedAt.localeCompare(a.updatedAt))
+      .slice(0, 6);
+    const academyEl = document.getElementById('academyList');
+    if (academies.length > 0) {
+      academyEl.innerHTML = academies.map(d => renderAcademyCard(d)).join('');
+    } else {
+      academyEl.innerHTML = '<div class="empty-state"><p>아직 등록된 학원이 없습니다.</p><a href="register.html">첫 번째 학원을 등록해보세요!</a></div>';
+    }
+
+    // Latest non-academy docs
+    const docs = getAllDocuments().filter(d => d.status === 'published' && d.docType !== 'academy')
       .sort((a, b) => b.updatedAt.localeCompare(a.updatedAt))
       .slice(0, 6);
     document.getElementById('latestDocs').innerHTML = docs.map(d => renderDocCard(d)).join('');
