@@ -58,19 +58,19 @@ function getFooterHTML() {
           <h4>학원 정보</h4>
           <a href="/categories/academy">학원찾기</a>
           <a href="/categories/edu-guide">교육가이드</a>
-          <a href="register.html">학원등록</a>
+          <a href="/register.html">학원등록</a>
         </div>
         <div class="footer-section">
           <h4>도구</h4>
-          <a href="search.html">검색</a>
-          <a href="admin.html">관리</a>
+          <a href="/search.html">검색</a>
+          <a href="/admin.html">관리</a>
         </div>
         <div class="footer-section">
           <h4>정보</h4>
-          <a href="about.html">소개</a>
-          <a href="contact.html">문의</a>
-          <a href="privacy.html">개인정보처리방침</a>
-          <a href="terms.html">이용약관</a>
+          <a href="/about.html">소개</a>
+          <a href="/contact.html">문의</a>
+          <a href="/privacy.html">개인정보처리방침</a>
+          <a href="/terms.html">이용약관</a>
         </div>
       </div>
       <div class="footer-bottom">

@@ -22,7 +22,7 @@
 
   <div class="container page-content">
     <div class="breadcrumb" id="breadcrumb">
-      <a href="index.html">홈</a>
+      <a href="/">홈</a>
       <span class="sep">›</span>
       <span>카테고리</span>
     </div>
@@ -98,7 +98,7 @@
         <div class="empty-state">
           <div class="empty-icon">📂</div>
           <h3>카테고리를 찾을 수 없습니다</h3>
-          <p><a href="categories.html">카테고리 목록으로</a></p>
+          <p><a href="/categories">카테고리 목록으로</a></p>
         </div>`;
       return;
     }
@@ -122,8 +122,8 @@
 
     // breadcrumb
     document.getElementById('breadcrumb').innerHTML = `
-      <a href="index.html">홈</a><span class="sep">›</span>
-      <a href="categories.html">카테고리</a><span class="sep">›</span>
+      <a href="/">홈</a><span class="sep">›</span>
+      <a href="/categories">카테고리</a><span class="sep">›</span>
       <span>${cat.nameKo}</span>`;
 
     const docs = getDocumentsByCategory(cat.id).sort((a,b) => b.updatedAt.localeCompare(a.updatedAt));

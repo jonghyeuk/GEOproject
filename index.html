@@ -78,7 +78,7 @@
     <!-- 학원 등록 CTA -->
     <div style="text-align:center; margin: 48px 0 24px;">
       <p style="color:var(--gray-500); margin-bottom:12px;">학원을 운영하고 계신가요?</p>
-      <a href="register.html" class="btn btn-large" style="display:inline-block; padding:14px 36px; background:var(--primary); color:#fff; border-radius:var(--radius); font-weight:700; font-size:1.05rem;">무료로 학원 등록하기</a>
+      <a href="/register.html" class="btn btn-large" style="display:inline-block; padding:14px 36px; background:var(--primary); color:#fff; border-radius:var(--radius); font-weight:700; font-size:1.05rem;">무료로 학원 등록하기</a>
     </div>
 
     <!-- 최근 문서 -->
@@ -109,7 +109,7 @@
     if (academies.length > 0) {
       academyEl.innerHTML = academies.map(d => renderAcademyCard(d)).join('');
     } else {
-      academyEl.innerHTML = '<div class="empty-state"><p>아직 등록된 학원이 없습니다.</p><a href="register.html">첫 번째 학원을 등록해보세요!</a></div>';
+      academyEl.innerHTML = '<div class="empty-state"><p>아직 등록된 학원이 없습니다.</p><a href="/register.html">첫 번째 학원을 등록해보세요!</a></div>';
     }
 
     // Latest non-academy docs
@@ -121,7 +121,7 @@
     // Search redirect
     document.getElementById('heroSearch').addEventListener('keydown', e => {
       if (e.key === 'Enter' && e.target.value.trim()) {
-        location.href = 'search.html?q=' + encodeURIComponent(e.target.value.trim());
+        location.href = '/search.html?q=' + encodeURIComponent(e.target.value.trim());
       }
     });
   }
