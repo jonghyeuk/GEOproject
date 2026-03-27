@@ -192,16 +192,26 @@ const HANAM_SEED = [
 
 // 즉시 실행: generateAcademyDocument()로 풀 문서 자동 생성하여 SAMPLE_DOCUMENTS에 추가
 (function() {
-  if (typeof generateAcademyDocument !== 'function') return;
-  HANAM_SEED.forEach(function(seed, i) {
-    var doc = generateAcademyDocument(seed);
-    doc.id = 'doc-academy-hanam-' + String(i + 1).padStart(3, '0');
-    doc.createdAt = '2026-03-27';
-    doc.updatedAt = '2026-03-27';
-    SAMPLE_DOCUMENTS.push(doc);
-  });
-  // 캐시가 이미 생성됐으면 갱신
-  if (typeof _cachedDocs !== 'undefined' && _cachedDocs !== null) {
-    _cachedDocs = [].concat(SAMPLE_DOCUMENTS);
+  try {
+    if (typeof generateAcademyDocument !== 'function') { console.warn('[hanam] generateAcademyDocument not found'); return; }
+    if (typeof SAMPLE_DOCUMENTS === 'undefined') { console.warn('[hanam] SAMPLE_DOCUMENTS not found'); return; }
+    HANAM_SEED.forEach(function(seed, i) {
+      try {
+        var doc = generateAcademyDocument(seed);
+        doc.id = 'doc-academy-hanam-' + String(i + 1).padStart(3, '0');
+        doc.createdAt = '2026-03-27';
+        doc.updatedAt = '2026-03-27';
+        SAMPLE_DOCUMENTS.push(doc);
+      } catch(e) {
+        console.error('[hanam] Failed to generate doc for:', seed.name, e);
+      }
+    });
+    // 캐시가 이미 생성됐으면 갱신
+    if (typeof _cachedDocs !== 'undefined' && _cachedDocs !== null) {
+      _cachedDocs = [].concat(SAMPLE_DOCUMENTS);
+    }
+    console.log('[hanam] Loaded', HANAM_SEED.length, 'academies');
+  } catch(e) {
+    console.error('[hanam] Failed to load seed data:', e);
   }
 })();
