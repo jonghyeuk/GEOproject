@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>카테고리 - 과학 교육 지식 분류 - EduAtlas</title>
-  <meta name="description" content="이론·원리, 실험방법, 실험장치, 시뮬레이션 — 과학 교육 지식을 분야별로 탐색하세요">
+  <title>카테고리 - 학원 찾기 & 교육 정보 - EduAtlas</title>
+  <meta name="description" content="학원찾기, 교육가이드, 이론·원리, 실험방법 — 교육 정보를 분야별로 탐색하세요">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://geoproject-8fc76.web.app/categories.html">
 
@@ -67,7 +67,7 @@
     const cards = CATEGORIES.map(cat => {
       const docs = getDocumentsByCategory(cat.id);
       const tags = {};
-      docs.forEach(d => d.tags.forEach(t => { tags[t] = (tags[t]||0)+1; }));
+      docs.forEach(d => { if (d.tags) d.tags.forEach(t => { tags[t] = (tags[t]||0)+1; }); });
       const topTags = Object.entries(tags).sort((a,b) => b[1]-a[1]).slice(0,5);
 
       return `
@@ -130,13 +130,13 @@
     const tags = {};
     const typeDist = {};
     docs.forEach(d => {
-      d.tags.forEach(t => { tags[t] = (tags[t]||0)+1; });
+      if (d.tags) d.tags.forEach(t => { tags[t] = (tags[t]||0)+1; });
       typeDist[d.docType] = (typeDist[d.docType] || 0) + 1;
     });
     const topTags = Object.entries(tags).sort((a,b) => b[1]-a[1]).slice(0,12);
 
     // 문서 유형 분포
-    const typeLabels = { article: '이론/원리', topic: '탐구 주제', guide: '실험 가이드', interactive: '시뮬레이션', concept: '개념' };
+    const typeLabels = { article: '이론/원리', topic: '탐구 주제', guide: '실험 가이드', interactive: '시뮬레이션', concept: '개념', academy: '학원 정보' };
     const typeStats = Object.entries(typeDist).map(([type, count]) =>
       `<span style="font-size:13px; padding:6px 14px; background:var(--gray-100); border-radius:20px; color:var(--gray-600);">${typeLabels[type] || type} (${count})</span>`
     ).join('');
@@ -174,9 +174,9 @@
       </div>` : ''}
 
       <!-- 문서 목록 -->
-      <h2 class="section-title">문서 목록</h2>
-      ${docs.length ? `<div class="card-grid">${docs.map(d => renderDocCard(d)).join('')}</div>` :
-        `<div class="empty-state"><div class="empty-icon">📄</div><h3>아직 문서가 없습니다</h3></div>`}
+      <h2 class="section-title">${catId === 'academy' ? '학원 목록' : '문서 목록'}</h2>
+      ${docs.length ? `<div class="card-grid">${docs.map(d => (d.docType === 'academy' && typeof renderAcademyCard === 'function') ? renderAcademyCard(d) : renderDocCard(d)).join('')}</div>` :
+        `<div class="empty-state"><div class="empty-icon">📄</div><h3>아직 ${catId === 'academy' ? '등록된 학원이' : '문서가'} 없습니다</h3></div>`}
     `;
   }
   </script>
