@@ -1378,10 +1378,20 @@ function generateAcademyDocument(formData) {
   ];
 
   if (programs && programs.length > 0) {
-    contentBlocks.push(
-      { type: 'heading', level: 2, text: '프로그램 안내' },
-      { type: 'list', ordered: false, items: programs }
-    );
+    var isDetailed = typeof programs[0] === 'object';
+    if (isDetailed) {
+      contentBlocks.push(
+        { type: 'heading', level: 2, text: '프로그램 안내' },
+        { type: 'table', headers: ['프로그램', '대상', '수준', '일정', '내용'], rows: programs.map(function(p) {
+          return [p.name || '', p.target || '', p.level || '', p.schedule || '', p.desc || ''];
+        })}
+      );
+    } else {
+      contentBlocks.push(
+        { type: 'heading', level: 2, text: '프로그램 안내' },
+        { type: 'list', ordered: false, items: programs }
+      );
+    }
   }
 
   if (features && features.length > 0) {
@@ -1411,9 +1421,18 @@ function generateAcademyDocument(formData) {
   );
 
   // FAQ 자동 생성
+  var isDetailedPrograms = programs && programs.length > 0 && typeof programs[0] === 'object';
+  var programFaqAnswer = '';
+  if (isDetailedPrograms) {
+    programFaqAnswer = programs.map(function(p) { return p.name + '(' + (p.target || '') + (p.schedule ? ', ' + p.schedule : '') + ')'; }).join(', ') + ' 등을 운영합니다.';
+  } else if (programs && programs.length > 0) {
+    programFaqAnswer = programs.join(', ') + ' 등을 운영합니다.';
+  }
+
   const faqItems = [
     { question: name + '은(는) 어디에 있나요?', answer: regionName + ' ' + district + (address ? ' ' + address : '') + '에 위치해 있습니다.' },
     { question: name + '에서 어떤 과목을 가르치나요?', answer: subjectNames.join(', ') + ' 과목을 가르칩니다.' },
+    { question: name + '에는 어떤 프로그램(반)이 있나요?', answer: programFaqAnswer || '프로그램 정보는 학원에 문의해주세요.' },
     { question: name + '의 수강료는 얼마인가요?', answer: monthlyFee ? '월 수강료는 ' + monthlyFee + ' 수준입니다. 정확한 금액은 학원에 직접 문의해주세요.' : '수강료는 학원에 직접 문의해주세요.' },
     { question: name + '은(는) 몇 명씩 수업하나요?', answer: classSize ? classSize + ' 규모로 수업합니다.' : '반 인원은 학원에 문의해주세요.' },
     { question: name + '의 운영시간은 어떻게 되나요?', answer: operatingHours || '운영시간은 학원에 문의해주세요.' }
