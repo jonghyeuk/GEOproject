@@ -216,6 +216,94 @@
     .success-message h2 { color: #065f46; margin-bottom: 8px; }
     .success-message p { color: #047857; }
     .success-message a { display: inline-block; margin-top: 16px; padding: 10px 24px; background: var(--primary); color: #fff; border-radius: var(--radius-sm); }
+
+    /* 기본 vs 프리미엄 비교 */
+    .plan-compare {
+      max-width: 720px;
+      margin: 0 auto 36px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+    @media (max-width: 600px) { .plan-compare { grid-template-columns: 1fr; } }
+    .plan-card {
+      background: #fff;
+      border-radius: var(--radius-lg);
+      padding: 28px;
+      box-shadow: var(--shadow);
+      border: 2px solid var(--gray-200);
+    }
+    .plan-card.premium { border-color: var(--secondary); }
+    .plan-card h3 { font-size: 1.15rem; margin-bottom: 4px; }
+    .plan-card .plan-price { font-size: 1.3rem; font-weight: 700; color: var(--primary); margin-bottom: 12px; }
+    .plan-card ul { list-style: none; padding: 0; margin: 0 0 16px; }
+    .plan-card ul li { padding: 4px 0; font-size: 0.9rem; color: var(--gray-600); }
+    .plan-card ul li::before { content: '✓ '; color: var(--success); font-weight: 700; }
+    .plan-card ul li.disabled { color: var(--gray-400); }
+    .plan-card ul li.disabled::before { content: '— '; color: var(--gray-300); }
+    .plan-card .plan-btn {
+      display: block;
+      width: 100%;
+      padding: 10px;
+      text-align: center;
+      border-radius: var(--radius-sm);
+      font-weight: 700;
+      font-size: 0.95rem;
+      border: none;
+      cursor: pointer;
+    }
+    .plan-card .plan-btn.basic { background: var(--gray-100); color: var(--gray-700); }
+    .plan-card .plan-btn.prem { background: linear-gradient(135deg, var(--primary), var(--secondary)); color: #fff; }
+
+    .basic-notice {
+      max-width: 720px;
+      margin: 0 auto 24px;
+      background: #fefce8;
+      border: 1px solid #fde68a;
+      border-radius: var(--radius);
+      padding: 14px 20px;
+      font-size: 0.9rem;
+      color: #92400e;
+    }
+
+    /* 프리미엄 신청 모달 */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.5);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+    }
+    .modal-overlay.show { display: flex; }
+    .modal-content {
+      background: #fff;
+      border-radius: var(--radius-lg);
+      padding: 36px;
+      max-width: 500px;
+      width: 90%;
+      max-height: 90vh;
+      overflow-y: auto;
+      position: relative;
+    }
+    .modal-content h2 { color: var(--primary); margin-bottom: 4px; font-size: 1.2rem; }
+    .modal-content .modal-desc { color: var(--gray-500); font-size: 0.9rem; margin-bottom: 20px; }
+    .modal-close {
+      position: absolute;
+      top: 12px; right: 16px;
+      background: none; border: none;
+      font-size: 1.5rem; cursor: pointer;
+      color: var(--gray-400);
+    }
+    .premium-success {
+      text-align: center;
+      padding: 24px 0;
+      display: none;
+    }
+    .premium-success.show { display: block; }
+    .premium-success h3 { color: #065f46; margin-bottom: 8px; }
+    .premium-success p { color: #047857; font-size: 0.9rem; }
   </style>
 </head>
 <body>
@@ -247,6 +335,41 @@
         <h3>검색 발견성 향상</h3>
         <p>지역+과목 기반 태그로 학부모가 쉽게 찾을 수 있습니다</p>
       </div>
+    </div>
+
+    <!-- 기본 vs 프리미엄 비교 -->
+    <div class="plan-compare">
+      <div class="plan-card">
+        <h3>기본 등록 (무료)</h3>
+        <div class="plan-price">무료</div>
+        <ul>
+          <li>학원 기본 정보 페이지 생성</li>
+          <li>AI 검색 기본 노출</li>
+          <li>지역+과목 태그 자동 생성</li>
+          <li class="disabled">프로그램 상세 정보 (대상학년, 수업방식)</li>
+          <li class="disabled">AI 우선 인용 최적화</li>
+          <li class="disabled">담당자 1:1 맞춤 문서 작성</li>
+        </ul>
+        <a href="#registerForm" class="plan-btn basic">아래에서 바로 등록</a>
+      </div>
+      <div class="plan-card premium">
+        <h3>프리미엄 등록</h3>
+        <div class="plan-price">맞춤 상담</div>
+        <ul>
+          <li>기본 등록 모든 기능 포함</li>
+          <li>프로그램별 상세 정보 (대상학년, 난이도, 일정)</li>
+          <li>AI 우선 인용 최적화 문서</li>
+          <li>담당자가 직접 맞춤 문서 작성</li>
+          <li>FAQ, 비교 문서, 가이드 문서 추가 생성</li>
+          <li>정기 업데이트 관리</li>
+        </ul>
+        <button class="plan-btn prem" onclick="document.getElementById('premiumModal').classList.add('show')">프리미엄 상담 신청</button>
+      </div>
+    </div>
+
+    <!-- 기본 등록 안내 -->
+    <div class="basic-notice" id="basicNotice">
+      기본 등록은 학원의 핵심 정보(학원명, 위치, 과목, 대상)만 포함됩니다. AI가 "이 학원에 중2도 다닐 수 있나요?", "특목고 대비반이 있나요?" 같은 구체적인 질문에 답하려면 프로그램 상세 정보가 필요합니다. <strong>프리미엄 등록</strong>을 신청하시면 담당자가 학원 맞춤 문서를 직접 작성해드립니다.
     </div>
 
     <!-- 등록 폼 -->
@@ -372,6 +495,48 @@
       <a href="#" id="viewDocLink">등록된 학원 정보 보기</a>
     </div>
 
+  </div>
+
+  <!-- 프리미엄 신청 모달 -->
+  <div class="modal-overlay" id="premiumModal">
+    <div class="modal-content">
+      <button class="modal-close" onclick="document.getElementById('premiumModal').classList.remove('show')">&times;</button>
+      <h2>프리미엄 등록 상담 신청</h2>
+      <p class="modal-desc">담당자가 학원 맞춤 AI 최적화 문서를 직접 작성해드립니다. 아래 정보를 입력해주시면 빠르게 연락드리겠습니다.</p>
+
+      <form id="premiumForm">
+        <div class="form-group">
+          <label>담당자 이름 <span class="required">*</span></label>
+          <input type="text" id="premName" required placeholder="예: 홍길동">
+        </div>
+        <div class="form-group">
+          <label>이메일 <span class="required">*</span></label>
+          <input type="email" id="premEmail" required placeholder="예: info@academy.com">
+        </div>
+        <div class="form-group">
+          <label>전화번호 <span class="required">*</span></label>
+          <input type="tel" id="premPhone" required placeholder="예: 010-1234-5678">
+        </div>
+        <div class="form-group">
+          <label>학원명 <span class="required">*</span></label>
+          <input type="text" id="premAcademy" required placeholder="예: 청담수학학원">
+        </div>
+        <div class="form-group">
+          <label>학원 위치</label>
+          <input type="text" id="premLocation" placeholder="예: 하남시 미사동">
+        </div>
+        <div class="form-group">
+          <label>문의 내용</label>
+          <textarea id="premMessage" rows="4" placeholder="운영 중인 프로그램, 학원 특징, AI 노출에서 강조하고 싶은 점 등을 자유롭게 적어주세요.&#10;&#10;예: 중등 수학 심화반(중1~중3, 주3회), 특목고 대비반, 고등 수능 킬러문항반을 운영하고 있습니다. 소수정예 8명 수업이 강점입니다."></textarea>
+        </div>
+        <button type="submit" class="btn-register" id="premSubmitBtn">상담 신청하기</button>
+      </form>
+
+      <div class="premium-success" id="premiumSuccess">
+        <h3>상담 신청이 완료되었습니다!</h3>
+        <p>담당자가 입력하신 연락처로 빠르게 연락드리겠습니다.<br>보통 1~2 영업일 이내에 안내해드립니다.</p>
+      </div>
+    </div>
   </div>
 
   <div id="site-footer"></div>
