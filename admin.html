@@ -30,7 +30,7 @@
   <!-- 관리자 화면 (로그인 후 표시) -->
   <div id="adminScreen" class="container page-content" style="display:none;">
     <div class="breadcrumb">
-      <a href="index.html">Explore</a>
+      <a href="/">Explore</a>
       <span class="sep">></span>
       <span>Admin</span>
     </div>
@@ -383,7 +383,7 @@
       return '\
       <div class="admin-doc-row">\
         <div class="admin-doc-info">\
-          <a href="document.html?slug=' + d.slug + '" class="admin-doc-title">' + d.title + '</a>\
+          <a href="/documents/' + d.slug + '" class="admin-doc-title">' + d.title + '</a>\
           <div class="admin-doc-meta">' + (cat ? cat.icon + ' ' + cat.nameKo : '') + ' &middot; ' + d.docType + ' &middot; ' + formatDate(d.updatedAt) + '</div>\
           <div class="tag-list" style="margin-top:4px;">' + (d.tags || []).slice(0,4).map(t => '<span class="tag" style="font-size:11px; padding:2px 6px;">' + t + '</span>').join('') + '</div>\
         </div>\
