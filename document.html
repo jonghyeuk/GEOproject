@@ -49,7 +49,7 @@
     if (!slug) {
       const pathParts = location.pathname.split('/').filter(Boolean);
       if (pathParts.length >= 2 && pathParts[0] === 'documents') {
-        slug = pathParts[1];
+        slug = decodeURIComponent(pathParts[1]);
       }
     }
     if (!slug) { location.href = 'knowledge.html'; return; }
